@@ -57,6 +57,20 @@ void Game::Update()
 
 
 	}
+	auto EbulletIt = EnemyBullets.begin();
+	while (EbulletIt != EnemyBullets.end()) {
+		if (!(*EbulletIt)->Update()) {
+			//€–S
+			EbulletIt = EnemyBullets.erase(EbulletIt);
+		}
+		else {
+			EbulletIt++;
+		}
+
+
+	}
+
+
 	CameraAngle();
 	camera.Update(); //ƒJƒƒ‰‚ÌXV
 	map.Update();
@@ -126,4 +140,8 @@ void Game::Render()
 	for (auto bullet : PlayerBullets) {
 		bullet->Render();
 	}
+	for (auto bullet : EnemyBullets) {
+		bullet->Render();
+	}
+
 }

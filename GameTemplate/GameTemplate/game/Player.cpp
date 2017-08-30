@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Player.h"
 #include "game.h"
+#define  TURBO 1000
 
 
 
@@ -44,9 +45,42 @@ void Player::Update()
 	MovePlayer(); //入力系のやつ
 	Animetion();  //アニメーション
 	AnglePlayer();//プレイヤーの向き
+	Attention(); //Z注目
 	pad.Update(); //パッドのアプデ
 	//camera->Update();//カメラのアプデ
 	skinmodel.UpdateWorldMatrix(position, rotation, D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+}
+
+//Z注目
+void Player::Attention()
+{
+	D3DXVECTOR3 pPos = game->GetEnemy()->Getpos();
+	D3DXVec3Subtract(&pPos, &pPos, &position);
+	if (pad.IsTrigger(Pad::enButtonLB2))
+	{
+		if (!ZAttent)
+		{
+
+			ZAttent = true;
+		}
+		else
+		{
+			ZAttent = false;
+		}
+
+	}
+	if (D3DXVec3Length(&pPos) > 150)
+	{
+		ZAttent = false;
+	}
+
+	if (ZAttent) {
+		D3DXVECTOR3 Def;
+		D3DXVECTOR3 UP = { 0.0f,1.0f,0.0f };
+		D3DXVec3Subtract(&Def, &game->GetEnemy()->Getpos(), &position);
+		D3DXQuaternionRotationAxis(&rotation, &UP, atan2f(Def.x, Def.z));
+	}
+
 }
 
 void Player::MovePlayer()
@@ -59,6 +93,8 @@ void Player::MovePlayer()
 	MoveSpeed.y =  0.0f;
 	MoveSpeed.x =  0.0f ;
 	MoveSpeed.z =  0.0f ;
+	MoveSpeed = { skinmodel.GetMatrix().m[2][0],skinmodel.GetMatrix().m[2][1],skinmodel.GetMatrix().m[2][2] };
+	MoveSpeed *= 5;
 
 ///////////////////////////////////////////////////////////////////////////////////
 	//入力の判定　(後で関数化する)
@@ -86,9 +122,10 @@ void Player::MovePlayer()
 		
 		characterController.Jump();
 	}
-
+	
 	if (pad.IsPress(Pad::enButtonA))
 	{
+		MoveSpeed *= 0;
 		MoveSpeed.y = -5;
 		characterController.Jump();
 	}
@@ -109,27 +146,27 @@ void Player::AnglePlayer()
 	D3DXVECTOR3 AnglemoveSpeed = characterController.GetMoveSpeed();
 
 	D3DXVECTOR3 moveDirLocal;
-	moveDirLocal.y = pad.GetLStickYF();
+	moveDirLocal.y = 0.0f;
 	moveDirLocal.x = pad.GetLStickXF();
 	moveDirLocal.z = pad.GetLStickYF();
 	D3DXMATRIX mViveInv = game->GetCamera()->GetViewMatrixInv();
 
 	D3DXVECTOR3 cameraZ;
 	cameraZ.x = mViveInv.m[2][0];
-	cameraZ.y = mViveInv.m[2][1];
+	cameraZ.y = 0.0f;
 	cameraZ.z = mViveInv.m[2][2];
 	D3DXVec3Normalize(&cameraZ, &cameraZ);
 
 	D3DXVECTOR3 cameraX;
 	cameraX.x = mViveInv.m[0][0];
-	cameraX.y = mViveInv.m[0][1];
+	cameraX.y = 0.0f;
 	cameraX.z = mViveInv.m[0][2];
 	D3DXVec3Normalize(&cameraX, &cameraX);
 
 	D3DXVECTOR3 moveDir;
 
 	moveDir.x = cameraX.x * moveDirLocal.x + cameraZ.x * moveDirLocal.z;
-	moveDir.y = cameraX.y * moveDirLocal.y + cameraZ.y * moveDirLocal.y;
+	moveDir.y = 0.0f;
 	moveDir.z = cameraX.z * moveDirLocal.x + cameraZ.z * moveDirLocal.z;
 	if (pad.GetLStickXF() != 0 || pad.GetLStickYF() != 0)
 	{
@@ -138,22 +175,48 @@ void Player::AnglePlayer()
 
 	AnglemoveSpeed.x = moveDir.x * 6;
 	AnglemoveSpeed.z = moveDir.z * 6;
-	AnglemoveSpeed.y = moveDir.y * 6;
-
 
 ///////////////////////////////////////////////////////////////////////////////////
+	//ブースト
+	if (pad.IsTrigger(Pad::enButtonRB2)&&DashTime < TURBO)
+	{
+		
+		AnglemoveSpeed *= 3;
+		if (pad.GetLStickXF() == 0 && pad.GetLStickYF() == 0)
+		{
+			AnglemoveSpeed = { skinmodel.GetMatrix().m[2][0],skinmodel.GetMatrix().m[2][1],skinmodel.GetMatrix().m[2][2] };
+			AnglemoveSpeed *= 10;
+
+		}
+
+
+		DashTime++;
+		characterController.SetGravity(0);
+		
+	}
+	if (DashTime >= TURBO)
+	{
+		characterController.SetGravity(-9.8f); //重力の設定
+	}
+	if (!pad.IsPress(Pad::enButtonRB2) && DashTime > 0)
+	{
+		DashTime--;
+		characterController.SetGravity(-9.8f); //重力の設定
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////
 	//弾の生成
 	D3DXMATRIX Ahead = skinmodel.GetMatrix(); //プレイヤーの行列を取得
-	D3DXVECTOR3 enemypos = game->GetEnemy()->Getpos() - position; //敵に向かうベクトル
-	D3DXVec3Normalize(&enemypos, &enemypos);
+	D3DXVECTOR3 Epos = game->GetEnemy()->Getpos() - position;
+	D3DXVec3Normalize(&Epos, &Epos);
 	if (pad.IsPress(Pad::enButtonRB1) && bulletFireInterval == 0) {
 		Bullet* bullet = new Bullet();
 		D3DXVECTOR3 bulletPos = position;
 		bulletPos.y += 0.5f;
 		bullet->Start(bulletPos, { Ahead.m[2][0],Ahead.m[2][1],Ahead.m[2][2] });//プレイヤーの前方向を渡す
-		if (pad.IsTrigger(Pad::enButtonLB2))
+		if (ZAttent)
 		{
-			bullet->Start(bulletPos,enemypos);//プレイヤーの前方向を渡す
+			bullet->Start(bulletPos, Epos);
 		}
 		game->AddPlayerBullets(bullet);
 		bulletFireInterval = 10;
@@ -164,34 +227,6 @@ void Player::AnglePlayer()
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////
-	//ブースト
-	if (pad.IsTrigger(Pad::enButtonRB2)&&DashTime < 600)
-	{
-		AnglemoveSpeed *= 2.5;
-		DashTime++;
-		characterController.SetGravity(0);
-		
-
-		//上昇
-		if (pad.GetLStickXF() == 0 && pad.GetLStickYF() == 0)
-		{
-			AnglemoveSpeed.y = 3;
-			AnglemoveSpeed.y *= 2.5;
-			characterController.Jump();
-		}
-		
-	}
-	if (DashTime >= 180)
-	{
-		characterController.SetGravity(-9.8f); //重力の設定
-	}
-	if (!pad.IsPress(Pad::enButtonRB2) && DashTime > 0)
-	{
-		DashTime--;
-		characterController.SetGravity(-9.8f); //重力の設定
-	}
-
-///////////////////////////////////////////////////////////////////////////////////
 
 
 	characterController.SetMoveSpeed(AnglemoveSpeed);
@@ -199,6 +234,8 @@ void Player::AnglePlayer()
 
 ///////////////////////////////////////////////////////////////////////////////////
 	//キャラの向きを変える処理
+	
+
 	D3DXVECTOR3 UP = { 0.0f,1.0f,0.0f };
 	if (D3DXVec3LengthSq(&moveDir) > 0.0001f)
 	{

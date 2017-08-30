@@ -2,6 +2,7 @@
 #include "IGameObject.h"
 #include "myEngine\Physics\CharacterController.h"
 #include "myEngine\HID\Pad.h"
+#include "Bullet.h"
 class Enemy : public IGameObject
 {
 public:
@@ -11,6 +12,7 @@ public:
 	void Update();
 	void Render();
 	void EndEnemy();
+	void EnemyBulletON();
 	D3DXVECTOR3 Getpos()
 	{
 		return position;
@@ -29,6 +31,9 @@ private:
 		  Camera*               camera;
 		  bool                  IsDete;
 		  Pad                   pad;          //パット
+		  int                   HP = 100;
+		  int bulletFireInterval;	//弾丸をもう一度打てるようになるまでのインターバル
+		  int                   tactics = 2; //戦術
 
 };
 

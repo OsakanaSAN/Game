@@ -16,10 +16,12 @@ public:
 	void Render();
 	void MovePlayer();
 	void AnglePlayer();
+	void Attention();
 	D3DXVECTOR3 GetPos()
 	{
 		return position;
 	}
+
 	void Animetion();
 private:
 	SkinModel             skinmodel;
@@ -37,6 +39,8 @@ private:
 	int bulletFireInterval;	//弾丸をもう一度打てるようになるまでのインターバル
 	D3DXVECTOR3           oldDir;
 	int                   DashTime = 0;
+	float                 SpeedDown = 1.0f;
+	bool                  ZAttent = false;
 	
 };
 

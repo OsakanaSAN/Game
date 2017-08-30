@@ -50,9 +50,15 @@ public:
 	{
 		return &enemy;
 	}
+	//プレイヤーの弾のリスト
 	const std::list<Bullet*>& GetPlayerBullet()
 	{
 		return PlayerBullets;
+	}
+	//敵の弾のリスト
+	const std::list<Bullet*>& GetEnemyBullet()
+	{
+		return EnemyBullets;
 	}
 	/*!
 	* @brief	プレイヤーが放った弾を追加。
@@ -61,6 +67,12 @@ public:
 	{
 		PlayerBullets.push_back(bullet);
 	}
+
+	void AddEnemyBullets(Bullet* bullet)
+	{
+		EnemyBullets.push_back(bullet);
+	}
+
 	Player* GetPlayer()
 	{
 		return &player;
@@ -73,8 +85,7 @@ private:
 	Pad    pad;
 	Map    map;
 	std::list<Bullet*> PlayerBullets;
-	
-	
+	std::list<Bullet*> EnemyBullets;
 
 };
 

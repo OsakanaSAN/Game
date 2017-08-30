@@ -26,37 +26,83 @@ void Enemy::Start()
 
 void Enemy::Update()
 {
+	
+
 	if (pad.IsPress(Pad::enButtonLB1))
 	{
-		//position = { 0.0f,1.0f,4.0f };
-		//characterController.Init(0.5f, 1.0f, position);
+		HP = 200;
 		IsDete = false;
 	}
 	pad.Update();
 	if (IsDete) { return; }
 	EndEnemy();
-	//EnemyMove();
-	//D3DXVECTOR3 Movespeed = { 0.0f,0.0f,0.0f };
-	//characterController.SetMoveSpeed(Movespeed);
+	EnemyMove();
+	EnemyBulletON();
 	characterController.Execute();
-	position = characterController.GetPosition();
+	//position = characterController.GetPosition();
 	animation.Update(1.0f / 60.0f);
 	skinmodel.UpdateWorldMatrix(position, rotation, D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 
 }
+
+//敵の弾丸処理
+void Enemy::EnemyBulletON()
+{
+	D3DXMATRIX Ahead = skinmodel.GetMatrix(); //プレイヤーの行列を取得
+	D3DXVECTOR3 pPos = game->GetPlayer()->GetPos();
+	D3DXVec3Subtract(&pPos, &pPos, &position);
+	//プレイヤーを追う弾
+	D3DXVECTOR3 Pos = game->GetPlayer()->GetPos() - position;
+	D3DXVec3Normalize(&Pos, &Pos);
+
+	if (D3DXVec3Length(&pPos) < 100 && bulletFireInterval == 0) {
+		Bullet* bullet = new Bullet();
+		D3DXVECTOR3 bulletPos = position;
+		bulletPos.y += 0.5f;
+		bullet->Start(bulletPos, Pos);//プレイヤーの前方向を渡す
+		game->AddEnemyBullets(bullet);
+		bulletFireInterval = 20 * tactics; //秒間3発
+	}
+	bulletFireInterval--;
+	if (bulletFireInterval < 0) {
+		bulletFireInterval = 0;
+	}
+
+}
+
 void Enemy::EnemyMove()
 {
 
-	position = position - game->GetPlayer()->GetPos();
-	//Y軸周りの回転行列を作成。
-	D3DXMATRIX mRot;
-	//単位行列を作成。
-	D3DXMatrixIdentity(&mRot);
-	D3DXMatrixRotationY(&mRot, 0.05f*2);
-	D3DXQuaternionRotationMatrix(&rotation, &mRot);
-	//toEyePosを回す。
-	D3DXQuaternionRotationAxis(&rotation, &position, 0.5f);
+	D3DXVECTOR3 pPos = game->GetPlayer()->GetPos();
+	D3DXVec3Subtract(&pPos, &pPos, &position);
 
+	if (D3DXVec3Length(&pPos) <= 50 && D3DXVec3Length(&pPos) > 1)
+	{
+		tactics = 1;
+		pPos /= D3DXVec3Length(&pPos);
+		position.x += pPos.x *0.2f;
+		position.y += pPos.y *0.2f;
+		position.z += pPos.z *0.2f;
+		D3DXVECTOR3 Def;
+		D3DXVECTOR3 UP = { 0.0f,1.0f,0.0f };
+		D3DXVec3Subtract(&Def, &game->GetPlayer()->GetPos(), &position);
+		D3DXQuaternionRotationAxis(&rotation, &UP, atan2f(Def.x, Def.z));
+
+	}
+
+	if (D3DXVec3Length(&pPos) <= 100&& D3DXVec3Length(&pPos) > 50)
+	{
+		tactics = 2;
+		pPos /= D3DXVec3Length(&pPos);
+		position.x += pPos.x *0.5f;
+		position.y += pPos.y *0.5f;
+		position.z += pPos.z *0.5f;
+		D3DXVECTOR3 Def;
+		D3DXVECTOR3 UP = { 0.0f,1.0f,0.0f };
+		D3DXVec3Subtract(&Def, &game->GetPlayer()->GetPos(), &position);
+		D3DXQuaternionRotationAxis(&rotation, &UP, atan2f(Def.x, Def.z));
+	}
+	
 
 }
 
@@ -74,7 +120,13 @@ void Enemy::EndEnemy()
 
 		if (length < 0.8f)
 		{
-			IsDete = true;
+			HP -= 5;
+			bullet->SetIsHit(true);
+			if (HP < 0)
+			{
+				IsDete = true;
+
+			}
 			//this->characterController.RemoveRigidBoby();
 		}
 

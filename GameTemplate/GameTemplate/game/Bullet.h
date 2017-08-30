@@ -20,6 +20,14 @@ public:
 	{
 		return moveSpeed;
 	}
+	void SetSpeed(D3DXVECTOR3 speed)
+	{
+		moveSpeed = speed;
+	}
+	void  SetIsHit(bool hit)
+	{
+		IsHit = hit;
+	}
 private:
 	SkinModel model;
 	D3DXMATRIX  Mat;
@@ -29,5 +37,6 @@ private:
 	D3DXVECTOR3 position;
 	D3DXVECTOR3 moveSpeed;
 	int life;		//éıñΩÅB
+	bool IsHit = false;
 };
 
