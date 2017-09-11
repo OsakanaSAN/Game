@@ -15,6 +15,13 @@ private:
 	float					Far;				//!<遠平面。
 	float					Near;				//!<近平面。
 	float					aspect;				//!<アスペクト比
+	D3DXVECTOR3             m_targetMoveSpeed = { 0.0,0.0,0.0 };
+	D3DXVECTOR3             m_positionMoveSpeed = { 0.0,0.0,0.0 };
+	float		m_maxMoveSpeed = 0.0f;					//!<最高移動速度。
+	float		m_targetDampingRate = 1.0f;				//!<減衰率。値が大きいほどカメラが遅れ付いてくる。
+	float		m_dampingRate = 1.0f;					//!<減衰率。
+	float		m_dampingRateVel = 0.0f;
+
 public:
 	/*!
 	 *@brief	コンストラクタ。
@@ -103,4 +110,7 @@ public:
 	 *@brief	カメラの初期化。
 	 */
 	void Init();
+
+	D3DXVECTOR3 CalcSpring(D3DXVECTOR3 pos, D3DXVECTOR3 target, D3DXVECTOR3 Speed,
+		            float Maxspeed, float down);
 };

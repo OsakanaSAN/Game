@@ -28,6 +28,7 @@ public:
 	{
 		IsHit = hit;
 	}
+	void LockOn(D3DXVECTOR3 lock);
 private:
 	SkinModel model;
 	D3DXMATRIX  Mat;

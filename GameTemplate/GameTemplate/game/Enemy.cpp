@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Enemy.h"
 
-
+int fg = 10;
 Enemy::Enemy()
 {
 	PLight.SetAmbientLight({ 1.0f,1.0f,1.0f,1.0f });
@@ -14,8 +14,9 @@ Enemy::~Enemy()
 
 void Enemy::Start()
 {
-
-	skinmodelData.LoadModelData("Assets/modelData/Unity.X", &animation);
+	position.x = fg;
+	fg += 10;
+	skinmodelData.LoadModelData("Assets/modelData/pship.X", NULL);
 	skinmodel.Init(&skinmodelData);
 	skinmodel.SetLight(&PLight);
 	characterController.Init(0.5f, 1.0f, position);
@@ -26,6 +27,7 @@ void Enemy::Start()
 
 void Enemy::Update()
 {
+	srand((unsigned int)time(NULL));
 	
 
 	if (pad.IsPress(Pad::enButtonLB1))
@@ -40,7 +42,6 @@ void Enemy::Update()
 	EnemyBulletON();
 	characterController.Execute();
 	//position = characterController.GetPosition();
-	animation.Update(1.0f / 60.0f);
 	skinmodel.UpdateWorldMatrix(position, rotation, D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 
 }
@@ -55,7 +56,7 @@ void Enemy::EnemyBulletON()
 	D3DXVECTOR3 Pos = game->GetPlayer()->GetPos() - position;
 	D3DXVec3Normalize(&Pos, &Pos);
 
-	if (D3DXVec3Length(&pPos) < 100 && bulletFireInterval == 0) {
+	if (D3DXVec3Length(&pPos) < 30 && bulletFireInterval == 0) {
 		Bullet* bullet = new Bullet();
 		D3DXVECTOR3 bulletPos = position;
 		bulletPos.y += 0.5f;
@@ -73,16 +74,47 @@ void Enemy::EnemyBulletON()
 void Enemy::EnemyMove()
 {
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//åôÇ»ãììÆ
+	//íÜÅEãﬂãóó£
 	D3DXVECTOR3 pPos = game->GetPlayer()->GetPos();
 	D3DXVec3Subtract(&pPos, &pPos, &position);
+	float spdX = rand() % 50 + 40;
+	float spdY = rand() % 50 + 20;
+	float spdZ = 50;//rand() % 50 + 40;
 
-	if (D3DXVec3Length(&pPos) <= 50 && D3DXVec3Length(&pPos) > 1)
+	if (D3DXVec3Length(&pPos) <= 60 && D3DXVec3Length(&pPos) > 1)
 	{
 		tactics = 1;
+		spdX  /= 100;
+		spdY  /= 100;
+		spdZ  /= 100;
 		pPos /= D3DXVec3Length(&pPos);
-		position.x += pPos.x *0.2f;
-		position.y += pPos.y *0.2f;
-		position.z += pPos.z *0.2f;
+		position.x -= pPos.x *spdX;
+		position.y -= pPos.y *spdY;
+		position.z -= pPos.z *spdZ;
+		int nexthp = HP;
+	    if (coolTime == 0)
+	    {
+			tacticsChange = HP;
+			TimeVec.x = spdX;
+			TimeVec.y = spdY;
+			TimeVec.z = spdZ;
+		    coolTime = 180;
+
+	    }
+
+		
+		if (coolTime > 0 )
+		{
+				coolTime--;
+				position.x += pPos.x *TimeVec.x;
+				position.y += pPos.y *TimeVec.y;
+				position.z += pPos.z *TimeVec.z;
+			
+		}
+		
+		
 		D3DXVECTOR3 Def;
 		D3DXVECTOR3 UP = { 0.0f,1.0f,0.0f };
 		D3DXVec3Subtract(&Def, &game->GetPlayer()->GetPos(), &position);
@@ -90,13 +122,42 @@ void Enemy::EnemyMove()
 
 	}
 
-	if (D3DXVec3Length(&pPos) <= 100&& D3DXVec3Length(&pPos) > 50)
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+	//âìãóó£ÇÃãììÆ
+	//ëÅÇ∑Ç¨ÇÈ
+	if (D3DXVec3Length(&pPos) <= 100&& D3DXVec3Length(&pPos) > 60)
 	{
 		tactics = 2;
+		spdX /= 50;
+		spdY /= 50;
+		spdZ /= 50;
+
 		pPos /= D3DXVec3Length(&pPos);
-		position.x += pPos.x *0.5f;
-		position.y += pPos.y *0.5f;
-		position.z += pPos.z *0.5f;
+		position.x += pPos.x *spdX;
+		position.y += pPos.y *spdY;
+		position.z += pPos.z *spdZ;
+
+
+		if (coolTime == 0)
+		{
+			TimeVec.x = spdX;
+			TimeVec.y = spdY;
+			TimeVec.z = spdZ;
+			coolTime = 120;
+
+		}
+
+		if (coolTime > 0)
+		{
+			position.x += pPos.x *TimeVec.x;
+			position.y += pPos.y *TimeVec.y;
+			position.z += pPos.z *TimeVec.z;
+
+		}
+
+
+
 		D3DXVECTOR3 Def;
 		D3DXVECTOR3 UP = { 0.0f,1.0f,0.0f };
 		D3DXVec3Subtract(&Def, &game->GetPlayer()->GetPos(), &position);
@@ -118,10 +179,10 @@ void Enemy::EndEnemy()
 		float length = D3DXVec3Length(&DetBullet);
 		
 
-		if (length < 0.8f)
+		if (length < 1.0f)
 		{
 			HP -= 5;
-			bullet->SetIsHit(true);
+			//bullet->SetIsHit(true);
 			if (HP < 0)
 			{
 				IsDete = true;

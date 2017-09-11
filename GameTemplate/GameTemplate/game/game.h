@@ -11,7 +11,10 @@
 #include "Map.h"
 #include "Bullet.h"
 #include <list>
-/*!
+#include "Primitive.h"
+#include "Sprite.h"
+#include "C2DImage.h"
+ /*!
  * @brief	ゲームクラス。
  */
 class Game{
@@ -60,6 +63,11 @@ public:
 	{
 		return EnemyBullets;
 	}
+	//エネミーリスト
+	const std::list<Enemy*>& GetEnemys()
+	{
+		return Enemys;
+	}
 	/*!
 	* @brief	プレイヤーが放った弾を追加。
 	*/
@@ -73,19 +81,36 @@ public:
 		EnemyBullets.push_back(bullet);
 	}
 
+	void AddEnemy(Enemy* enemy)
+	{
+		Enemys.push_back(enemy);
+	}
+
 	Player* GetPlayer()
 	{
 		return &player;
 	}
 private:
 	D3DXVECTOR3		toEyePos;		//注視点から視点までのベクトル。
+	D3DXVECTOR3    oldPos;
+
 	Camera camera;
 	Player player;
 	Enemy  enemy;
+	Enemy  enemy2;
 	Pad    pad;
 	Map    map;
+	CPrimitive prim;
+	Sprite*    sprite;
+	LPD3DXSPRITE spt;
+	D3DXVECTOR3  rag;
+	float       Time = 0;
+
 	std::list<Bullet*> PlayerBullets;
 	std::list<Bullet*> EnemyBullets;
+	std::list<Enemy*>  Enemys;
+	float             length;
+
 
 };
 

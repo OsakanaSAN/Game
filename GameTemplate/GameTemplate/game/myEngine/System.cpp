@@ -5,6 +5,7 @@ LPDIRECT3D9             g_pD3D = NULL;
 LPDIRECT3DDEVICE9       g_pd3dDevice = NULL;
 EffectManager*			g_effectManager = NULL;
 
+
 extern void Init();
 extern void Render();
 extern void Update();
@@ -16,7 +17,6 @@ void InitD3D(HWND hWnd)
 {
 	//D3Dオブジェクトを作成する。
 	g_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
-	
 	// D3Dデバイスを作成するためのパラメータを設定する。
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp, sizeof(d3dpp));
@@ -82,7 +82,8 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 
 	//ここからゲーム関係の初期化。
 	Init();
-	
+
+
 	// ゲームループ
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));

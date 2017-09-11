@@ -45,6 +45,11 @@ public:
 	{
 		return worldMatrix;
 	}
+
+	D3DXMATRIX GetWorldMatrix()
+	{
+		return worldMatrix;
+	}
 	/*!
 	*@brief	オリジナルメッシュの先頭を取得する。
 	*/

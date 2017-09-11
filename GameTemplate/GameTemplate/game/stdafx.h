@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <time.h>
 
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision\CollisionDispatch\btGhostObject.h"
@@ -21,3 +22,8 @@
 #include "myEngine/Graphics/Light.h"
 
 #include "game.h"
+
+#define SAFE_RELEASE(p)			{ if(p) { (p)->Release(); (p) = NULL; } }	//インスタンスリリース
+#define SAFE_DELETE_ARRAY(p)	{ if(p) { delete[] (p);   (p) = NULL; } }	//インスタンス配列削除
+#define SAFE_DELETE(p)			{ if(p) { delete (p);     (p) = NULL; } }	//インスタンス削除
+

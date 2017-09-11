@@ -24,7 +24,7 @@ private:
 		  SkinModel             skinmodel;
 		  SkinModelData         skinmodelData;
 		  Light                 PLight;
-		  D3DXVECTOR3           position = { 0.0f,1.0f,4.0f };
+		  D3DXVECTOR3           position = { 70.0f,1.0f,50.0f };
 		  D3DXQUATERNION        rotation = { 0.0f, 0.0f, 0.0f, 1.0f };
 		  Animation             animation;    //アニメーション
 		  CharacterController   characterController;
@@ -34,6 +34,9 @@ private:
 		  int                   HP = 100;
 		  int bulletFireInterval;	//弾丸をもう一度打てるようになるまでのインターバル
 		  int                   tactics = 2; //戦術
+		  D3DXVECTOR3           TimeVec;
+		  int                   coolTime = 0;
+		  int                   tacticsChange;
 
 };
 

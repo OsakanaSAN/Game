@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "game.h"
 
+Enemy enemy3;
 
 /*!
  * @brief	コンストラクタ。
@@ -24,6 +25,7 @@ Game::~Game()
  */
 void Game::Start()
 {
+	D3DXCreateSprite(g_pd3dDevice, &spt);
 	g_physicsWorld = new PhysicsWorld;
 	g_physicsWorld->Init();
 	camera.Init();
@@ -36,6 +38,14 @@ void Game::Start()
 	player.Start();
 
 	enemy.Start();
+	this->sprite = new Sprite;
+	this->sprite->Loadtex("Assets/sprite/AC2.png");
+	this->sprite->Initialize();
+	/*enemy2.Start();
+	enemy3.Start();*/
+	
+	D3DXVECTOR3 V = player.GetPos() - camera.GetEyePt();
+	length = D3DXVec3Length(&V);
 
 }
 /*!
@@ -45,6 +55,9 @@ void Game::Update()
 {
 	player.Update(); //プレイヤーの更新
 	enemy.Update();  //敵の更新
+	/*enemy2.Update();
+	enemy3.Update();*/
+
 	auto bulletIt = PlayerBullets.begin();
 	while (bulletIt != PlayerBullets.end()) {
 		if (!(*bulletIt)->Update()) {
@@ -74,6 +87,9 @@ void Game::Update()
 	CameraAngle();
 	camera.Update(); //カメラの更新
 	map.Update();
+	this->sprite->Update();
+	
+	
 }
 
 void Game::CameraAngle()
@@ -119,24 +135,43 @@ void Game::CameraAngle()
 	}
 
 	//カメラをキャラに追従させる
-	D3DXVECTOR3 V = player.GetPos();
-	
-	camera.SetLookatPt(V);
-	V.x = V.x + toEyePos.x;
-	V.y = V.y + toEyePos.y;
-	V.z = V.z + toEyePos.z;
-	camera.SetEyePt(V);
+	float Delta_time = 1.0f / 60.0f;
 
+	Time += Delta_time;
+	D3DXVECTOR3 tlen = player.GetPos() - camera.GetEyePt();
+	float length2 = D3DXVec3Length(&tlen);
+	float LENGTH = length2 -length;
+
+	if (LENGTH > 1.5f || LENGTH < -1.5f)
+	{
+		D3DXVECTOR3 V = player.GetPos();
+
+		camera.SetLookatPt(V);
+
+	}
+		V.x = V.x + toEyePos.x;
+		V.y = V.y + toEyePos.y;
+		V.z = V.z + toEyePos.z;
+
+		camera.SetEyePt(V);
+	
+	
 	pad.Update();
+	
 }
 /*!
 * @brief	描画。
 */
 void Game::Render()
 {
+	
 	player.Render();
 	enemy.Render();
+	
+	/*enemy2.Render();
+	enemy3.Render();*/
 	map.Render();
+	
 	for (auto bullet : PlayerBullets) {
 		bullet->Render();
 	}
@@ -144,4 +179,5 @@ void Game::Render()
 		bullet->Render();
 	}
 
+	this->sprite->Draw(this->spt);
 }

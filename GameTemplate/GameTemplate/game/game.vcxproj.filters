@@ -37,11 +37,17 @@
     <Filter Include="ソース ファイル\Games\Character">
       <UniqueIdentifier>{133a3c8a-d8af-435e-b01b-3009e5a168f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Games\Map">
-      <UniqueIdentifier>{fceb8bfd-3b51-4fbd-827b-d1b7919952a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Games\Item">
       <UniqueIdentifier>{534e989d-0bbb-48e3-a609-40711242d053}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Games\Item\Map">
+      <UniqueIdentifier>{fceb8bfd-3b51-4fbd-827b-d1b7919952a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\myEngine\Sound">
+      <UniqueIdentifier>{9d274c37-0c28-4f7d-a70a-9bc5cb2e4d44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\myEngine\Graphics\primitive">
+      <UniqueIdentifier>{50e6d667-6b99-4709-87eb-2fdc9b357061}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -100,16 +106,25 @@
       <Filter>ソース ファイル\Games\Character</Filter>
     </ClCompile>
     <ClCompile Include="MapChip.cpp">
-      <Filter>ソース ファイル\Games\Map</Filter>
+      <Filter>ソース ファイル\Games\Item\Map</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>ソース ファイル\Games\Item</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">
-      <Filter>ソース ファイル\Games\Map</Filter>
+      <Filter>ソース ファイル\Games\Item\Map</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>ソース ファイル\Games\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Primitive.cpp">
+      <Filter>ソース ファイル\myEngine\Graphics\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="C2DImage.cpp">
+      <Filter>ソース ファイル\myEngine\Graphics\primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>ソース ファイル\myEngine\Graphics\primitive</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -174,10 +189,10 @@
       <Filter>ソース ファイル\Games\Character</Filter>
     </ClInclude>
     <ClInclude Include="MapChip.h">
-      <Filter>ソース ファイル\Games\Map</Filter>
+      <Filter>ソース ファイル\Games\Item\Map</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
-      <Filter>ソース ファイル\Games\Map</Filter>
+      <Filter>ソース ファイル\Games\Item\Map</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>ソース ファイル\Games\Item</Filter>
@@ -186,10 +201,27 @@
       <Filter>ソース ファイル\Games\Character</Filter>
     </ClInclude>
     <ClInclude Include="locationInfo.h">
-      <Filter>ソース ファイル\Games\Map</Filter>
+      <Filter>ソース ファイル\Games\Item\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitive.h">
+      <Filter>ソース ファイル\myEngine\Graphics\primitive</Filter>
     </ClInclude>
     <ClInclude Include="DxCommonData.h">
-      <Filter>ソース ファイル\myEngine\Graphics</Filter>
+      <Filter>ソース ファイル\myEngine\Graphics\primitive</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="C2DImage.h">
+      <Filter>ソース ファイル\myEngine\Graphics\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>ソース ファイル\myEngine\Graphics\primitive</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

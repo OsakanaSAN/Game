@@ -23,7 +23,7 @@ void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 	D3DXVECTOR3 Nomal = moveSpeed;
 	D3DXVec3Normalize(&Nomal,&Nomal);
 	
-	this->moveSpeed = Nomal * 0.8; //弾速調整
+	this->moveSpeed = Nomal * 1.5; //弾速調整
 	//ライトを初期化。
 	light.SetDiffuseLightDirection(0, D3DXVECTOR4(0.707f, 0.0f, -0.707f, 1.0f));
 	light.SetDiffuseLightDirection(1, D3DXVECTOR4(-0.707f, 0.0f, -0.707f, 1.0f));
@@ -54,10 +54,19 @@ bool Bullet::Update()
 		//死亡。
 		return false;
 	}
+
 	position += moveSpeed;
 	
 	return true;
 }
+void Bullet::LockOn(D3DXVECTOR3 lock)
+{
+	D3DXVECTOR3 old = lock - moveSpeed;
+	D3DXVec3Normalize(&old, &old);
+	moveSpeed = old *0.8f;
+
+}
+
 void Bullet::Render()
 {
 	model.UpdateWorldMatrix(position, D3DXQUATERNION(0.0f, 0.0f, 0.0f, 1.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
