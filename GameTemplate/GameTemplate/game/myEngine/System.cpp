@@ -4,7 +4,7 @@
 LPDIRECT3D9             g_pD3D = NULL;		
 LPDIRECT3DDEVICE9       g_pd3dDevice = NULL;
 EffectManager*			g_effectManager = NULL;
-
+CShadowMap              g_shadowMap;
 
 extern void Init();
 extern void Render();
@@ -24,7 +24,7 @@ void InitD3D(HWND hWnd)
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
 	d3dpp.EnableAutoDepthStencil = TRUE;
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
 	//D3Dデバイスを作成する。
 	g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
 		D3DCREATE_HARDWARE_VERTEXPROCESSING,
@@ -71,11 +71,12 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 
 	// ウィンドウを作成。
 	HWND hWnd = CreateWindow("Game", "Game",
-		WS_OVERLAPPEDWINDOW, 100, 100, FRAME_BUFFER_WIDTH + 100, FRAME_BUFFER_HEIGHT + 100,
+		WS_OVERLAPPEDWINDOW, 0, 0, FRAME_BUFFER_WIDTH + 100, FRAME_BUFFER_HEIGHT + 100,
 		NULL, NULL, wc.hInstance, NULL);
 	// Direct3Dを初期化。
 	InitD3D(hWnd);
 
+	g_shadowMap.Init();
 	// Show the window
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
 	UpdateWindow(hWnd);

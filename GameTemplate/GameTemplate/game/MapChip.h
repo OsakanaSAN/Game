@@ -26,4 +26,7 @@ private:
 	Light light;
 	MeshCollider meshCollider;	//メッシュコライダー。
 	RigidBody rigidBody;		//剛体。
+	bool      Sea;
+	D3DXVECTOR4 Up = { 0.75f,0.0f,0.0f,1.0f };
+	int         lightNo = 0;
 };

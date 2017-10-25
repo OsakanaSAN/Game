@@ -40,14 +40,26 @@
     <Filter Include="ソース ファイル\Games\Item">
       <UniqueIdentifier>{534e989d-0bbb-48e3-a609-40711242d053}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Games\Item\Map">
-      <UniqueIdentifier>{fceb8bfd-3b51-4fbd-827b-d1b7919952a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\myEngine\Sound">
       <UniqueIdentifier>{9d274c37-0c28-4f7d-a70a-9bc5cb2e4d44}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\myEngine\Graphics\primitive">
       <UniqueIdentifier>{50e6d667-6b99-4709-87eb-2fdc9b357061}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\myEngine\Camera">
+      <UniqueIdentifier>{0685ee8c-1e07-4cef-9a51-ef85be6d3e9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\myEngine\Timer">
+      <UniqueIdentifier>{51c6378d-923c-454e-b1c5-0544497d58e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Games\HUD">
+      <UniqueIdentifier>{055b923e-cfa7-4a77-81b3-0cf895c686a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Games\scene">
+      <UniqueIdentifier>{75d4dec6-7e3d-42c0-812d-a2f33a5e5834}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Games\Map">
+      <UniqueIdentifier>{fceb8bfd-3b51-4fbd-827b-d1b7919952a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -55,9 +67,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="game.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="myEngine\Graphics\SkinModelData.cpp">
@@ -106,13 +115,13 @@
       <Filter>ソース ファイル\Games\Character</Filter>
     </ClCompile>
     <ClCompile Include="MapChip.cpp">
-      <Filter>ソース ファイル\Games\Item\Map</Filter>
+      <Filter>ソース ファイル\Games\Map</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>ソース ファイル\Games\Item</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">
-      <Filter>ソース ファイル\Games\Item\Map</Filter>
+      <Filter>ソース ファイル\Games\Map</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>ソース ファイル\Games\Character</Filter>
@@ -126,12 +135,45 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>ソース ファイル\myEngine\Graphics\primitive</Filter>
     </ClCompile>
+    <ClCompile Include="GameCamera.cpp">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClCompile>
+    <ClCompile Include="SpringCamera.cpp">
+      <Filter>ソース ファイル\myEngine\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraCollisionSolver.cpp">
+      <Filter>ソース ファイル\myEngine\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollider.cpp">
+      <Filter>ソース ファイル\myEngine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Bootht.cpp">
+      <Filter>ソース ファイル\Games\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TITLE.cpp">
+      <Filter>ソース ファイル\Games\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Fade.cpp">
+      <Filter>ソース ファイル\Games\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Skydoom.cpp">
+      <Filter>ソース ファイル\Games\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Missile.cpp">
+      <Filter>ソース ファイル\Games\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>ソース ファイル\myEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Sea.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="myEngine\Graphics\SkinModelData.h">
@@ -189,10 +231,10 @@
       <Filter>ソース ファイル\Games\Character</Filter>
     </ClInclude>
     <ClInclude Include="MapChip.h">
-      <Filter>ソース ファイル\Games\Item\Map</Filter>
+      <Filter>ソース ファイル\Games\Map</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
-      <Filter>ソース ファイル\Games\Item\Map</Filter>
+      <Filter>ソース ファイル\Games\Map</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>ソース ファイル\Games\Item</Filter>
@@ -201,7 +243,7 @@
       <Filter>ソース ファイル\Games\Character</Filter>
     </ClInclude>
     <ClInclude Include="locationInfo.h">
-      <Filter>ソース ファイル\Games\Item\Map</Filter>
+      <Filter>ソース ファイル\Games\Map</Filter>
     </ClInclude>
     <ClInclude Include="Primitive.h">
       <Filter>ソース ファイル\myEngine\Graphics\primitive</Filter>
@@ -217,6 +259,51 @@
     </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>ソース ファイル\myEngine\Graphics\primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCamera.h">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTime.h">
+      <Filter>ソース ファイル\myEngine\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Stopwatch.h">
+      <Filter>ソース ファイル\myEngine\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="SpringCamera.h">
+      <Filter>ソース ファイル\myEngine\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraCollisionSolver.h">
+      <Filter>ソース ファイル\myEngine\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollider.h">
+      <Filter>ソース ファイル\myEngine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Bootht.h">
+      <Filter>ソース ファイル\Games\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="TITLE.h">
+      <Filter>ソース ファイル\Games\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Fade.h">
+      <Filter>ソース ファイル\Games\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Skydoom.h">
+      <Filter>ソース ファイル\Games\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Missile.h">
+      <Filter>ソース ファイル\Games\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>ソース ファイル\myEngine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>ソース ファイル\myEngine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Sea.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

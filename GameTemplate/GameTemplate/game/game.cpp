@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "game.h"
 
+
 Enemy enemy3;
 
 /*!
@@ -11,8 +12,8 @@ Enemy enemy3;
  */
 Game::Game()
 {
-
-
+	D3DXCreateSprite(g_pd3dDevice, &spt);
+	
 }
 /*!
  * @brief	デストラクタ。
@@ -25,27 +26,32 @@ Game::~Game()
  */
 void Game::Start()
 {
-	D3DXCreateSprite(g_pd3dDevice, &spt);
+	
+	title.Start();
+
+
+	Gamecamera.Strat();
 	g_physicsWorld = new PhysicsWorld;
 	g_physicsWorld->Init();
-	camera.Init();
-	camera.SetEyePt(D3DXVECTOR3(0.0f, 2.5f, 8.0f));
-	camera.SetLookatPt(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	camera.Update();
+	Boot.Start(); //スプライト
+
 	map.Init();
 
 	//プレイヤーのインスタンスを生成
 	player.Start();
 
-	enemy.Start();
-	this->sprite = new Sprite;
-	this->sprite->Loadtex("Assets/sprite/AC2.png");
-	this->sprite->Initialize();
-	/*enemy2.Start();
-	enemy3.Start();*/
+
+	/*for (int i = 0;i < 3;i++)
+	{
+		Enemy* enemy = new Enemy;
+		Enemys.push_back(enemy);
+		enemy->Start(D3DXVECTOR3(500.0f * i, 1000.0f, -300.0f));
+	}*/
 	
-	D3DXVECTOR3 V = player.GetPos() - camera.GetEyePt();
-	length = D3DXVec3Length(&V);
+
+	game->GetCamera()->SetLookatPt(player.GetPos());
+	D3DXVECTOR3 l = player.GetPos() - game->GetCamera()->GetEyePt();
+	Gamecamera.SetPLength(D3DXVec3Length(&l));
 
 }
 /*!
@@ -53,131 +59,93 @@ void Game::Start()
  */
 void Game::Update()
 {
-	player.Update(); //プレイヤーの更新
-	enemy.Update();  //敵の更新
-	/*enemy2.Update();
-	enemy3.Update();*/
+	g_fade.Update();
+	switch (Scene)
+	{
+	case Title_Scene:
 
-	auto bulletIt = PlayerBullets.begin();
-	while (bulletIt != PlayerBullets.end()) {
-		if (!(*bulletIt)->Update()) {
-			//死亡
-			bulletIt = PlayerBullets.erase(bulletIt);
+
+
+		title.Update();
+		break;
+
+	case Game_Scene:
+
+
+		player.Update(); //プレイヤーの更新
+		Gamecamera.Update(); //カメラのアップデート
+		
+		/*for (auto Enemy : Enemys) {
+			Enemy->Update();
+		}*/
+
+		auto bulletIt = PlayerBullets.begin();
+		while (bulletIt != PlayerBullets.end()) {
+			if (!(*bulletIt)->Update()) {
+				//死亡
+				bulletIt = PlayerBullets.erase(bulletIt);
+			}
+			else {
+				bulletIt++;
+			}
+
+
 		}
-		else {
-			bulletIt++;
+		auto EbulletIt = EnemyBullets.begin();
+		while (EbulletIt != EnemyBullets.end()) {
+
+			if (!(*EbulletIt)->Update()) {
+				//死亡
+				EbulletIt = EnemyBullets.erase(EbulletIt);
+			}
+			else {
+				EbulletIt++;
+			}
+
+
 		}
 
 
+		
+		map.Update();
+		
+		Boot.Update();
+		break;
 	}
-	auto EbulletIt = EnemyBullets.begin();
-	while (EbulletIt != EnemyBullets.end()) {
-		if (!(*EbulletIt)->Update()) {
-			//死亡
-			EbulletIt = EnemyBullets.erase(EbulletIt);
-		}
-		else {
-			EbulletIt++;
-		}
-
-
-	}
-
-
-	CameraAngle();
-	camera.Update(); //カメラの更新
-	map.Update();
-	this->sprite->Update();
-	
-	
 }
 
-void Game::CameraAngle()
-{
-	float rStick_x = pad.GetRStickXF();
-	float rStick_y = pad.GetRStickYF();
-
-	toEyePos = camera.GetEyePt() - camera.GetLookatPt();
-
-	//Y軸周りの回転行列を作成。
-	D3DXMATRIX mRot;
-	//単位行列を作成。
-	D3DXMatrixIdentity(&mRot);
-	if (fabs(rStick_x) > 0.0f) 
-	{
-		D3DXMatrixRotationY(&mRot, 0.05f*rStick_x);
-	}
-	//toEyePosを回す。
-	D3DXVec3TransformCoord(&toEyePos, &toEyePos, &mRot);
-
-	//続いて、上下に回す。
-	//単位行列にしとく。
-	D3DXMatrixIdentity(&mRot);
-	//回転させる軸を求める。
-	D3DXVECTOR3 rotAxis;
-	D3DXVECTOR3 up = { 0.0f, 1.0f, 0.0f };
-	D3DXVec3Cross(&rotAxis, &up, &toEyePos);
-	//回転軸を正規化する。
-	D3DXVec3Normalize(&rotAxis, &rotAxis);
-
-	if (fabs(rStick_y) > 0) {
-		D3DXMatrixRotationAxis(&mRot, &rotAxis, 0.05f*rStick_y);
-	}
-	//toEyePosを回す。
-	D3DXVECTOR3 toEyePosOld = toEyePos;
-	D3DXVec3TransformCoord(&toEyePos, &toEyePos, &mRot);
-	//上下の回転は制限を設ける。
-	D3DXVECTOR3 toEyePosNormalized;
-	D3DXVec3Normalize(&toEyePosNormalized, &toEyePos);
-	if (fabsf(toEyePosNormalized.x) < 0.5f && fabsf(toEyePosNormalized.z) < 0.5f) {
-		//可動域を超えている。
-		toEyePos = toEyePosOld;
-	}
-
-	//カメラをキャラに追従させる
-	float Delta_time = 1.0f / 60.0f;
-
-	Time += Delta_time;
-	D3DXVECTOR3 tlen = player.GetPos() - camera.GetEyePt();
-	float length2 = D3DXVec3Length(&tlen);
-	float LENGTH = length2 -length;
-
-	if (LENGTH > 1.5f || LENGTH < -1.5f)
-	{
-		D3DXVECTOR3 V = player.GetPos();
-
-		camera.SetLookatPt(V);
-
-	}
-		V.x = V.x + toEyePos.x;
-		V.y = V.y + toEyePos.y;
-		V.z = V.z + toEyePos.z;
-
-		camera.SetEyePt(V);
-	
-	
-	pad.Update();
-	
-}
 /*!
 * @brief	描画。
 */
 void Game::Render()
 {
 	
-	player.Render();
-	enemy.Render();
-	
-	/*enemy2.Render();
-	enemy3.Render();*/
-	map.Render();
-	
-	for (auto bullet : PlayerBullets) {
-		bullet->Render();
-	}
-	for (auto bullet : EnemyBullets) {
-		bullet->Render();
-	}
+	switch (Scene)
+	{
+	case Title_Scene:
 
-	this->sprite->Draw(this->spt);
+		title.Drow(spt);
+		break;
+	case Game_Scene:
+
+		player.Render();//プレイヤー描画
+
+		//for (auto Enemy : Enemys) {
+		//	Enemy->Render();
+		//}
+
+		map.Render();
+
+		for (auto bullet : PlayerBullets) {
+			bullet->Render();
+		}
+		for (auto bullet : EnemyBullets) {
+			bullet->Render();
+		}
+
+		Boot.Drow(spt);
+
+		break;
+	}
+	g_fade.Drow(spt);
 }

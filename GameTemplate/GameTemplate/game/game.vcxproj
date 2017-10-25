@@ -153,15 +153,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bootht.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="C2DImage.cpp" />
+    <ClCompile Include="CameraCollisionSolver.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Fade.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="IGameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapChip.cpp" />
+    <ClCompile Include="Missile.cpp" />
     <ClCompile Include="myEngine\Graphics\Animation.cpp" />
     <ClCompile Include="myEngine\Graphics\Camera.cpp" />
     <ClCompile Include="myEngine\Graphics\EffectManager.cpp" />
@@ -176,6 +181,11 @@
     <ClCompile Include="myEngine\System.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="Sea.cpp" />
+    <ClCompile Include="ShadowMap.cpp" />
+    <ClCompile Include="Skydoom.cpp" />
+    <ClCompile Include="SphereCollider.cpp" />
+    <ClCompile Include="SpringCamera.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -183,18 +193,25 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TITLE.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bootht.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="C2DImage.h" />
+    <ClInclude Include="CameraCollisionSolver.h" />
     <ClInclude Include="DxCommonData.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Fade.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameObjectManager.h" />
+    <ClInclude Include="GameTime.h" />
     <ClInclude Include="IGameObject.h" />
     <ClInclude Include="locationInfo.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapChip.h" />
+    <ClInclude Include="Missile.h" />
     <ClInclude Include="myEngine\Graphics\Animation.h" />
     <ClInclude Include="myEngine\Graphics\Camera.h" />
     <ClInclude Include="myEngine\Graphics\EffectManager.h" />
@@ -212,9 +229,17 @@
     <ClInclude Include="myEngine\system.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Primitive.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Sea.h" />
+    <ClInclude Include="ShadowMap.h" />
+    <ClInclude Include="Skydoom.h" />
+    <ClInclude Include="SphereCollider.h" />
+    <ClInclude Include="SpringCamera.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Stopwatch.h" />
+    <ClInclude Include="TITLE.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />

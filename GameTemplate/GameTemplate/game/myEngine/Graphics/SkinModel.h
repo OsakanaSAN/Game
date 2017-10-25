@@ -9,6 +9,15 @@
 class SkinModelData;
 class RenderContext;
 class Light;
+
+
+//フォグ。
+enum EFogFunc {
+	enFogFuncNone,		//フォグなし。
+	enFogFuncDist,		//距離フォグ。
+	enFogFuncHeight,	//高さフォグ。
+	enFogFuncNum,
+};
 /*!
 *@brief	スキンモデル
 */
@@ -51,6 +60,54 @@ public:
 		return worldMatrix;
 	}
 	/*!
+	* @brief	フォグパラメータを設定。
+	*@param[in]	fogFunc		フォグの種類。EFogFuncを参照。
+	*@param[in]	param0		フォグパラメータ0
+	* fogFuncがenFogFuncDistの場合はフォグが掛かり始める距離、fogFuncがenFogFuncHeightの場合はフォグが掛かり始める高さ。
+	*@param[in]	param1		フォグパラメータ１
+	* fogFuncがenFogFuncDistの場合はフォグが掛かり切る距離、fogFuncがenFogFuncHeightの場合はフォグが掛かり切る高さ。
+	*/
+	void SetFogParam(EFogFunc fogFunc, float param0, float param1)
+	{
+		m_fogFunc = fogFunc;
+		m_fogParam[0] = param0;
+		m_fogParam[1] = param1;
+	}
+	//シャドウマップセット
+	void SetShadowMap(bool ssm)
+	{
+		IsDrawShadowMap = ssm;
+	}
+	//シャドウレシーブセット
+	void SetShadowRecieve(bool ssr)
+	{
+		IsRecieveShadow = ssr;
+	}
+	void SetWave(bool Wave)
+	{
+		IsWave = Wave;
+	}
+	
+	LPDIRECT3DTEXTURE9 GetWaveTex()
+	{
+		return WaveTex;
+	}
+	void SetWaveTexture()
+	{
+		//D3DXIMAGE_INFO imgInfo;
+	     HRESULT hr = D3DXCreateTextureFromFileA(
+			g_pd3dDevice,
+			"Assets/modelData/NormalMap2.png",
+			&WaveTex
+		 );	//テクスチャ読込
+		 this->NormalMap = WaveTex;
+	}
+	void SetTexture(LPDIRECT3DTEXTURE9 settex)
+	{
+		this->NormalMap = settex;
+	}
+
+	/*!
 	*@brief	オリジナルメッシュの先頭を取得する。
 	*/
 	LPD3DXMESH GetOrgMeshFirst();
@@ -61,4 +118,14 @@ private:
 	ID3DXEffect*		pEffect = nullptr;			//!<エフェクト。
 	Animation			animation;					//!<アニメーション。
 	Light*				light = nullptr;			//!<ライト。
+	EFogFunc						m_fogFunc;							//!<フォグの種類。0ならフォグなし、1なら距離フォグ、2なら高さフォグ。
+	float							m_fogParam[2];						//!<フォグのパラメータ
+
+	//影用の判定
+	bool				IsDrawShadowMap = false; 
+	bool                IsRecieveShadow = false;
+	bool                IsWave = false;
+	LPDIRECT3DTEXTURE9      NormalMap = NULL;
+	LPDIRECT3DTEXTURE9      WaveTex = NULL;
+	
 };

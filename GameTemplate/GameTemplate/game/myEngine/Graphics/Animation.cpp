@@ -11,6 +11,7 @@ void Animation::Init(ID3DXAnimationController* anim)
 	blendRateTable.reset( new float[numMaxTracks] );
 	animationEndTime.reset(new double[numAnimSet]);
 	animationSets.reset(new ID3DXAnimationSet*[numAnimSet]);
+	animationLoopFlags.reset(new bool[numAnimSet]);
 	for( int i = 0; i < numMaxTracks; i++ ){
 		blendRateTable[i] = 1.0f;
 	}
@@ -38,6 +39,7 @@ void Animation::PlayAnimation(int animationSetIndex)
 			pAnimController->SetTrackEnable(0, TRUE);
 			pAnimController->SetTrackPosition(0, 0.0f);
 			localAnimationTime = 0.0;
+			isAnimEnd = false;
 		}
 	}
 	else {
@@ -76,23 +78,42 @@ void Animation::PopRequestPlayeAnimation()
 	}
 }
 
+/*!
+*@brief	補間時間を元にトラックの重みを更新。
+*/
+void Animation::UpdateTrackWeights()
+{
+	float weight = 0.0f;
+	if (interpolateTime < interpolateEndTime) {
+		weight = interpolateTime / interpolateEndTime;
+		float invWeight = 1.0f - weight;
+		//ウェイトを設定していく。
+		for (int i = 0; i < numMaxTracks; i++) {
+			if (i != currentTrackNo) {
+				pAnimController->SetTrackWeight(i, blendRateTable[i] * invWeight);
+			}
+			else {
+				pAnimController->SetTrackWeight(i, weight);
+			}
+		}
+	}
+	else {
+		for (int i = 0; i < numMaxTracks; i++) {
+			if (i != currentTrackNo) {
+				pAnimController->SetTrackWeight(i, 0.0f);
+			}
+			else {
+				pAnimController->SetTrackWeight(i, 1.0f);
+			}
+		}
+	}
+}
+
 
 void Animation::Update(float deltaTime)
 {
-	if (pAnimController) {
+	if (pAnimController&&!isAnimEnd) {
 		localAnimationTime += deltaTime;
-		
-		if (animationEndTime[currentAnimationSetNo] > 0.0 //アニメーションの終了時間が設定されている。
-			&& localAnimationTime > animationEndTime[currentAnimationSetNo] //アニメーションの終了時間を超えた。
-		) {
-			localAnimationTime -= animationEndTime[currentAnimationSetNo];
-			pAnimController->SetTrackPosition(currentTrackNo, localAnimationTime);
-			pAnimController->AdvanceTime(0, NULL);
-		}
-		else {
-			//普通に再生。
-			pAnimController->AdvanceTime(deltaTime, NULL);
-		}
 		if (isInterpolate) {
 			ID3DXAnimationSet* animSet = animationSets[2];
 			float period = (float)animSet->GetPeriod();
@@ -111,18 +132,44 @@ void Animation::Update(float deltaTime)
 				}
 			}
 			else {
-				weight = interpolateTime / interpolateEndTime;
-				float invWeight = 1.0f - weight;
-				//ウェイトを設定していく。
-				for (int i = 0; i < numMaxTracks; i++) {
-					if (i != currentTrackNo) {
-						pAnimController->SetTrackWeight(i, blendRateTable[i] * invWeight);
-					}
-					else {
-						pAnimController->SetTrackWeight(i, weight);
-					}
-				}
+				//各トラックの重み付け
+				UpdateTrackWeights();
+				
 			}
 		}
+		if (animationEndTime[currentAnimationSetNo] > 0.0 //アニメーションの終了時間が設定されている。
+			&& localAnimationTime > animationEndTime[currentAnimationSetNo] //アニメーションの終了時間を超えた。
+		) {
+			if (animationLoopFlags[currentAnimationSetNo])
+			{
+				localAnimationTime -= animationEndTime[currentAnimationSetNo];
+				pAnimController->SetTrackPosition(currentTrackNo, localAnimationTime);
+				pAnimController->AdvanceTime(0, NULL);
+			}
+			else
+			{ 
+				isAnimEnd = true;
+			
+			}
+		}
+		else {
+			//普通に再生。
+			if (animationSets[currentAnimationSetNo]->GetPeriod() < localAnimationTime
+				&& !animationLoopFlags[currentAnimationSetNo]) {
+				localAnimationTime = animationSets[currentAnimationSetNo]->GetPeriod();
+				isAnimEnd = true;
+			}
+			else
+			{
+
+
+				pAnimController->AdvanceTime(deltaTime, NULL);
+			}
+		}
+		if (isAnimEnd)
+		{
+			PopRequestPlayeAnimation();
+		}
+		
 	}
 }

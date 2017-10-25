@@ -14,33 +14,77 @@ public:
 	void Start();
 	void Update();
 	void Render();
-	void MovePlayer();
+	void LightEyePosRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightProjMatrix);
+	void PlayerAnimation();
 	void AnglePlayer();
-	void Attention();
+	void LockOn();     //ロックオン処理 
+	void BulletInit(); //弾の生成
+	void ChangeAngle(); //プレイヤーの向きの処理
+	D3DXVECTOR3 BoothtInit(D3DXVECTOR3 MoveSpeed); //ブーストの処理
+
+
 	D3DXVECTOR3 GetPos()
 	{
 		return position;
 	}
-	D3DXVECTOR3 GetSpeed()
+	/*ブースと時間取得*/
+	float GetBoothtTime()
 	{
-		return MoveSpeed;
+		return BoothtTime;
 	}
 
 	D3DXMATRIX GetWorldMatrix()
 	{
 		return skinmodel.GetWorldMatrix();
 	}
+	D3DXQUATERNION GetRot()
+	{
+		return rotation;
+	}
+	bool GetNotBootht()
+	{
+		return NoBoothtInput;
+	}
+	int GetMoveSpeed()
+	{
+		return MOVESpeed;
+	}
+	void SetEnemypos(D3DXVECTOR3 epos)
+	{/*
+		if (EnemyIt[EnemyNo])
+		{
+
+			Enemypos[EnemyNo] = epos;
+
+		}
+
+		EnemyNo++;
+		if (EnemyNo == 3)
+		{
+			EnemyNo = 0;
+		}*/
+	}
+	void EnemyDet()
+	{
+		EnemyIt[LockNo] = false;
+	}
+
+	
+	
 
 	void Animetion();
 private:
 	SkinModel             skinmodel;
 	SkinModelData         skinmodelData;
 	Light                 PLight;
-	D3DXVECTOR3           position = { 0.0f,1.0f,0.0f };
+	D3DXVECTOR3           position = { -650.0f,460.0f,130.0f };
 	D3DXVECTOR3           MAEposition = { 1.0f,0.0f,0.0f };
 	D3DXVECTOR3           Bespos;
 	D3DXQUATERNION        rotation = { 0.0f, 0.0f, 0.0f, 1.0f };
-	D3DXVECTOR3           MoveSpeed;
+	float				  BoothtTime;
+	bool				  NoBoothtInput = false; //ブースと中かの判定
+	int                   MOVESpeed = 0;         //速さ
+	
 
 	Animation             animation;    //アニメーション
 	Pad                   pad;          //パット
@@ -60,6 +104,16 @@ private:
 	float                 X_input_old = 0; //過去のx軸の入力量保管
 	float                 Y_input_old = 0; //過去のy軸の入力量保管
 	bool                  oveline = false;
+	bool                  Battle_Motion = false; //攻撃中
+
+/////////////////////////////////////////////////////////////////////////////////////
+	//エネミーに注目するための変数
+	D3DXVECTOR3           Enemypos[3];
+	bool                  EnemyIt[3];
+	int                   EnemyNo = 0;
+	int                   LockNo = 0;
+	bool                  NoEenemy = false;
+/////////////////////////////////////////////////////////////////////////////////////
 	
 };
 

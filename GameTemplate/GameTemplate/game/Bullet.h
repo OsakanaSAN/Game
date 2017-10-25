@@ -28,6 +28,7 @@ public:
 	{
 		IsHit = hit;
 	}
+	void LightEyePosRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightProjMatrix);
 	void LockOn(D3DXVECTOR3 lock);
 private:
 	SkinModel model;
@@ -37,6 +38,7 @@ private:
 	Light light;
 	D3DXVECTOR3 position;
 	D3DXVECTOR3 moveSpeed;
+	D3DXQUATERNION rot;
 	int life;		//éıñΩÅB
 	bool IsHit = false;
 };

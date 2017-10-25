@@ -22,6 +22,10 @@
 #include "myEngine/Graphics/Light.h"
 
 #include "game.h"
+#include "ShadowMap.h"
+
+extern CShadowMap g_shadowMap;	//シャドウマップ。
+
 
 #define SAFE_RELEASE(p)			{ if(p) { (p)->Release(); (p) = NULL; } }	//インスタンスリリース
 #define SAFE_DELETE_ARRAY(p)	{ if(p) { delete[] (p);   (p) = NULL; } }	//インスタンス配列削除

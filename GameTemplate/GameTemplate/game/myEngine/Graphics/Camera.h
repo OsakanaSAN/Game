@@ -7,20 +7,17 @@ class Camera {
 private:
 	D3DXMATRIX				viewMatrix;			//!<ビュー行列。カメラ行列とも言う。
 	D3DXMATRIX              viewMatrixInv;      //ビュー行列の逆行列
+	D3DXMATRIX				viewProjectionMatrix;//!<ビュープロジェクション行列。
 	D3DXMATRIX              CameraRot;          //!<カメラの回転行列。
 	D3DXMATRIX				projectionMatrix;	//!<プロジェクション行列。ビュー空間から射影空間に変換する行列。
-	D3DXVECTOR3				vEyePt;				//!<カメラクラスを作るためのヒント。カメラの視点。この辺りはメンバ変数に変更する。
-	D3DXVECTOR3				vLookatPt;			//!<カメラクラスを作るためのヒント。カメラの注視点。どこを見ているかという情報。この辺りはメンバ変数に変更する。
-	D3DXVECTOR3				vUpVec;				//!<カメラクラスを作るためのヒント。カメラの上方向。基本的にY方向でかまわない。基本的には・・・。この辺りはメンバ変数に変更する。
+	D3DXVECTOR3				vEyePt;				//!<カメラの視点。
+	D3DXVECTOR3				vLookatPt;			//!<カメラの注視点。
+	D3DXVECTOR3				vUpVec;				//!<カメラの上方向。
 	float					Far;				//!<遠平面。
 	float					Near;				//!<近平面。
+	float			        m_viewAngle;		//!<画角(ラジアン)。
 	float					aspect;				//!<アスペクト比
-	D3DXVECTOR3             m_targetMoveSpeed = { 0.0,0.0,0.0 };
-	D3DXVECTOR3             m_positionMoveSpeed = { 0.0,0.0,0.0 };
-	float		m_maxMoveSpeed = 0.0f;					//!<最高移動速度。
-	float		m_targetDampingRate = 1.0f;				//!<減衰率。値が大きいほどカメラが遅れ付いてくる。
-	float		m_dampingRate = 1.0f;					//!<減衰率。
-	float		m_dampingRateVel = 0.0f;
+	bool		            m_isNeedUpdateProjectionMatrix;
 
 public:
 	/*!
@@ -43,6 +40,7 @@ public:
 	 *@brief	ファーを設定。
 	 */
 	void SetFar(float _far);
+	
 	/*!
 	 *@brief	ニアを取得。
 	 */
@@ -58,7 +56,7 @@ public:
 	/*!
 	 *@brief	視点を設定。
 	 */
-	void SetEyePt(D3DXVECTOR3 pt);
+	void SetEyePt(const D3DXVECTOR3 pt);
 	/*!
 	 *@brief	視点を取得。
 	 */
@@ -66,7 +64,7 @@ public:
 	/*!
 	 *@brief	注視点を設定。
 	 */
-	void SetLookatPt(D3DXVECTOR3 pt);
+	void SetLookatPt(const D3DXVECTOR3 pt);
 	/*!
 	 *@brief	注視点の取得。
 	 */
@@ -95,6 +93,34 @@ public:
 		return viewMatrixInv;
 	}
 	/*!
+	* @brief	カメラの回転行列を取得。
+	*/
+	const D3DXMATRIX& GetCameraRotation() const
+	{
+		return CameraRot;
+	}
+	/*!
+	* @brief	プロジェクション行列を取得。
+	*/
+	const D3DXMATRIX& GetProjectionMatrix() const
+	{
+		return projectionMatrix;
+	}
+	/*!
+	* @brief	画角を設定。
+	*/
+	void SetViewAngle(float viewAngle)
+	{
+		m_viewAngle = viewAngle;
+	}
+	/*!
+	* @brief	画角を取得。
+	*/
+	float GetViewAngle() const
+	{
+		return m_viewAngle;
+	}
+	/*!
 	 *@brief	プロジェクション行列の設定。
 	 */
 	void SetProjectionMatrix(D3DXMATRIX mProj);
@@ -111,6 +137,4 @@ public:
 	 */
 	void Init();
 
-	D3DXVECTOR3 CalcSpring(D3DXVECTOR3 pos, D3DXVECTOR3 target, D3DXVECTOR3 Speed,
-		            float Maxspeed, float down);
 };

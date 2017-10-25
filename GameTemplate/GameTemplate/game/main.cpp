@@ -6,6 +6,7 @@
 #include "myEngine/Graphics/Light.h"
 #include "game.h"
 
+
 Game* game;
 
 //-----------------------------------------------------------------------------
@@ -21,10 +22,17 @@ void Init()
 //-----------------------------------------------------------------------------
 VOID Render()
 {
+	
+	
+	g_shadowMap.Update();
+
 	// 画面をクリア。
 	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
 	//シーンの描画開始。
 	g_pd3dDevice->BeginScene();
+
+	//シャドウマップにレンダリング。
+	g_shadowMap.Draw();
 
 	game->Render();
 
@@ -38,6 +46,7 @@ VOID Render()
  -----------------------------------------------------------------------------*/
 void Update()
 {
+	
 	game->Update();
 }
 //-----------------------------------------------------------------------------

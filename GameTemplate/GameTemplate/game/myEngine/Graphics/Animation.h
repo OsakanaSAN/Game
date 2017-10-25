@@ -83,6 +83,10 @@ public:
 		return numAnimSet;
 	}
 	/*!
+	*@brief	補間時間を元にトラックの重みを更新。
+	*/
+	void UpdateTrackWeights();
+	/*!
 	*@brief	アニメーションの更新。
 	*@param[in]		deltaTime	更新時間。単位は秒。
 	*/
@@ -98,13 +102,14 @@ private:
 	std::unique_ptr<ID3DXAnimationSet*[]>	animationSets;			//!<アニメーションセットの配列。
 	std::unique_ptr<float[]>				blendRateTable;			//!<ブレンディングレートのテーブル。
 	std::unique_ptr<double[]>				animationEndTime;		//!<アニメーションの終了タイム。デフォルトは-1.0が入っていて、-1.0が入っている場合はID3DXAnimationSetのアニメーション終了タイムが優先される。
-	std::unique_ptr<bool[]>					animationLoopFlags;											//!<DirectX9のアニメーションセットに１秒以下のアニメーションを入れる方法が見つからない。1秒以下のアニメーションはこいつを適時設定。
+	std::unique_ptr<bool[]>					animationLoopFlags;		//!<DirectX9のアニメーションセットに１秒以下のアニメーションを入れる方法が見つからない。1秒以下のアニメーションはこいつを適時設定。
 	double									localAnimationTime;		//!<ローカルアニメーションタイム。
 	int										currentAnimationSetNo;	//!<現在再生中のアニメーショントラックの番号。
 	int										currentTrackNo;			//!<現在のトラックの番号。
 	int										numMaxTracks;			//!<アニメーショントラックの最大数。
 	bool									isBlending;				//!<アニメーションブレンディング中？
 	bool									isInterpolate;			//!<補間中？
+	bool									isAnimEnd;				//!<アニメーションの終了フラグ。
 	float									interpolateEndTime;		//!<補間終了時間。
 	float									interpolateTime;		//!<補間時間。
 	std::deque<RequestPlayAnimation>		playAnimationRequest;	//!<アニメーション再生のリクエスト。

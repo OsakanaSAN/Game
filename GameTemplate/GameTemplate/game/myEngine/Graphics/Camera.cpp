@@ -3,13 +3,22 @@
 
 
 
-float dampingK = 35.0f;
+
+
 //コンストラクタ。
 Camera::Camera()
 {
 	Near = 0.1f;
-	Far = 100.0f;
+	Far = 100000.0f;
+	m_viewAngle = 60.0f * (3.14159265358979323846 / 180.0f);
 	aspect = (float)FRAME_BUFFER_WIDTH / (float)FRAME_BUFFER_HEIGHT;
+	m_isNeedUpdateProjectionMatrix = true;
+	vEyePt = { 0.0f,0.0f,0.0f }; //視点の初期化
+	vUpVec = { 0.0f,1.0f,0.0f }; //上方向の初期化
+	vLookatPt = { 0.0f,0.0f,0.0f }; //注視点の初期化
+	D3DXMatrixIdentity(&viewMatrix);
+	D3DXMatrixIdentity(&projectionMatrix);
+	D3DXMatrixIdentity(&viewProjectionMatrix);
 	D3DXMatrixIdentity(&viewMatrixInv);
 }
 //デストラクタ
@@ -99,8 +108,24 @@ D3DXMATRIX Camera::GetProjectionMatrix()
 //カメラの更新処理。
 void Camera::Update()
 {
+
+	if (m_isNeedUpdateProjectionMatrix) {
+		float aspect = (float)FRAME_BUFFER_WIDTH / (float)FRAME_BUFFER_HEIGHT;
+		//プロジェクション行列を計算。
+		D3DXMatrixPerspectiveFovLH(
+		    &projectionMatrix,
+			m_viewAngle,
+			aspect,
+			Near,
+			Far
+		);
+	}
 	D3DXMatrixLookAtLH(&viewMatrix, &vEyePt, &vLookatPt, &vUpVec);
-	D3DXMatrixPerspectiveFovLH(&projectionMatrix, D3DX_PI / 4, aspect, Near, Far);
+
+	D3DXMatrixMultiply(&viewProjectionMatrix, &viewMatrix, &projectionMatrix);
+
+	//D3DXMatrixPerspectiveFovLH(&projectionMatrix, D3DX_PI / 4, aspect, Near, Far);
+
 	D3DXMatrixInverse(&viewMatrixInv, NULL, &viewMatrix);
 	CameraRot = viewMatrixInv;
 	CameraRot.m[3][0] = 0.0f;
@@ -120,43 +145,3 @@ void Camera::Init()
 	Update();
 }
 
-D3DXVECTOR3 Camera::CalcSpring(D3DXVECTOR3 pos, D3DXVECTOR3 target, D3DXVECTOR3 Speed,
-	                    float Maxspeed, float down)
-{
-	float deltaTime = min(1.0f / 300.0f, 1.0f / 60.0f);
-	D3DXVECTOR3 distans;
-	D3DXVec3Subtract(&distans, &target,&pos);
-	D3DXVECTOR3 originarDir = distans;
-	D3DXVec3Normalize(&originarDir, &originarDir);
-	D3DXVECTOR3 springAccle;
-	springAccle = distans;
-
-	float t = dampingK / (2.0f * down);
-	float springK = t * t;
-	D3DXVec3Scale(&springAccle, &springAccle, springK);
-	D3DXVECTOR3 vt = Speed;
-	D3DXVec3Scale(&vt, &vt, dampingK);
-	D3DXVec3Subtract(&springAccle, &springAccle, &vt);
-
-	D3DXVec3Scale(&springAccle, &springAccle, deltaTime);
-	D3DXVec3Add(&Speed, &Speed, &springAccle);
-	if (D3DXVec3LengthSq(&Speed) > Maxspeed*Maxspeed)
-	{
-		D3DXVec3Normalize(&Speed, &Speed);
-		D3DXVec3Scale(&Speed, &Speed, Maxspeed);
-
-	}
-	D3DXVECTOR3 newpos = pos;
-	D3DXVECTOR3 addpos = Speed;
-	D3DXVec3Scale(&addpos, &addpos, deltaTime);
-	D3DXVec3Add(&newpos,&newpos,&addpos);
-	D3DXVec3Subtract(&vt, &target, &newpos);
-	D3DXVec3Normalize(&vt, &vt);
-	if (D3DXVec3Dot(&vt, &originarDir) < 0.0f)
-	{
-		newpos = target;
-		Speed = { 0,0,0 };
-	}
-	return newpos;
-
-}

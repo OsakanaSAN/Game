@@ -12,8 +12,13 @@
 #include "Bullet.h"
 #include <list>
 #include "Primitive.h"
+#include "GameCamera.h"
 #include "Sprite.h"
+#include "Bootht.h"
 #include "C2DImage.h"
+#include "TITLE.h"
+#include "Fade.h"
+
  /*!
  * @brief	ゲームクラス。
  */
@@ -39,11 +44,10 @@ public:
 	 * @brief	描画。
 	 */
 	void Render();
-	void CameraAngle();
 
 	Camera* GetCamera()
 	{
-		return &camera;
+		return Gamecamera.Getcamera();
 	}
 	Pad* GetPad()
 	{
@@ -90,27 +94,45 @@ public:
 	{
 		return &player;
 	}
+	Fade* GetFade()
+	{
+		return &g_fade;
+	}
+	void SetGameScene()
+	{
+		Scene = Game_Scene;
+	}
 private:
+	enum SceneState {
+		Title_Scene,	//タイトル画面
+		Game_Scene,		//ゲーム画面
+	};
+
+
 	D3DXVECTOR3		toEyePos;		//注視点から視点までのベクトル。
 	D3DXVECTOR3    oldPos;
+	GameCamera Gamecamera;        //カメラ
+	Player player;                //プレイヤー
+	Enemy  enemy;                 //敵
+	Pad    pad;                   //パッド
+	Map    map;                   //マップ
+	Bootht Boot;
+	TITLE  title;				  //タイトル画面
+	Fade   g_fade;
+	
 
-	Camera camera;
-	Player player;
-	Enemy  enemy;
-	Enemy  enemy2;
-	Pad    pad;
-	Map    map;
-	CPrimitive prim;
-	Sprite*    sprite;
+	CPrimitive prim;              //プリミティブ
+	Sprite*    sprite;            //スプライト
+
 	LPD3DXSPRITE spt;
 	D3DXVECTOR3  rag;
-	float       Time = 0;
 
 	std::list<Bullet*> PlayerBullets;
 	std::list<Bullet*> EnemyBullets;
 	std::list<Enemy*>  Enemys;
-	float             length;
 
+
+	SceneState         Scene = Title_Scene;    //シーンの管理変数
 
 };
 
