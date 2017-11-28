@@ -97,21 +97,30 @@ public:
 		//D3DXIMAGE_INFO imgInfo;
 	     HRESULT hr = D3DXCreateTextureFromFileA(
 			g_pd3dDevice,
-			"Assets/modelData/NormalMap2.png",
+			"Assets/modelData/NormalMap4.png",
 			&WaveTex
 		 );	//テクスチャ読込
 		 this->NormalMap = WaveTex;
 	}
+	void SetSkyTexture(LPDIRECT3DCUBETEXTURE9 cube)
+	{
+		this->CubeMap = cube;
+		this->IsSky = true;
+
+	}
+
 	void SetTexture(LPDIRECT3DTEXTURE9 settex)
 	{
 		this->NormalMap = settex;
 	}
+
 
 	/*!
 	*@brief	オリジナルメッシュの先頭を取得する。
 	*/
 	LPD3DXMESH GetOrgMeshFirst();
 private:
+	
 	D3DXMATRIX			worldMatrix;				//!<ワールド行列。
 	D3DXMATRIX			rotationMatrix;				//!<回転行列。
 	SkinModelData*		skinModelData = nullptr;	//!<スキンモデルデータ。
@@ -124,8 +133,13 @@ private:
 	//影用の判定
 	bool				IsDrawShadowMap = false; 
 	bool                IsRecieveShadow = false;
+	//水面の判定
 	bool                IsWave = false;
 	LPDIRECT3DTEXTURE9      NormalMap = NULL;
 	LPDIRECT3DTEXTURE9      WaveTex = NULL;
+
+	//空用の判定
+	bool                 IsSky = false;
+	LPDIRECT3DCUBETEXTURE9      CubeMap = NULL;
 	
 };

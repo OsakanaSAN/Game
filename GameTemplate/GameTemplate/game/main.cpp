@@ -24,15 +24,18 @@ VOID Render()
 {
 	
 	
-	g_shadowMap.Update();
-
-	// 画面をクリア。
-	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
-	//シーンの描画開始。
-	g_pd3dDevice->BeginScene();
+	//g_shadowMap.Update();
 
 	//シャドウマップにレンダリング。
 	g_shadowMap.Draw();
+
+	// 画面をクリア。
+	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
+	
+	//シーンの描画開始。
+	g_pd3dDevice->BeginScene();
+
+	
 
 	game->Render();
 

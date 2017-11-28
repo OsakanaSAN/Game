@@ -22,7 +22,7 @@
 #include "myEngine/Graphics/Light.h"
 
 #include "game.h"
-#include "ShadowMap.h"
+#include "myEngine/Graphics/ShadowMap.h"
 
 extern CShadowMap g_shadowMap;	//シャドウマップ。
 

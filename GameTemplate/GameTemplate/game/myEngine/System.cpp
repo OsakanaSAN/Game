@@ -77,6 +77,7 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 	InitD3D(hWnd);
 
 	g_shadowMap.Init();
+	
 	// Show the window
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
 	UpdateWindow(hWnd);

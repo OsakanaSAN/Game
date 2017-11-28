@@ -5,14 +5,16 @@
 
 extern UINT                 g_NumBoneMatricesMax;
 extern D3DXMATRIXA16*       g_pBoneMatrices ;
+LPDIRECT3DCUBETEXTURE9      ppCubeTexture;
 
 static const int		LIGHT_NUM = 4;
 D3DXVECTOR4 			g_diffuseLightDirection[LIGHT_NUM];	//ライトの方向。
 D3DXVECTOR4				g_diffuseLightColor[LIGHT_NUM];		//ライトの色。
 D3DXVECTOR4				g_ambientLight;						//環境光
 float                   g_Moveuv = 0.00f;                   //波の法線マップの移動
-D3DXVECTOR2             g_farNera = {10000.0f,0.1f};
+D3DXVECTOR2             g_farNera;
 bool                    ReWave = false;
+
 
 namespace {
 	void DrawMeshContainer(
@@ -28,7 +30,9 @@ namespace {
 		bool   IsDrawShadowMap,
 		bool   IsRecieveShadow,
 		bool   IsWave,
-		LPDIRECT3DTEXTURE9 NormalMap
+		LPDIRECT3DTEXTURE9 NormalMap,
+		bool   IsSky,
+		LPDIRECT3DCUBETEXTURE9      CubeMap
 
 	)
 	{
@@ -43,28 +47,60 @@ namespace {
 		D3DXMATRIX viewProj;
 		D3DXMatrixMultiply(&viewProj, viewMatrix, projMatrix);
 		
+		//フォグ値
+		D3DXVECTOR2             fog;
+		//フォグの計算
+		fog.x = game->GetCamera()->GetFar() / (game->GetCamera()->GetFar() - game->GetCamera()->GetNear());
+		fog.y = -1 / (game->GetCamera()->GetFar() - game->GetCamera()->GetNear());
+
 		//テクニックを設定。
 		{
 
-				if (!IsDrawShadowMap)
-				{
-					if (pMeshContainer->pSkinInfo != NULL) {
-						pEffect->SetTechnique("SkinModel");
+			if (pMeshContainer->pSkinInfo != NULL) {
+
+				if (IsDrawShadowMap)
+					{
+							//シャドウマップへの書き込みテクニック。
+							pEffect->SetTechnique("SkinModelRenderToShadowMap");
 					}
-					else {
-						pEffect->SetTechnique("NoSkinModel");
+
+					else
+					{
+
+							pEffect->SetTechnique("SkinModel");
 					}
-				}
-				else
+			}
+			else {
+
+				if (IsWave)
 				{
-					//シャドウマップへの書き込みテクニック。
-					pEffect->SetTechnique("SkinModelRenderToShadowMap");
+					pEffect->SetTechnique("NoSkinModelRenderToWave");
 				}
 
+				else if (IsSky)
+				{
+					pEffect->SetTechnique("NoSkinModelRenderToSkyMap");
+				}
+
+				else if (IsDrawShadowMap)
+				{
+					//シャドウマップへの書き込みテクニック。
+					pEffect->SetTechnique("NoSkinModelRenderToShadowMap");
+				}
+
+				else
+				{
+
+					pEffect->SetTechnique("NoSkinModel");
+				}
+			}
+				
+				
 			
 			
 
 		}
+
 		//共通の定数レジスタを設定
 		{
 			//ビュープロジェクション
@@ -84,7 +120,7 @@ namespace {
 		    pEffect->SetBool("g_isWave", true);
 			pEffect->SetTexture("g_normalTexture", NormalMap); //法線マップ
 			pEffect->SetFloat("g_moveUV", g_Moveuv);		   //法線マップを動かすための処理
-			g_Moveuv += 0.00002f;
+			g_Moveuv += 0.00008f;
 			if (g_Moveuv == 0.01)
 			{
 				g_Moveuv = 0;
@@ -92,9 +128,21 @@ namespace {
 		}
 		else {
 			pEffect->SetBool("g_isWave", false);
+
 		}
-		pEffect->SetFloat("g_far", g_farNera.x);
-		pEffect->SetFloat("g_Near", g_farNera.y);
+
+		if (IsRecieveShadow) {
+
+			pEffect->SetTexture("g_shadowMapTexture", g_shadowMap.GetTexture());
+			pEffect->SetMatrix("g_lightViewMatrix", &g_shadowMap.GetLightViewMatrix());
+			pEffect->SetMatrix("g_lightProjectionMatrix", &g_shadowMap.GetLightProjectionMatrix());
+
+		}
+
+		pEffect->SetTexture("g_CubeTexture",CubeMap);
+		pEffect->SetFloat("g_Fog_X", fog.x);
+		pEffect->SetFloat("g_Fog_Y", fog.y);
+
 		if (pMeshContainer->pSkinInfo != NULL)
 		{
 			//スキン情報有り。
@@ -119,15 +167,13 @@ namespace {
 				Camera camera;
 				camera.SetFar(100);
 				camera.SetEyePt({ 0.0f, 15000.0f, 0.0f });
-				D3DXVECTOR4 g_pos = game->GetCamera()->GetEyePt();
+				D3DXVECTOR4 g_pos = camera.GetEyePt();//game->GetCamera()->GetEyePt();
 				g_pos.w = 1.0f;
 				pEffect->SetVector("g_Eyeposition", &g_pos);
 				pEffect->SetMatrixArray("g_mWorldMatrixArray", g_pBoneMatrices, pMeshContainer->NumPaletteEntries);
 				pEffect->SetInt("g_numBone", pMeshContainer->NumInfl);
 				// ディフューズテクスチャ。
 				pEffect->SetTexture("g_diffuseTexture", pMeshContainer->ppTextures[pBoneComb[iAttrib].AttribId]);
-				/////////////////////////////////////////////////////////////////////////////////
-				
 
 				///////////////////////////////////////////////////////////////////////////
 				// ボーン数。
@@ -150,7 +196,9 @@ namespace {
 
 			}
 		}
-		else {
+
+		else
+		{
 						
 			D3DXMATRIX mWorld;
 			if (pFrame != NULL) {
@@ -166,13 +214,10 @@ namespace {
 			pEffect->Begin(0, D3DXFX_DONOTSAVESTATE);
 			pEffect->BeginPass(0);
 
-			if (IsRecieveShadow) {
-				pEffect->SetTexture("g_shadowMapTexture", g_shadowMap.GetTexture());
-				pEffect->SetMatrix("g_lightViewMatrix", &g_shadowMap.GetLightViewMatrix());
-				pEffect->SetMatrix("g_lightProjectionMatrix", &g_shadowMap.GetLightProjectionMatrix());
-			}
+			
 
 			for (DWORD i = 0; i < pMeshContainer->NumMaterials; i++) {
+				
 				pEffect->SetTexture("g_diffuseTexture", pMeshContainer->ppTextures[i]);
 				pEffect->CommitChanges();
 				pMeshContainer->MeshData.pMesh->DrawSubset(i);
@@ -181,6 +226,7 @@ namespace {
 			pEffect->End();
 		}
 	}
+
 	void DrawFrame(
 		IDirect3DDevice9* pd3dDevice, 
 		LPD3DXFRAME pFrame, 
@@ -193,7 +239,9 @@ namespace {
 		bool	IsDrawShadowMap,
 		bool	IsRecieveShadow,
 		bool	IsWave,
-		LPDIRECT3DTEXTURE9  NormalMap)
+		LPDIRECT3DTEXTURE9  NormalMap,
+		bool   IsSky,
+		LPDIRECT3DCUBETEXTURE9      CubeMap)
 	{
 		LPD3DXMESHCONTAINER pMeshContainer;
 
@@ -213,7 +261,9 @@ namespace {
 				IsDrawShadowMap,
 				IsRecieveShadow,
 				IsWave,
-				NormalMap
+				NormalMap,
+				IsSky,
+				CubeMap
 
 				);
 
@@ -234,7 +284,9 @@ namespace {
 				IsDrawShadowMap,
 				IsRecieveShadow,
 				IsWave,
-				NormalMap
+				NormalMap,
+				IsSky,
+				CubeMap
 				);
 		}
 
@@ -252,7 +304,8 @@ namespace {
 				IsDrawShadowMap,
 				IsRecieveShadow,
 				IsWave,
-				NormalMap
+				NormalMap, IsSky,
+				CubeMap
 				);
 		}
 	}
@@ -283,9 +336,6 @@ void InitLight()
 void SkinModel::Init(SkinModelData* modelData)
 {
 	pEffect = g_effectManager->LoadEffect("Assets/Shader/Model.fx");
-	
-	
-
 	skinModelData = modelData;
 	InitLight();
 }
@@ -306,6 +356,7 @@ void SkinModel::UpdateWorldMatrix(const D3DXVECTOR3& trans, const D3DXQUATERNION
 
 void SkinModel::Draw(D3DXMATRIX* viewMatrix, D3DXMATRIX* projMatrix)
 {
+	
 	if (IsWave)
 	{
 
@@ -330,7 +381,9 @@ void SkinModel::Draw(D3DXMATRIX* viewMatrix, D3DXMATRIX* projMatrix)
 			IsDrawShadowMap,
 			IsRecieveShadow,
 			IsWave,
-			NormalMap
+			NormalMap,
+			IsSky,
+			CubeMap
 		);
 	}
 }

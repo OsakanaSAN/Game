@@ -21,7 +21,9 @@ float4 DiffuseLight( float3 normal )
 	color += max( 0, -dot(normal, g_light.diffuseLightDir[1])) * g_light.diffuseLightColor[1];
 	color += max( 0, -dot(normal, g_light.diffuseLightDir[2])) * g_light.diffuseLightColor[2];
 	color += max( 0, -dot(normal, g_light.diffuseLightDir[3])) * g_light.diffuseLightColor[3];
-	color.xyz += g_light.ambient.xyz;
+
+
+	//color.xyz += g_light.ambient.xyz;//アンビエントの加算
 	color.a = 1.0f;
 	return color;
 }

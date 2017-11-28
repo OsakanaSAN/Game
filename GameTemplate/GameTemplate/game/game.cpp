@@ -4,9 +4,7 @@
 #include "stdafx.h"
 #include "game.h"
 
-
-Enemy enemy3;
-
+int count = 0;
 /*!
  * @brief	コンストラクタ。
  */
@@ -26,9 +24,8 @@ Game::~Game()
  */
 void Game::Start()
 {
-	
-	title.Start();
 
+	title.Start();
 
 	Gamecamera.Strat();
 	g_physicsWorld = new PhysicsWorld;
@@ -39,15 +36,6 @@ void Game::Start()
 
 	//プレイヤーのインスタンスを生成
 	player.Start();
-
-
-	/*for (int i = 0;i < 3;i++)
-	{
-		Enemy* enemy = new Enemy;
-		Enemys.push_back(enemy);
-		enemy->Start(D3DXVECTOR3(500.0f * i, 1000.0f, -300.0f));
-	}*/
-	
 
 	game->GetCamera()->SetLookatPt(player.GetPos());
 	D3DXVECTOR3 l = player.GetPos() - game->GetCamera()->GetEyePt();
@@ -62,6 +50,11 @@ void Game::Update()
 	g_fade.Update();
 	switch (Scene)
 	{
+
+	case Result_Scene:
+
+		break;
+
 	case Title_Scene:
 
 
@@ -71,13 +64,24 @@ void Game::Update()
 
 	case Game_Scene:
 
-
 		player.Update(); //プレイヤーの更新
 		Gamecamera.Update(); //カメラのアップデート
-		
-		/*for (auto Enemy : Enemys) {
-			Enemy->Update();
-		}*/
+	
+
+		auto EnemyIt = Enemys.begin();
+		while (EnemyIt != Enemys.end()) {
+			if ((*EnemyIt)->IsEnd()) {
+				//死亡
+				EnemyIt = Enemys.erase(EnemyIt);
+				count++;
+			}
+			else {
+				(*EnemyIt)->Update();
+				EnemyIt++;
+			}
+
+
+		}
 
 		auto bulletIt = PlayerBullets.begin();
 		while (bulletIt != PlayerBullets.end()) {
@@ -91,12 +95,14 @@ void Game::Update()
 
 
 		}
+
 		auto EbulletIt = EnemyBullets.begin();
 		while (EbulletIt != EnemyBullets.end()) {
 
 			if (!(*EbulletIt)->Update()) {
 				//死亡
 				EbulletIt = EnemyBullets.erase(EbulletIt);
+				
 			}
 			else {
 				EbulletIt++;
@@ -122,29 +128,36 @@ void Game::Render()
 	
 	switch (Scene)
 	{
+	//タイトル画面の描画
 	case Title_Scene:
 
 		title.Drow(spt);
 		break;
+	//ゲーム画面の描画
 	case Game_Scene:
+
+		
 
 		player.Render();//プレイヤー描画
 
-		//for (auto Enemy : Enemys) {
-		//	Enemy->Render();
-		//}
+		for (auto Enemy : Enemys) {
+			Enemy->Render();
+		}
 
 		map.Render();
 
 		for (auto bullet : PlayerBullets) {
+			
 			bullet->Render();
 		}
+
 		for (auto bullet : EnemyBullets) {
 			bullet->Render();
 		}
 
 		Boot.Drow(spt);
-
+		break;
+	case Result_Scene:
 		break;
 	}
 	g_fade.Drow(spt);

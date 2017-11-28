@@ -5,19 +5,20 @@
 #pragma once
 
 #include "myEngine/Physics/Physics.h"
-#include "Player.h"
-#include "Enemy.h"
+#include "Character/Player.h"
+#include "Character/Enemy.h"
 #include "myEngine/HID/Pad.h"
-#include "Map.h"
-#include "Bullet.h"
+#include "Map/Map.h"
+#include "Item/Bullet.h"
 #include <list>
-#include "Primitive.h"
-#include "GameCamera.h"
-#include "Sprite.h"
-#include "Bootht.h"
-#include "C2DImage.h"
-#include "TITLE.h"
-#include "Fade.h"
+#include "myEngine/Graphics/Sprite/Primitive.h"
+#include "GameCamera/GameCamera.h"
+#include "myEngine/Graphics/Sprite/Sprite.h"
+#include "HUD/Bootht.h"
+#include "myEngine/Graphics/Sprite/C2DImage.h"
+#include "Scene/TITLE.h"
+#include "Fade/Fade.h"
+#include "myEngine/GameManager/GameObjectManager.h"
 
  /*!
  * @brief	ゲームクラス。
@@ -49,11 +50,15 @@ public:
 	{
 		return Gamecamera.Getcamera();
 	}
+	GameCamera* GetGameCamara()
+	{
+		return &Gamecamera;
+	}
 	Pad* GetPad()
 	{
 		return &pad;
 	}
-	Enemy* GetEnemy()
+	CEnemy* GetEnemy()
 	{
 		return &enemy;
 	}
@@ -68,7 +73,7 @@ public:
 		return EnemyBullets;
 	}
 	//エネミーリスト
-	const std::list<Enemy*>& GetEnemys()
+	const std::list<CEnemy*>& GetEnemys()
 	{
 		return Enemys;
 	}
@@ -85,12 +90,17 @@ public:
 		EnemyBullets.push_back(bullet);
 	}
 
-	void AddEnemy(Enemy* enemy)
+	void AddEnemy(CEnemy* enemy)
 	{
 		Enemys.push_back(enemy);
 	}
-
-	Player* GetPlayer()
+	//現在のマップを取得
+	Map* GetMap()
+	{
+		return &map;
+	}
+	//現在のプレイヤーを取得
+	CPlayer* GetPlayer()
 	{
 		return &player;
 	}
@@ -102,18 +112,27 @@ public:
 	{
 		Scene = Game_Scene;
 	}
+	//敵を生成するための関数
+	void InitEnemy(D3DXVECTOR3 Setpos) 
+	{
+		CEnemy* enemy = new CEnemy;
+		Enemys.push_back(enemy);
+		enemy->Start();
+		enemy->SetPos(Setpos);
+	}
 private:
 	enum SceneState {
 		Title_Scene,	//タイトル画面
 		Game_Scene,		//ゲーム画面
+		Result_Scene	//リザルト画面に移行
 	};
 
 
 	D3DXVECTOR3		toEyePos;		//注視点から視点までのベクトル。
 	D3DXVECTOR3    oldPos;
 	GameCamera Gamecamera;        //カメラ
-	Player player;                //プレイヤー
-	Enemy  enemy;                 //敵
+	CPlayer player;                //プレイヤー
+	CEnemy  enemy;                 //敵
 	Pad    pad;                   //パッド
 	Map    map;                   //マップ
 	Bootht Boot;
@@ -127,11 +146,10 @@ private:
 	LPD3DXSPRITE spt;
 	D3DXVECTOR3  rag;
 
-	std::list<Bullet*> PlayerBullets;
-	std::list<Bullet*> EnemyBullets;
-	std::list<Enemy*>  Enemys;
-
-
+	std::list<Bullet*> PlayerBullets;	//プレイヤーの弾のリスト
+	std::list<Bullet*> EnemyBullets;	//敵の弾のリスト
+	std::list<CEnemy*>  Enemys;			//敵のリスト
+	GameObjectManager  GameManager;     //ゲームマネージャー
 	SceneState         Scene = Title_Scene;    //シーンの管理変数
 
 };
