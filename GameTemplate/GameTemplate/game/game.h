@@ -14,11 +14,12 @@
 #include "myEngine/Graphics/Sprite/Primitive.h"
 #include "GameCamera/GameCamera.h"
 #include "myEngine/Graphics/Sprite/Sprite.h"
-#include "HUD/Bootht.h"
+#include "HUD/Hud.h"
 #include "myEngine/Graphics/Sprite/C2DImage.h"
 #include "Scene/TITLE.h"
 #include "Fade/Fade.h"
 #include "myEngine/GameManager/GameObjectManager.h"
+#include "myEngine/Graphics/PostEffect/Bloom.h"
 
  /*!
  * @brief	ゲームクラス。
@@ -42,9 +43,12 @@ public:
 	 */
 	void Update();
 	/*!
-	 * @brief	描画。
+	 * @brief	3Dモデルの描画。
 	 */
 	void Render();
+
+	//			2Dの描画
+	void Render2D();
 
 	Camera* GetCamera()
 	{
@@ -104,7 +108,7 @@ public:
 	{
 		return &player;
 	}
-	Fade* GetFade()
+	CFade* GetFade()
 	{
 		return &g_fade;
 	}
@@ -127,30 +131,30 @@ private:
 		Result_Scene	//リザルト画面に移行
 	};
 
-
+	
 	D3DXVECTOR3		toEyePos;		//注視点から視点までのベクトル。
-	D3DXVECTOR3    oldPos;
-	GameCamera Gamecamera;        //カメラ
-	CPlayer player;                //プレイヤー
-	CEnemy  enemy;                 //敵
-	Pad    pad;                   //パッド
-	Map    map;                   //マップ
-	Bootht Boot;
-	TITLE  title;				  //タイトル画面
-	Fade   g_fade;
+	D3DXVECTOR3		oldPos;
+	GameCamera		Gamecamera;		//カメラ
+	CPlayer			player;					//プレイヤー
+	CEnemy			enemy;					//敵
+	Pad				pad;						//パッド
+	Map				map;						//マップ
+	CHud			Hud;						//HUD
+	TITLE			title;					//タイトル画面
+	CFade			g_fade;
 	
 
-	CPrimitive prim;              //プリミティブ
-	Sprite*    sprite;            //スプライト
+	CPrimitive prim;				//プリミティブ
+	Sprite*    sprite;				//スプライト
 
 	LPD3DXSPRITE spt;
 	D3DXVECTOR3  rag;
 
-	std::list<Bullet*> PlayerBullets;	//プレイヤーの弾のリスト
-	std::list<Bullet*> EnemyBullets;	//敵の弾のリスト
-	std::list<CEnemy*>  Enemys;			//敵のリスト
-	GameObjectManager  GameManager;     //ゲームマネージャー
-	SceneState         Scene = Title_Scene;    //シーンの管理変数
+	std::list<Bullet*> PlayerBullets;			//プレイヤーの弾のリスト
+	std::list<Bullet*> EnemyBullets;			//敵の弾のリスト
+	std::list<CEnemy*>  Enemys;					//敵のリスト
+	GameObjectManager  GameManager;				//ゲームマネージャー
+	SceneState         Scene = Title_Scene;		//シーンの管理変数
 
 };
 

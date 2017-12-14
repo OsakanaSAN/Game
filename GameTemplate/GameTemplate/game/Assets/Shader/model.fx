@@ -251,7 +251,7 @@ float4 PSMain( VS_OUTPUT In ) : COLOR
 			}
 		//}
 	 }
-	lig.xyz += g_light.ambient.xyz; //アンビエントの加算
+	lig.xyz *= g_light.ambient.xyz; //アンビエントの加算
 	color *= lig ;
 
 	return color;
@@ -318,7 +318,7 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
   
       	 float3 Wnormal = In.Normal;
     	//法線マップがある。
-    	float2 baseUV = In.Tex0.xy * 3.0f;
+    	float2 baseUV = In.Tex0.xy * 20.0f;
 		float3 tangent = normalize(In.Tangent);
 		float2 moveUV = g_moveUV;
 		
@@ -370,13 +370,13 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 		
 	#endif
 		
-/*	   float3 toSun = normalize(float3(0.0f, 100.0f, 0.0f) - In.worldPos.xyz); 
+	    float3 toSun = normalize(g_Eyeposition - In.worldPos.xyz); 
 		float3 L = -g_light.diffuseLightDir[0]; //ライトの向き
 		float3 N = Wnormal.xyz;                  //法線ベクトル 
 		float3 R = -L + 2.0f * dot(N,L)* N; //反射ベクトルの計算
-		lig += pow(max(0.0f,dot(R,toSun)),.0f);   //スペキュラーの計算
-*/		
+		lig += pow(max(0.0f,dot(R,toSun)),10.0f);   //スペキュラーの計算
 		
+		//lig.xyz += g_light.ambient.xyz; //アンビエントの加算
 		Wcolor.xyz = lig.xyz;
 		Wcolor.w = 0.5f; //水面の透過処理
 		return Wcolor;

@@ -153,7 +153,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="HUD\Bootht.cpp" />
+    <ClCompile Include="myEngine\Graphics\PostEffect\Bloom.cpp" />
+    <ClCompile Include="HUD\Hud.cpp" />
+    <ClCompile Include="myEngine\Graphics\PostEffect\PostEffect.cpp" />
+    <ClCompile Include="myEngine\Graphics\Sprite\IndexBuffer.cpp" />
     <ClCompile Include="Item\Bullet.cpp" />
     <ClCompile Include="myEngine\Graphics\Sprite\C2DImage.cpp" />
     <ClCompile Include="myEngine\Camera\CameraCollisionSolver.cpp" />
@@ -181,6 +184,7 @@
     <ClCompile Include="myEngine\System.cpp" />
     <ClCompile Include="Character\Player.cpp" />
     <ClCompile Include="myEngine\Graphics\Sprite\Primitive.cpp" />
+    <ClCompile Include="GameCamera\RadarMap.cpp" />
     <ClCompile Include="Scene\Result.cpp" />
     <ClCompile Include="Map\Sea.cpp" />
     <ClCompile Include="myEngine\Graphics\ShadowMap.cpp" />
@@ -195,9 +199,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Scene\TITLE.cpp" />
+    <ClCompile Include="myEngine\Graphics\Sprite\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HUD\Bootht.h" />
+    <ClInclude Include="myEngine\Graphics\PostEffect\Bloom.h" />
+    <ClInclude Include="HUD\Hud.h" />
+    <ClInclude Include="myEngine\Graphics\Sprite\IndexBuffer.h" />
     <ClInclude Include="Item\Bullet.h" />
     <ClInclude Include="myEngine\Graphics\Sprite\C2DImage.h" />
     <ClInclude Include="myEngine\Camera\CameraCollisionSolver.h" />
@@ -209,6 +216,8 @@
     <ClInclude Include="myEngine\GameManager\GameObjectManager.h" />
     <ClInclude Include="myEngine\Time\GameTime.h" />
     <ClInclude Include="myEngine\GameManager\IGameObject.h" />
+    <ClInclude Include="GameCamera\RadarMap.h" />
+    <ClInclude Include="myEngine\Graphics\PostEffect\PostEffect.h" />
     <ClInclude Include="Scene\Result.h" />
     <ClInclude Include="Map\Tutorial.h" />
     <ClInclude Include="Map\Map.h" />
@@ -242,6 +251,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="Scene\TITLE.h" />
+    <ClInclude Include="myEngine\Graphics\Sprite\VertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />

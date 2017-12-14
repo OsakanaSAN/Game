@@ -111,5 +111,6 @@ private:
 	float m_lStickY;			//!<左スティックのY軸の入力量。
 	float m_rStickX;			//!<右スティックのX軸の入力量。
 	float m_rStickY;			//!<右スティックのY軸の入力量。
+	
 };
 

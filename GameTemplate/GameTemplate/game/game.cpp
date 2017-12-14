@@ -30,7 +30,7 @@ void Game::Start()
 	Gamecamera.Strat();
 	g_physicsWorld = new PhysicsWorld;
 	g_physicsWorld->Init();
-	Boot.Start(); //スプライト
+	Hud.Start(); //スプライト
 
 	map.Init();
 
@@ -115,13 +115,13 @@ void Game::Update()
 		
 		map.Update();
 		
-		Boot.Update();
+		Hud.Update();
 		break;
 	}
 }
 
 /*!
-* @brief	描画。
+* @brief	3Dモデルの描画。
 */
 void Game::Render()
 {
@@ -131,7 +131,7 @@ void Game::Render()
 	//タイトル画面の描画
 	case Title_Scene:
 
-		title.Drow(spt);
+		//title.Drow(spt);
 		break;
 	//ゲーム画面の描画
 	case Game_Scene:
@@ -155,10 +155,30 @@ void Game::Render()
 			bullet->Render();
 		}
 
-		Boot.Drow(spt);
+		
 		break;
 	case Result_Scene:
 		break;
 	}
+	
+	
+}
+
+//2Dの描画
+void Game::Render2D()
+{
+	switch (Scene)
+	{
+	case Title_Scene:
+		title.Drow(spt);
+		break;
+
+	case Game_Scene:
+		Hud.Drow(spt);
+		break;
+
+	}
+
 	g_fade.Drow(spt);
+
 }

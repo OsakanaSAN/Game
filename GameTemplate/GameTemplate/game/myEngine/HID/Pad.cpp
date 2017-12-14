@@ -74,6 +74,7 @@ Pad::~Pad()
 }
 void Pad::Update()
 {
+
 	DWORD result = XInputGetState(m_padNo, &m_state.state);
 	if (result == ERROR_SUCCESS) {
 		//Ú‘±‚³‚ê‚Ä‚¢‚éB

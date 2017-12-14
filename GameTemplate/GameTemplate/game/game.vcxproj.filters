@@ -144,9 +144,6 @@
     <ClCompile Include="GameCamera\GameCamera.cpp">
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
-    <ClCompile Include="HUD\Bootht.cpp">
-      <Filter>ソース ファイル\Games\HUD</Filter>
-    </ClCompile>
     <ClCompile Include="Item\Bullet.cpp">
       <Filter>ソース ファイル\Games\Item</Filter>
     </ClCompile>
@@ -172,6 +169,24 @@
       <Filter>ソース ファイル\Games\scene</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCamera\RadarMap.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD\Hud.cpp">
+      <Filter>ソース ファイル\Games\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="myEngine\Graphics\Sprite\IndexBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="myEngine\Graphics\Sprite\VertexBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="myEngine\Graphics\PostEffect\PostEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="myEngine\Graphics\PostEffect\Bloom.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -281,9 +296,6 @@
     <ClInclude Include="GameCamera\GameCamera.h">
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
-    <ClInclude Include="HUD\Bootht.h">
-      <Filter>ソース ファイル\Games\HUD</Filter>
-    </ClInclude>
     <ClInclude Include="Item\Bullet.h">
       <Filter>ソース ファイル\Games\Item</Filter>
     </ClInclude>
@@ -310,6 +322,24 @@
     </ClInclude>
     <ClInclude Include="Scene\TITLE.h">
       <Filter>ソース ファイル\Games\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCamera\RadarMap.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD\Hud.h">
+      <Filter>ソース ファイル\Games\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="myEngine\Graphics\Sprite\IndexBuffer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="myEngine\Graphics\Sprite\VertexBuffer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="myEngine\Graphics\PostEffect\PostEffect.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="myEngine\Graphics\PostEffect\Bloom.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

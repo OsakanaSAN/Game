@@ -70,9 +70,17 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 	RegisterClassEx(&wc);
 
 	// ウィンドウを作成。
-	HWND hWnd = CreateWindow("Game", "Game",
-		WS_OVERLAPPEDWINDOW, 0, 0, FRAME_BUFFER_WIDTH + 100, FRAME_BUFFER_HEIGHT + 100,
-		NULL, NULL, wc.hInstance, NULL);
+	HWND hWnd = CreateWindow("Game",
+		"Game",
+		WS_OVERLAPPEDWINDOW,
+		0,
+		0,
+		FRAME_BUFFER_WIDTH	+ 100, 
+		FRAME_BUFFER_HEIGHT + 100,
+		NULL,
+		NULL,
+		wc.hInstance,
+		NULL);
 	// Direct3Dを初期化。
 	InitD3D(hWnd);
 

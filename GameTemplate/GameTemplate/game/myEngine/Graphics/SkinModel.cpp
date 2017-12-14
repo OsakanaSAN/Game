@@ -120,7 +120,7 @@ namespace {
 		    pEffect->SetBool("g_isWave", true);
 			pEffect->SetTexture("g_normalTexture", NormalMap); //法線マップ
 			pEffect->SetFloat("g_moveUV", g_Moveuv);		   //法線マップを動かすための処理
-			g_Moveuv += 0.00008f;
+			g_Moveuv += 0.0001f;
 			if (g_Moveuv == 0.01)
 			{
 				g_Moveuv = 0;

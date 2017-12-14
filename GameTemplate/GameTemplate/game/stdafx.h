@@ -23,6 +23,7 @@
 
 #include "game.h"
 #include "myEngine/Graphics/ShadowMap.h"
+#include "myEngine/Graphics/PostEffect/PostEffect.h"
 
 extern CShadowMap g_shadowMap;	//シャドウマップ。
 
