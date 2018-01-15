@@ -23,6 +23,7 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {
+	
 }
 void CPlayer::Start()
 {
@@ -35,10 +36,9 @@ void CPlayer::Start()
 	m_Light.SetDiffuseLightColor(1, D3DXVECTOR4(0.8f, 0.8f, 0.8f, 1.0f));
 	m_Light.SetDiffuseLightColor(2, D3DXVECTOR4(0.8f, 0.8f, 0.8f, 1.0f));
 	m_Light.SetDiffuseLightColor(3, D3DXVECTOR4(0.8f, 0.8f, 0.8f, 1.0f));
-	m_Light.SetAmbientLight({ 2.0f,2.0f,2.0f,1.0f });
+	m_Light.SetAmbientLight({ 0.5f,0.5f,0.5f,1.0f });
 	m_SkinmodelData.LoadModelData("Assets/modelData/robo1.x",NULL);
 	m_Skinmodel.Init(&m_SkinmodelData);
-	
 
 	m_Skinmodel.SetLight(&m_Light);
 	//アニメーションの初期化
@@ -52,12 +52,15 @@ void CPlayer::Start()
 	m_CharacterController.Init(1.0f, 1.0f, m_Position);
 	m_CharacterController.SetGravity(-9.0f); //重力の設定
 
+	m_PlayerSE = new CSoundSource;
+	m_PlayerSE->Init("Assets/Sound/SE/LoockOnSound.wav");
+	
 }
 
 
 void CPlayer::Update()
 {
-
+	
 	m_Camera = game->GetCamera();
 	m_CharacterController.Execute();
 	//PlayerAnimation(); //アニメーションの設定
@@ -78,9 +81,15 @@ void CPlayer::OnLock()
 	{
 		if (!m_ZAttent)
 		{
+			m_PlayerSE->Init("Assets/Sound/SE/LoockOnSound.wav");
+			m_PlayerSE->Play(true);
+			m_PlayerSE->Update();
+			m_PlayerSE->Play(true);
+			m_PlayerSE->Update();
 			m_ZAttent = true;
 		}
 		else {
+			
 			m_ZAttent = false;
 			game->GetGameCamara()->LookOnCamera(m_Enemypos, false);
 		}
@@ -104,7 +113,7 @@ void CPlayer::OnLock()
 		game->GetGameCamara()->LookOnCamera(m_Enemypos, false);
 		return;
 	}
-
+	
 	
 	D3DXVECTOR3 pPos = m_Enemypos;
 	D3DXVec3Subtract(&pPos, &pPos, &m_Position);
@@ -129,6 +138,8 @@ void CPlayer::OnLock()
 		D3DXQuaternionRotationAxis(&mul, &-rotAxis, topos.y);
 		D3DXQuaternionMultiply(&m_Rotation, &m_Rotation, &mul);
 		game->GetGameCamara()->LookOnCamera(m_Enemypos,true);
+		
+		
 	}
 
 }
@@ -307,8 +318,7 @@ const D3DXVECTOR3& CPlayer::InitBootht(D3DXVECTOR3& MoveSpeed)
 	m_BoothtTime = m_DashTime;
 	if (m_Pad.IsPress(Pad::enButtonRB2) && m_DashTime < TURBOTIME && !m_NoBoothtInput)
 	{
-
-
+		
 		if (m_Pad.GetLStickXF() != 0 && m_Pad.GetLStickYF() != 0)
 		{
 			m_Inertia = NomalSpeed;
@@ -416,6 +426,9 @@ void CPlayer::InitBullet()
 		}
 		game->AddPlayerBullets(bullet);
 		m_bulletFireInterval = 10;
+		m_PlayerSE->Init("Assets/Sound/SE/BulletSound2.wav");
+		m_PlayerSE->Play(true);
+		m_PlayerSE->Update();
 	}
 	m_bulletFireInterval--;
 	if (m_bulletFireInterval < 0) {

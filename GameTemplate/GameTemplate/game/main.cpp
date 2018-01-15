@@ -9,6 +9,7 @@
 
 Game* game;
 CPostEffect* g_PostEffect;
+CSoundEngine* g_SoundEngine;
 
 //-----------------------------------------------------------------------------
 // Name: ゲームを初期化。
@@ -22,6 +23,8 @@ void Init()
 	g_PostEffect->InitPrimitive();
 	//ポストエフェクト用のシェーダーロード
 	g_PostEffect->LoadShader();
+	
+	
 	game = new Game;
 	game->Start();
 }
@@ -38,7 +41,11 @@ VOID Render()
 	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
 	
 	//シーンの描画開始。
-	g_pd3dDevice->BeginScene();
+	//g_pd3dDevice->BeginScene();
+	////半透明合成の設定。
+	//g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	//g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	//g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 	g_PostEffect->Render();
 
@@ -46,9 +53,9 @@ VOID Render()
 	//game->Render2D();
 
 	//// シーンの描画終了。
-	//g_pd3dDevice->EndScene();
+	g_pd3dDevice->EndScene();
 	//// バックバッファとフロントバッファを入れ替える。
-	//g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
+	g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 
 }
 /*!-----------------------------------------------------------------------------
@@ -56,6 +63,7 @@ VOID Render()
  -----------------------------------------------------------------------------*/
 void Update()
 {
+	
 	game->Update();
 }
 //-----------------------------------------------------------------------------

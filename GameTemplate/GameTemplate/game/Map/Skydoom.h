@@ -12,7 +12,7 @@ public:
 	{
 		HRESULT hr = D3DXCreateCubeTextureFromFile(
 			g_pd3dDevice,
-			"Assets/modelData/CubeMap2.dds",
+			"Assets/modelData/skyCubeMap.dds",
 			&this->CubeMap
 		);
 		model.SetSkyTexture(CubeMap);

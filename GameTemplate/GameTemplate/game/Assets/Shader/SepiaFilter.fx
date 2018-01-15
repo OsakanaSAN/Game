@@ -19,6 +19,8 @@ sampler_state
     MipFilter = NONE;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
 };
 
 VS_OUTPUT VSMain( VS_INPUT In)

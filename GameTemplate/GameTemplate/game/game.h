@@ -20,6 +20,7 @@
 #include "Fade/Fade.h"
 #include "myEngine/GameManager/GameObjectManager.h"
 #include "myEngine/Graphics/PostEffect/Bloom.h"
+#include "myEngine/Sound/CSoundEngine.h"
 
  /*!
  * @brief	ゲームクラス。
@@ -81,6 +82,11 @@ public:
 	{
 		return Enemys;
 	}
+	const void Sound_Dete(int No)
+	{
+		
+		Sounds.erase(Sounds.begin() + No);
+	}
 	/*!
 	* @brief	プレイヤーが放った弾を追加。
 	*/
@@ -88,16 +94,22 @@ public:
 	{
 		PlayerBullets.push_back(bullet);
 	}
-
+	//敵の放った弾を追加
 	void AddEnemyBullets(Bullet* bullet)
 	{
 		EnemyBullets.push_back(bullet);
 	}
-
+	//エネミーをエネミーのリストに追加
 	void AddEnemy(CEnemy* enemy)
 	{
 		Enemys.push_back(enemy);
 	}
+	//音楽リストに追加する
+	void AddSound(CSoundSource* Sound)
+	{
+		Sounds.push_back(Sound);
+	}
+
 	//現在のマップを取得
 	Map* GetMap()
 	{
@@ -124,6 +136,12 @@ public:
 		enemy->Start();
 		enemy->SetPos(Setpos);
 	}
+
+	CSoundEngine& GetSoundEngine()
+	{
+		return m_SoundEngine;
+	}
+
 private:
 	enum SceneState {
 		Title_Scene,	//タイトル画面
@@ -142,6 +160,7 @@ private:
 	CHud			Hud;						//HUD
 	TITLE			title;					//タイトル画面
 	CFade			g_fade;
+	CSoundEngine	m_SoundEngine;
 	
 
 	CPrimitive prim;				//プリミティブ
@@ -150,9 +169,10 @@ private:
 	LPD3DXSPRITE spt;
 	D3DXVECTOR3  rag;
 
-	std::list<Bullet*> PlayerBullets;			//プレイヤーの弾のリスト
-	std::list<Bullet*> EnemyBullets;			//敵の弾のリスト
+	std::list<Bullet*>  PlayerBullets;			//プレイヤーの弾のリスト
+	std::list<Bullet*>  EnemyBullets;			//敵の弾のリスト
 	std::list<CEnemy*>  Enemys;					//敵のリスト
+	std::vector<CSoundSource*>	Sounds;			//サウンドリスト
 	GameObjectManager  GameManager;				//ゲームマネージャー
 	SceneState         Scene = Title_Scene;		//シーンの管理変数
 

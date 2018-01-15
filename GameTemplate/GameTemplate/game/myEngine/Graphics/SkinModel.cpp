@@ -361,10 +361,16 @@ void SkinModel::Draw(D3DXMATRIX* viewMatrix, D3DXMATRIX* projMatrix)
 	{
 
 		g_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+		//”¼“§–¾‡¬‚ÌÝ’èB
+		g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+		//g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+		//g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 	}
 	else
 	{
+		//”¼“§–¾‡¬‚ÌÝ’èB
+		g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 		g_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	}
 

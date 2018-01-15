@@ -26,7 +26,7 @@ void CPostEffect::InitMainRenderTarget()
 		1280,					//フレームバッファの幅
 		 720,					//フレームバッファの高さ
 		   1,					//ミップマップレベル
-		D3DFMT_A16B16G16R16F,		//カラーバッファのフォーマット
+		D3DFMT_A16B16G16R16F,	//カラーバッファのフォーマット
 		D3DFMT_D24S8,			//デプスステンシルバッファのフォーマット
 		D3DMULTISAMPLE_NONE,	//マルチサンプリングの種類
 		0						//マルチサンプリングの品質
@@ -115,10 +115,10 @@ void CPostEffect::MainRTToCurrentRT()
 	//m_SepiaEffct->SetTechnique("Default");
 	//m_SepiaEffct->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
 	//m_SepiaEffct->BeginPass(0);
-	////シーンテクスチャを設定する
-	//m_SepiaEffct->SetTexture("g_tex", mainRenderTarget->GetTexture());
-	////定数レジスタへの変更をコミットする。
-	//m_SepiaEffct->CommitChanges();
+	//シーンテクスチャを設定する
+	m_SepiaEffct->SetTexture("g_tex", mainRenderTarget->GetTexture());
+	//定数レジスタへの変更をコミットする。
+	m_SepiaEffct->CommitChanges();
 
 	// インデックスバッファを設定。
 	g_pd3dDevice->SetIndices(quadPrimitive->GetIndexBuffer()->GetBody());
@@ -137,11 +137,12 @@ void CPostEffect::MainRTToCurrentRT()
 	m_CopyEffct->EndPass();
 	m_CopyEffct->End();
 	//セピア
-	/*m_SepiaEffct->EndPass();
-	m_SepiaEffct->End();*/
+	//m_SepiaEffct->EndPass();
+	//m_SepiaEffct->End();
 	// 変更したレンダリングステートを元に戻す。
 	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 	g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+
 }
 
 //シェーダーをロード
@@ -157,6 +158,7 @@ void CPostEffect::LoadShader()
 }
 void CPostEffect::Render()
 {
+	
 	//現在のレンダリングターゲットのバックアップの作成
 	LPDIRECT3DSURFACE9 frameBufferRT;
 	LPDIRECT3DSURFACE9 frameBufferDS;
@@ -176,6 +178,8 @@ void CPostEffect::Render()
 	// レンダリングターゲットをクリア。
 	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
 
+	g_pd3dDevice->BeginScene();
+
 	game->Render();
 	bloom.Render();
 
@@ -192,11 +196,12 @@ void CPostEffect::Render()
 
 	game->Render2D();
 	// シーンの描画終了。
-	g_pd3dDevice->EndScene();
+	//g_pd3dDevice->EndScene();
 
 	g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
 	// バックバッファとフロントバッファを入れ替える。
-	g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
+	//g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 
 }
 

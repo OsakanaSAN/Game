@@ -18,14 +18,22 @@ Game::Game()
  */
 Game::~Game()
 {
+	auto SoundIt = Sounds.begin();
+	while (SoundIt != Sounds.end()) {
+		(*SoundIt)->Release();
+			//死亡
+			SoundIt = Sounds.erase(SoundIt);
+			count++;
+	}
+	m_SoundEngine.Release();
 }
 /*!
  * @brief	ゲームが起動してから一度だけ呼ばれる関数。
  */
 void Game::Start()
 {
-
-	title.Start();
+	m_SoundEngine.Init();
+	
 
 	Gamecamera.Strat();
 	g_physicsWorld = new PhysicsWorld;
@@ -40,13 +48,14 @@ void Game::Start()
 	game->GetCamera()->SetLookatPt(player.GetPos());
 	D3DXVECTOR3 l = player.GetPos() - game->GetCamera()->GetEyePt();
 	Gamecamera.SetPLength(D3DXVec3Length(&l));
-
+	title.Start();
 }
 /*!
  * @brief	更新。
  */
 void Game::Update()
 {
+	m_SoundEngine.Update();
 	g_fade.Update();
 	switch (Scene)
 	{

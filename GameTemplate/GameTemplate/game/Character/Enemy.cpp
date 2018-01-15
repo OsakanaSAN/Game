@@ -19,11 +19,11 @@ void CEnemy::Start()
 	m_Light.SetDiffuseLightDirection(2, D3DXVECTOR4(0.0f, 0.707f, -0.707f, 1.0f));
 	m_Light.SetDiffuseLightDirection(3, D3DXVECTOR4(0.0f, -0.707f, -0.707f, 1.0f));
 
-	m_Light.SetDiffuseLightColor(0, D3DXVECTOR4(0.2f, 0.2f, 0.2f, 1.0f));
-	m_Light.SetDiffuseLightColor(1, D3DXVECTOR4(0.2f, 0.2f, 0.2f, 1.0f));
-	m_Light.SetDiffuseLightColor(2, D3DXVECTOR4(0.3f, 0.3f, 0.3f, 1.0f));
-	m_Light.SetDiffuseLightColor(3, D3DXVECTOR4(0.2f, 0.2f, 0.2f, 1.0f));
-	m_Light.SetAmbientLight({ 0.3f,0.3f,0.3f,0.3f });
+	m_Light.SetDiffuseLightColor(0, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
+	m_Light.SetDiffuseLightColor(1, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
+	m_Light.SetDiffuseLightColor(2, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
+	m_Light.SetDiffuseLightColor(3, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
+	m_Light.SetAmbientLight({ 0.5f,0.5f,0.8f,0.3f });
 
 	m_SkinmodelData.LoadModelData("Assets/modelData/robo4.x", NULL);
 	m_Skinmodel.Init(&m_SkinmodelData);

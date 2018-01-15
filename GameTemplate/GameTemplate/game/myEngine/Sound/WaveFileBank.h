@@ -1,15 +1,16 @@
 #pragma once
 #include <map>
+#include "CNameKey.h"
 
-class WaveFile;
-typedef std::shared_ptr<WaveFile> CWaveFilePtr;
+class CWaveFile;
+typedef std::shared_ptr<CWaveFile> CWaveFilePtr;
 typedef std::map<unsigned int, CWaveFilePtr>	CWaveFilePtrMap;
 
-class WaveFileBank 
+class CWaveFileBank 
 {
 public:
-	WaveFileBank();
-	~WaveFileBank();
+	CWaveFileBank();
+	~CWaveFileBank();
 	/*!
 	*@brief	波形データを登録。
 	*@param[in]	groupID		グループＩＤ。指定できるＩＤの最大値はMAX_GROUP-1。
@@ -49,5 +50,5 @@ private:
 	static const int MAX_GROUP = 256;
 	CWaveFilePtrMap	m_waveFileMap[MAX_GROUP];		//!<waveファイルのリスト。
 };
-};
+
 

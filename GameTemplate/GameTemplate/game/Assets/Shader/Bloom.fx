@@ -68,6 +68,8 @@ sampler_state
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
 };
 
 float2 g_luminanceTexSize;		//輝度テクスチャのサイズ。

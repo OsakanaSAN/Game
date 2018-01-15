@@ -39,7 +39,7 @@ void MapChip::Init(SMapChipLocInfo& locInfo)
 		light.SetDiffuseLightColor(2, D3DXVECTOR4(0.6f, 0.6f, 0.6f, 1.0f));
 		light.SetDiffuseLightColor(3, D3DXVECTOR4(0.6f, 0.6f, 0.6f, 1.0f));
 
-		light.SetAmbientLight(D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+		light.SetAmbientLight(D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
 	}
 
 	model.SetLight(&light);
@@ -56,13 +56,13 @@ void MapChip::Init(SMapChipLocInfo& locInfo)
 		light.SetDiffuseLightDirection(3, D3DXVECTOR4(0.0f, -0.707f, -0.707f, 1.0f));
 
 		
-		light.SetDiffuseLightColor(0, D3DXVECTOR4(0.6f, 0.6f, 0.6f, 1.0f));
-		light.SetDiffuseLightColor(1, D3DXVECTOR4(0.6f, 0.6f, 0.6f, 1.0f));
-		light.SetDiffuseLightColor(2, D3DXVECTOR4(0.6f, 0.6f, 0.6f, 1.0f));
-		light.SetDiffuseLightColor(3, D3DXVECTOR4(0.6f, 0.6f, 0.6f, 1.0f));
+		light.SetDiffuseLightColor(0, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
+		light.SetDiffuseLightColor(1, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
+		light.SetDiffuseLightColor(2, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
+		light.SetDiffuseLightColor(3, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
 		
 
-		light.SetAmbientLight(D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+		light.SetAmbientLight(D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
 		model.SetLight(&light);
 		model.SetWaveTexture();
 		model.SetWave(true);

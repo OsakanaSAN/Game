@@ -4,6 +4,7 @@
 
 TITLE::TITLE()
 {
+	
 }
 
 
@@ -13,7 +14,10 @@ TITLE::~TITLE()
 
 void TITLE::Start()
 {
-
+	m_TitleBgm = new CSoundSource;
+	m_TitleBgm->Init("Assets/Sound/Title.wav");
+	m_TitleBgm->SetVolume(0.1f);
+	m_TitleBgm->Play(1);
 	for (int i = 0; i < 4;i++)
 	{
 		Title[i] = new Sprite;
@@ -62,6 +66,15 @@ void TITLE::Update()
 	Title[2]->Update();
 	Title[3]->Update();
 	pad.Update();
+
+	if (pad.IsTrigger(Pad::enButtonA))
+	{
+		m_TitleBgm->Release();
+		/*m_TitleBgm->Stop();
+		m_TitleBgm->Init("Assets/Sound/Machi.wav");
+		m_TitleBgm->Play(1);*/
+	}
+
 	switch (m_state)
 	{
 	case eStateWaitFadeIn:
@@ -74,7 +87,7 @@ void TITLE::Update()
 
 		if (pad.IsTrigger(Pad::enButtonStart))
 		{
-			
+			m_TitleBgm->Release();
 			game->GetFade()->StartFadeOut();
 			m_state = eStateWaitFadeOut;
 			

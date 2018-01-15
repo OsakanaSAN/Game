@@ -1,5 +1,6 @@
 #pragma once
 #include "myEngine/Time/GameTime.h"
+#include "myEngine/Sound/CSoundSource.h"
 class TITLE
 {
 public:
@@ -15,6 +16,8 @@ private:
 		eStateWaitFadeOut,	//!<フェードアウト待ち。
 		End,
 	};
+	CSoundSource*	m_TitleBgm;
+
 	EState			m_state = eStateRun;
 	Sprite*			Title[4];
 	D3DXVECTOR2		Meterpos = { 0.0f,0.0f };

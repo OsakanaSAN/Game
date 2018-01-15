@@ -1,12 +1,12 @@
 #pragma once
-
+//#pragma comment(lib, "winmm.lib")	// winmm.libを使用する
 #include<thread>
 
-class WaveFile
+class CWaveFile
 {
 public:
-	WaveFile();
-	~WaveFile();
+	CWaveFile();
+	~CWaveFile();
 
 	/*!
 	* @brief	waveファイルをオープン。

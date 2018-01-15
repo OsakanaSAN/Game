@@ -5,6 +5,7 @@
 #include "myEngine\Physics\CharacterController.h"
 #include "myEngine\Graphics\Camera.h"
 #include "Item/Bullet.h"
+#include "myEngine/Sound/CSoundSource.h"
 
 class CPlayer : public IGameObject
 {
@@ -55,12 +56,14 @@ public:
 	void Animetion();
 
 private:
-	SkinModel             m_Skinmodel;								//スキンモデル
-	SkinModelData         m_SkinmodelData;							//スキンモデルデーター
-	Light                 m_Light;									//プレイヤーのライト
-	D3DXVECTOR3           m_Position = { 0.0f,60.0f,0.0f };			//プレイヤーの現在位置	
-	D3DXQUATERNION        m_Rotation = { 0.0f, 0.0f, 0.0f, 1.0f };	//回転
-	CharacterController   m_CharacterController;					//キャラクターコントローラー
+	SkinModel				m_Skinmodel;								//スキンモデル
+	SkinModelData			m_SkinmodelData;							//スキンモデルデーター
+	Light					m_Light;									//プレイヤーのライト
+	D3DXVECTOR3				m_Position = { 0.0f,60.0f,0.0f };			//プレイヤーの現在位置	
+	D3DXQUATERNION			m_Rotation = { 0.0f, 0.0f, 0.0f, 1.0f };	//回転
+	CharacterController		m_CharacterController;						//キャラクターコントローラー
+	CSoundSource*			m_PlayerSE;									//プレイヤーのSE
+
 	float				  m_BoothtTime;								//ブーストの時間を格納
 	int					  m_MoveSpeed = 0;							//速さ
 	bool				  m_NoBoothtInput;

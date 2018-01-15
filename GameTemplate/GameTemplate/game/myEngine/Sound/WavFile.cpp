@@ -2,17 +2,17 @@
 #include "WavFile.h"
 
 
-WaveFile::WaveFile()
+CWaveFile::CWaveFile()
 {
 }
 
 
-WaveFile::~WaveFile()
+CWaveFile::~CWaveFile()
 {
 	Release();
 }
 
-void WaveFile::Open(const char* fileName)
+void CWaveFile::Open(const char* fileName)
 {
 	m_filePath = fileName;
 	m_filePathHash = MakeHash(fileName);
@@ -109,7 +109,7 @@ void WaveFile::Open(const char* fileName)
 	ResetFile();
 	m_dwSize = m_ck.cksize;
 }
-void WaveFile::ResetFile()
+void CWaveFile::ResetFile()
 {
 	while (!m_isReadEnd) {}	//読み込み中にリセットはさせない。
 	if (m_hmmio == NULL)
@@ -130,7 +130,7 @@ void WaveFile::ResetFile()
 	}
 }
 
-void WaveFile::Read(char* pBuffer, unsigned int sizeToRead, unsigned int* currentReadSize)
+void CWaveFile::Read(char* pBuffer, unsigned int sizeToRead, unsigned int* currentReadSize)
 {
 	MMIOINFO mmioinfoIn; // current status of m_hmmio
 
@@ -182,7 +182,7 @@ void WaveFile::Read(char* pBuffer, unsigned int sizeToRead, unsigned int* curren
 	m_isReadEnd = true;
 	return;
 }
-void WaveFile::ReadAsync(char* pBuffer, unsigned int sizeToRead, unsigned int* currentReadSize)
+void CWaveFile::ReadAsync(char* pBuffer, unsigned int sizeToRead, unsigned int* currentReadSize)
 {
 	if (m_isInvokeReadAsyncThread) {
 		m_readAsyncThread.join();
@@ -196,7 +196,7 @@ void WaveFile::ReadAsync(char* pBuffer, unsigned int sizeToRead, unsigned int* c
 	});
 	m_isInvokeReadAsyncThread = true;
 }
-void WaveFile::Release()
+void CWaveFile::Release()
 {
 	if (m_isInvokeReadAsyncThread) {
 		m_readAsyncThread.join();

@@ -7,8 +7,14 @@
 #include <cstdlib>
 #include <memory>
 #include <vector>
+#include <list>
 #include <map>
 #include <time.h>
+#include <X3daudio.h>
+#include <Xaudio2.h>
+#include <Xaudio2fx.h>
+#pragma comment(lib, "winmm.lib")	// winmm.lib‚ðŽg—p‚·‚é
+#pragma comment(lib, "X3DAudio.lib")
 
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision\CollisionDispatch\btGhostObject.h"

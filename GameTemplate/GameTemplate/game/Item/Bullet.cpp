@@ -9,12 +9,16 @@ Bullet::Bullet()
 {
 	position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	moveSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_BulletSe = new CSoundSource;
+	m_BulletSe->Init("Assets/Sound/SE/BulletSound2.wav");
+	m_BulletSe->SetVolume(0.2f);
 	
 }
 
 
 Bullet::~Bullet()
 {
+	m_BulletSe->Release();
 	delete modelData;
 	modelData = NULL;
 }
@@ -24,18 +28,18 @@ void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 	PlayerFrontPosition = moveSpeed;
 	D3DXVec3Normalize(&PlayerFrontPosition,&PlayerFrontPosition);
 	
-	this->moveSpeed = PlayerFrontPosition * 3.0f ;//1.5f; //弾速調整
+	this->moveSpeed = PlayerFrontPosition * 3.5f ;//1.5f; //弾速調整
 	//ライトを初期化。
 	light.SetDiffuseLightDirection(0, D3DXVECTOR4(0.707f, 0.0f, -0.707f, 1.0f));
 	light.SetDiffuseLightDirection(1, D3DXVECTOR4(-0.707f, 0.0f, -0.707f, 1.0f));
 	light.SetDiffuseLightDirection(2, D3DXVECTOR4(0.0f, 0.707f, -0.707f, 1.0f));
 	light.SetDiffuseLightDirection(3, D3DXVECTOR4(0.0f, -0.707f, -0.707f, 1.0f));
 
-	light.SetDiffuseLightColor(0, D3DXVECTOR4(0.2f, 0.2f, 0.2f, 1.0f));
-	light.SetDiffuseLightColor(1, D3DXVECTOR4(0.2f, 0.2f, 0.2f, 1.0f));
-	light.SetDiffuseLightColor(2, D3DXVECTOR4(0.3f, 0.3f, 0.3f, 1.0f));
-	light.SetDiffuseLightColor(3, D3DXVECTOR4(0.2f, 0.2f, 0.2f, 1.0f));
-	light.SetAmbientLight(D3DXVECTOR4(2.0f, 2.0f, 2.0f, 1.0f));
+	light.SetDiffuseLightColor(0, D3DXVECTOR4(1.0f, 1.0f, 0.2f, 1.0f));
+	light.SetDiffuseLightColor(1, D3DXVECTOR4(1.0f, 1.0f, 0.2f, 1.0f));
+	light.SetDiffuseLightColor(2, D3DXVECTOR4(1.0f, 1.0f, 0.2f, 1.0f));
+	light.SetDiffuseLightColor(3, D3DXVECTOR4(1.0f, 1.0f, 0.2f, 1.0f));
+	light.SetAmbientLight(D3DXVECTOR4(10.0f, 10.0f, 5.0f, 1.0f));
 
 	if (modelData == NULL) {
 		//モデルをロード。
@@ -46,17 +50,21 @@ void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 	model.Init(modelData);
 	model.SetLight(&light);
 	life = 120;
+	//m_BulletSe->Play(0);
 }
 bool Bullet::Update()
 {
-	//if (IsLifeDown)
-	//{
-		life--;
-
-	//}
+	life--;
+	
 	if (life < 0 || IsHit) {
 		//死亡。
+		if (IsHit)
+		{
+			m_BulletSe->Init("Assets/Sound/SE/HitSound.wav");
+			m_BulletSe->Play(0);
+		}
 		//delete(this);
+		//m_BulletSe->Release();
 		return false;
 	}
 
@@ -79,7 +87,7 @@ void Bullet::Render()
 
 	model.SetShadowMap(false);
 	model.SetShadowRecieve(true);
-	model.UpdateWorldMatrix(position, rot, D3DXVECTOR3(0.3f, 0.3f, 0.3f));
+	model.UpdateWorldMatrix(position, rot, D3DXVECTOR3(0.1f, 0.1f, 0.3f));
 	model.Draw(&game->GetCamera()->GetViewMatrix(), &game->GetCamera()->GetProjectionMatrix());
 }
 

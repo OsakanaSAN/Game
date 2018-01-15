@@ -1,5 +1,7 @@
 #pragma once
 #include "myEngine/GameManager/IGameObject.h"
+#include "myEngine/Sound/CSoundSource.h"
+
 class Bullet
 {
 public:
@@ -24,6 +26,7 @@ public:
 	{
 		moveSpeed = speed;
 	}
+	//íeä€Ç™ìGÇ…îÌíeÇµÇƒÇ¢ÇÈÇ©ÇÃîªíË
 	void  SetIsHit(bool hit)
 	{
 		IsHit = hit;
@@ -37,10 +40,12 @@ private:
 	static SkinModelData* modelData;
 	Animation animation;
 	Light light;
-	D3DXVECTOR3 position;
-	D3DXVECTOR3 moveSpeed;
-	D3DXVECTOR3 PlayerFrontPosition;
-	D3DXQUATERNION rot;
+	D3DXVECTOR3			position;
+	D3DXVECTOR3			moveSpeed;
+	D3DXVECTOR3			PlayerFrontPosition;
+	D3DXQUATERNION		rot;
+	CSoundSource*		m_BulletSe;
+
 	bool IsLifeDown = false;
 	int life;		//éıñΩÅB
 	bool IsHit = false;
