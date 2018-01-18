@@ -14,10 +14,10 @@ TITLE::~TITLE()
 
 void TITLE::Start()
 {
-	m_TitleBgm = new CSoundSource;
+	/*m_TitleBgm = new CSoundSource;
 	m_TitleBgm->Init("Assets/Sound/Title.wav");
 	m_TitleBgm->SetVolume(0.1f);
-	m_TitleBgm->Play(1);
+	m_TitleBgm->Play(1);*/
 	for (int i = 0; i < 4;i++)
 	{
 		Title[i] = new Sprite;
@@ -87,7 +87,7 @@ void TITLE::Update()
 
 		if (pad.IsTrigger(Pad::enButtonStart))
 		{
-			m_TitleBgm->Release();
+			//m_TitleBgm->Release();
 			game->GetFade()->StartFadeOut();
 			m_state = eStateWaitFadeOut;
 			

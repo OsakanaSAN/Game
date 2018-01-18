@@ -1,3 +1,66 @@
-﻿  CSoundSource.cpp
+﻿  stdafx.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\myengine\graphics\sprite\dxcommondata.h(26): warning C4091: 'typedef ': 変数が何も宣言されていないときは、'MESH' の左辺を無視します。
+  VertexBuffer.cpp
+  TITLE.cpp
+  Sprite.cpp
+  SpringCamera.cpp
+  SphereCollider.cpp
+  Skydoom.cpp
+  ShadowMap.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\myengine\graphics\shadowmap.cpp(22): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+  Sea.cpp
+  Result.cpp
+  Particle.cpp
+  ParticleEmitter.cpp
+  RadarMap.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\gamecamera\radarmap.cpp(20): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+  Primitive.cpp
+  Player.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\character\player.cpp(376): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+  System.cpp
+  WavFile.cpp
+  WaveFileBank.cpp
+  CSoundSource.cpp
+  CSoundEngine.cpp
+  RigidBody.cpp
+  コードを生成中...
+  コンパイル中...
+  Physics.cpp
+  MeshCollider.cpp
+  CharacterController.cpp
+  CapsuleCollider.cpp
+  Pad.cpp
+  SkinModelData.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\myengine\graphics\skinmodeldata.cpp(320): warning C4316: 'D3DXFRAME_DERIVED': ヒープで割り当てられたオブジェクトが 16 にアラインメントされていない可能性があります
+  SkinModel.cpp
+  EffectManager.cpp
+  Camera.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\myengine\graphics\camera.cpp(13): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+  Animation.cpp
+  Missile.cpp
+  MapChip.cpp
+  Map.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\map\map.cpp(55): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\map\map.cpp(64): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\map\map.cpp(73): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+  main.cpp
+  IGameObject.cpp
+  GameObjectManager.cpp
+  GameCamera.cpp
+  game.cpp
+  Fade.cpp
+  Enemy.cpp
+  コードを生成中...
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\character\player.h(38): warning C4172: ローカル変数またはテンポラリのアドレスを返します
+  コンパイル中...
+  CameraCollisionSolver.cpp
+  C2DImage.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\myengine\graphics\sprite\c2dimage.cpp(26): warning C4838: 'UINT' から 'LONG' への変換には縮小変換が必要です
+  Bullet.cpp
+  IndexBuffer.cpp
+  PostEffect.cpp
+  Hud.cpp
+  Bloom.cpp
+  コードを生成中...
   game.vcxproj -> C:\Users\kbc16b03\Desktop\Game\GameTemplate\GameTemplate\Debug\game.exe
   game.vcxproj -> C:\Users\kbc16b03\Desktop\Game\GameTemplate\GameTemplate\Debug\game.pdb (Full PDB)

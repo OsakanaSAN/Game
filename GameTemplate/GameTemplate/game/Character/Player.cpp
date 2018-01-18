@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "game.h"
 #define  TURBOTIME 5
-#define  NomalSpeed 30
+#define  NomalSpeed 20
 
 
 
@@ -23,7 +23,7 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {
-	
+	m_PlayerSE->SoundDete();
 }
 void CPlayer::Start()
 {
@@ -37,7 +37,7 @@ void CPlayer::Start()
 	m_Light.SetDiffuseLightColor(2, D3DXVECTOR4(0.8f, 0.8f, 0.8f, 1.0f));
 	m_Light.SetDiffuseLightColor(3, D3DXVECTOR4(0.8f, 0.8f, 0.8f, 1.0f));
 	m_Light.SetAmbientLight({ 0.5f,0.5f,0.5f,1.0f });
-	m_SkinmodelData.LoadModelData("Assets/modelData/robo1.x",NULL);
+	m_SkinmodelData.LoadModelData("Assets/modelData/robo5.x",NULL);
 	m_Skinmodel.Init(&m_SkinmodelData);
 
 	m_Skinmodel.SetLight(&m_Light);
@@ -82,8 +82,6 @@ void CPlayer::OnLock()
 		if (!m_ZAttent)
 		{
 			m_PlayerSE->Init("Assets/Sound/SE/LoockOnSound.wav");
-			m_PlayerSE->Play(true);
-			m_PlayerSE->Update();
 			m_PlayerSE->Play(true);
 			m_PlayerSE->Update();
 			m_ZAttent = true;
@@ -265,12 +263,12 @@ void CPlayer::MovePlayer()
 			moveDir.y = 0.0f;
 			moveDir.z = cameraX.z * m_X_input + cameraZ.z * m_Y_input;
 			
-			if (m_Pad.GetLStickXF() != 0 && m_Pad.GetLStickYF() != 0)
+			/*if (m_Pad.GetLStickXF() != 0 && m_Pad.GetLStickYF() != 0)
 			{
 				
 				m_Inertia -= 15.5f;
 
-			}
+			}*/
 
 	}
 	
@@ -316,13 +314,20 @@ const D3DXVECTOR3& CPlayer::InitBootht(D3DXVECTOR3& MoveSpeed)
 {
 	//ブースト
 	m_BoothtTime = m_DashTime;
+	
+		
+
+	
+	
 	if (m_Pad.IsPress(Pad::enButtonRB2) && m_DashTime < TURBOTIME && !m_NoBoothtInput)
 	{
 		
+
 		if (m_Pad.GetLStickXF() != 0 && m_Pad.GetLStickYF() != 0)
 		{
 			m_Inertia = NomalSpeed;
-			m_Inertia *= 2;
+			m_Inertia *= 4;
+			
 
 		}
 

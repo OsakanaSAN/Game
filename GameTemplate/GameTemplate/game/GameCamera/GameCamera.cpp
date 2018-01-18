@@ -63,7 +63,7 @@ void GameCamera::CameraAngle()
 	if (fabs(rStick_x) > 0.0f)
 	{
 		D3DXMATRIX mRot;
-		D3DXMatrixRotationY(&mRot, 0.05f*rStick_x);
+		D3DXMatrixRotationY(&mRot, 0.1f*rStick_x);
 		
 		D3DXVECTOR3 mEyepos = Eyepos;
 		Eyepos.x = mEyepos.x * mRot.m[0][0] + mEyepos.y * mRot.m[1][0] + mEyepos.z * mRot.m[2][0] + mRot.m[3][0];
@@ -78,7 +78,7 @@ void GameCamera::CameraAngle()
 		D3DXVec3Cross(&rotAxis, &Up, &Eyepos);
 		D3DXVec3Normalize(&rotAxis, &rotAxis);
 		D3DXMATRIX mRot;
-		D3DXMatrixRotationAxis(&mRot, &rotAxis, 0.05f*rStick_y);
+		D3DXMatrixRotationAxis(&mRot, &rotAxis, 0.1f*rStick_y);
 		D3DXVECTOR3 toPositionOld = Eyepos;
 		D3DXVECTOR3 mEyepos = Eyepos;
 		Eyepos.x = mEyepos.x * mRot.m[0][0] + mEyepos.y * mRot.m[1][0] + mEyepos.z * mRot.m[2][0] + mRot.m[3][0];
