@@ -1,14 +1,16 @@
 ﻿  stdafx.cpp
-c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\DxCommonData.h(26): warning C4091: 'typedef ': 変数が何も宣言されていないときは、'MESH' の左辺を無視します。
-  Bootht.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\myengine\graphics\sprite\DxCommonData.h(26): warning C4091: 'typedef ': 変数が何も宣言されていないときは、'MESH' の左辺を無視します。
+  GroupEnemy.cpp
+  GUI.cpp
+  Bloom.cpp
+  Hud.cpp
+  PostEffect.cpp
+  IndexBuffer.cpp
   Bullet.cpp
   C2DImage.cpp
-C2DImage.cpp(23): warning C4838: 'UINT' から 'LONG' への変換には縮小変換が必要です
+myEngine\Graphics\Sprite\C2DImage.cpp(26): warning C4838: 'UINT' から 'LONG' への変換には縮小変換が必要です
   CameraCollisionSolver.cpp
   Enemy.cpp
-Enemy.cpp(26): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
-Enemy.cpp(91): warning C4244: '初期化中': 'int' から 'float' への変換です。データが失われる可能性があります。
-Enemy.cpp(92): warning C4244: '初期化中': 'int' から 'float' への変換です。データが失われる可能性があります。
   Fade.cpp
   game.cpp
   GameCamera.cpp
@@ -16,10 +18,10 @@ Enemy.cpp(92): warning C4244: '初期化中': 'int' から 'float' への変換�
   IGameObject.cpp
   main.cpp
   Map.cpp
-Map.cpp(41): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
-Map.cpp(48): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
   MapChip.cpp
+  Missile.cpp
   Animation.cpp
+  コンパイル中...
   Camera.cpp
 myEngine\Graphics\Camera.cpp(13): warning C4305: '=': 'double' から 'float' へ切り詰めます。
   EffectManager.cpp
@@ -28,22 +30,39 @@ myEngine\Graphics\Camera.cpp(13): warning C4305: '=': 'double' から 'float' �
 myEngine\Graphics\SkinModelData.cpp(320): warning C4316: 'D3DXFRAME_DERIVED': ヒープで割り当てられたオブジェクトが 16 にアラインメントされていない可能性があります
   Pad.cpp
   CapsuleCollider.cpp
-  コンパイル中...
   CharacterController.cpp
   MeshCollider.cpp
   Physics.cpp
   RigidBody.cpp
+  CSoundEngine.cpp
+  CSoundSource.cpp
+  WaveFileBank.cpp
+  WavFile.cpp
   System.cpp
   Player.cpp
-Player.cpp(270): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
-Player.cpp(318): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+Character\Player.cpp(399): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
   Primitive.cpp
+  RadarMap.cpp
+GameCamera\RadarMap.cpp(20): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+  ParticleEmitter.cpp
+  Particle.cpp
+  コンパイル中...
+  GameScene.cpp
+  Result.cpp
+  Sea.cpp
+  ShadowMap.cpp
+myEngine\Graphics\ShadowMap.cpp(22): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+  Skydoom.cpp
   SphereCollider.cpp
   SpringCamera.cpp
   Sprite.cpp
   TITLE.cpp
+  VertexBuffer.cpp
   コード生成しています。
-  All 1230 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\character\player.h(50): warning C4172: ローカル変数またはテンポラリのアドレスを返します
+  1285 of 2080 functions (61.8%) were compiled, the rest were copied from previous compilation.
+    974 functions were new in current compilation
+    84 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   game.vcxproj -> C:\Users\kbc16b03\Desktop\Game\GameTemplate\GameTemplate\Release\game.exe
   game.vcxproj -> C:\Users\kbc16b03\Desktop\Game\GameTemplate\GameTemplate\Release\game.pdb (Full PDB)

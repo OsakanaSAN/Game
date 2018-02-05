@@ -15,7 +15,7 @@ public:
 	void Render();
 	void ShadowMapRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightProjMatrix);
 private:
-	std::vector<MapChip*>	mapChipList;	//マップチップのリスト。
+	std::list<MapChip*>	mapChipList;	//マップチップのリスト。
 	Skydoom*                skydoom;
 };
 

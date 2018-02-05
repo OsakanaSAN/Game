@@ -9,6 +9,8 @@ Skydoom::Skydoom()
 
 Skydoom::~Skydoom()
 {
+
+
 }
 
 

@@ -25,8 +25,8 @@ public:
 	/*!
 	*@brief	コリジョン解決の実行。
 	*@param[out]	result		コリジョン解決を行った結果のカメラの視点の座標が格納される。
-	*@param[in]	position	カメラの視点。
-	*@param[in]	target		カメラの注視点。
+	*@param[in]		position	カメラの視点。
+	*@param[in]		target		カメラの注視点。
 	*@return	コリジョン解決を行った場合はtrueが返ってくる。
 	*/
 	bool Execute(D3DXVECTOR3& result, const D3DXVECTOR3& position, const D3DXVECTOR3& target);

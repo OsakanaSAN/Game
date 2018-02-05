@@ -112,6 +112,7 @@ void Animation::UpdateTrackWeights()
 
 void Animation::Update(float deltaTime)
 {
+	deltaTime *= animationSpeed;
 	if (pAnimController&&!isAnimEnd) {
 		localAnimationTime += deltaTime;
 		if (isInterpolate) {

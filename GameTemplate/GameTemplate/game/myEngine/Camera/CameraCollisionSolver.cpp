@@ -22,6 +22,7 @@ public:
 		return btCollisionWorld::ClosestConvexResultCallback::addSingleResult(convexResult, normalInWorldSpace);
 	}
 };
+
 CameraCollisionSolver::CameraCollisionSolver()
 {
 }

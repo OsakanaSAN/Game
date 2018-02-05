@@ -68,6 +68,20 @@ public:
 		req.interpolateTime = interpolateTime;
 		playAnimationRequest.push_back(req);
 }
+
+	//アニメーションスピードの設定
+	void SetAnimetionSpeed(float SAS)
+	{
+		animationSpeed = SAS;
+	}
+	/*!
+	*@brief	アニメーションの再生中判定。
+	*/
+	bool IsPlay() const
+	{
+		return !isAnimEnd;
+
+     }
 #if 0
 	/*!
 	*@brief	アニメーションのブレンディング再生。
@@ -112,6 +126,7 @@ private:
 	bool									isAnimEnd;				//!<アニメーションの終了フラグ。
 	float									interpolateEndTime;		//!<補間終了時間。
 	float									interpolateTime;		//!<補間時間。
+	float									animationSpeed = 1.0f;  //アニメーションスピード
 	std::deque<RequestPlayAnimation>		playAnimationRequest;	//!<アニメーション再生のリクエスト。
 
 };

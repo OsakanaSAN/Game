@@ -175,6 +175,7 @@ void CharacterController::Execute()
 			if (callback.isHit) {
 				//当たった。
 				//壁。
+				m_isHit_Wall = true;
 				D3DXVECTOR3 vT0, vT1;
 				//XZ平面上での移動後の座標をvT0に、交点の座標をvT1に設定する。
 				vT0 = { nextPosition.x, 0.0f, nextPosition.z };
@@ -209,6 +210,7 @@ void CharacterController::Execute()
 			}
 			else {
 				//どことも当たらないので終わり。
+				m_isHit_Wall = false;
 				break;
 			}
 			loopCount++;

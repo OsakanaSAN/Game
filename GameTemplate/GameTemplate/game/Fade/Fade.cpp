@@ -5,11 +5,11 @@
 CFade::CFade()
 {
 	m_Sprite = new Sprite;
-	m_Sprite->Loadtex("Assets/sprite/BackScreen.png");
+	m_Sprite->Loadtex("Assets/sprite/BackScreen2.png");
 	m_Sprite->Initialize();
 	m_Sprite->Setcolor(0.0f, 1.0f, 1.0f, 1.0f);
-	m_Sprite->Setposition({ 0.0f, 0.0f });
-	m_Sprite->SetSize({ 1280.0f, 720.0f });
+	m_Sprite->Setposition({ -100.0f, -100.0f });
+	m_Sprite->SetSize({ 1000.0f, 720.0f });
 
 }
 

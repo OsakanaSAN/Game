@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "game.h"
 #define  TURBOTIME 5
-#define  NomalSpeed 20
+#define  NomalSpeed 30
 
 
 
@@ -24,6 +24,9 @@ CPlayer::CPlayer()
 CPlayer::~CPlayer()
 {
 	m_PlayerSE->SoundDete();
+	m_CharacterController.RemoveRigidBoby();
+	m_SkinmodelData.Release();
+
 }
 void CPlayer::Start()
 {
@@ -37,12 +40,16 @@ void CPlayer::Start()
 	m_Light.SetDiffuseLightColor(2, D3DXVECTOR4(0.8f, 0.8f, 0.8f, 1.0f));
 	m_Light.SetDiffuseLightColor(3, D3DXVECTOR4(0.8f, 0.8f, 0.8f, 1.0f));
 	m_Light.SetAmbientLight({ 0.5f,0.5f,0.5f,1.0f });
-	m_SkinmodelData.LoadModelData("Assets/modelData/robo5.x",NULL);
+	m_SkinmodelData.LoadModelData("Assets/modelData/robo6.x",&m_Animation);
 	m_Skinmodel.Init(&m_SkinmodelData);
 
 	m_Skinmodel.SetLight(&m_Light);
 	//アニメーションの初期化
-	/*animation.PlayAnimation(Stand_anim);
+	//m_Animation.Init();
+	m_Animation.PlayAnimation(0);
+	m_Animation.SetAnimetionSpeed(1.0f);
+	m_Animation.SetAnimetionLoopFlag(0, true);
+	/*
 	animation.SetAnimetionLoopFlag(Run_anim, false);
 	animation.SetAnimationEndTime(Stand_anim, -1.0f);
 	animation.SetAnimationEndTime(walk_anim, 0.54f);
@@ -50,10 +57,19 @@ void CPlayer::Start()
 	animation.SetAnimetionLoopFlag(Battle_anim,false);*/
 	
 	m_CharacterController.Init(1.0f, 1.0f, m_Position);
-	m_CharacterController.SetGravity(-9.0f); //重力の設定
+	m_CharacterController.SetGravity(-60.0f); //重力の設定
 
 	m_PlayerSE = new CSoundSource;
 	m_PlayerSE->Init("Assets/Sound/SE/LoockOnSound.wav");
+	m_EnemyNo = 0;
+
+	/*SParicleEmitParameter SparticleEmit;
+	SparticleEmit.texturePath = "Assets/Particle/smoke2.png";
+	SparticleEmit.w = 0.5f;
+	SparticleEmit.h = 0.5f;
+	SparticleEmit.intervalTime = 0.5f;
+	SparticleEmit.initSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_ParticleEmitter.Init(SparticleEmit);*/
 	
 }
 
@@ -64,11 +80,13 @@ void CPlayer::Update()
 	m_Camera = game->GetCamera();
 	m_CharacterController.Execute();
 	//PlayerAnimation(); //アニメーションの設定
-	//Animetion();  //アニメーション
+	Animetion();  //アニメーション
 	MovePlayer();//プレイヤーの移動
 	OnLock(); //ロックオン
 	m_Position = m_CharacterController.GetPosition();
 	m_Pad.Update(); //パッドのアプデ
+	//m_ParticleEmitter.SetPosition(m_Position);
+	//m_ParticleEmitter.Update();
 	m_Skinmodel.UpdateWorldMatrix(m_Position, m_Rotation, D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 }
 
@@ -82,6 +100,7 @@ void CPlayer::OnLock()
 		if (!m_ZAttent)
 		{
 			m_PlayerSE->Init("Assets/Sound/SE/LoockOnSound.wav");
+			m_PlayerSE->SetVolume(0.1f);
 			m_PlayerSE->Play(true);
 			m_PlayerSE->Update();
 			m_ZAttent = true;
@@ -93,27 +112,51 @@ void CPlayer::OnLock()
 		}
 		
 	}
+
 	D3DXVECTOR3 Length;
 	bool        LockEnemy = false;
+	int         Box = 0;				//敵の数を入れる  
+	
 	//距離が一番近い敵にロックオンをする
 	for (auto enemy : game->GetEnemys())
 		{
-			if (D3DXVec3Length(&Length) > D3DXVec3Length(&(enemy->Getpos() - m_Position)))
-			{
+		
+			//if (D3DXVec3Length(&Length) > D3DXVec3Length(&(enemy->Getpos() - m_Position)))
+			//{
 				LockEnemy = true;
-				m_Enemypos = enemy->Getpos();
-				Length = m_Enemypos - m_Position;
-			}
+				m_EnemyBox[Box].Position = enemy->Getpos();
+				m_EnemyBox[Box].Number = Box;
+				//m_Enemypos = enemy->Getpos();
+				//Length = m_Enemypos - m_Position;
+			//}
+			Box++;
+			m_MaxEnemy = Box;
 		}
+
+
+	if (m_Pad.IsTrigger(Pad::enButtonUp) && m_EnemyNo < m_MaxEnemy-1)
+	{
+
+		m_EnemyNo += 1;
+
+	}
+
+	else if (m_Pad.IsTrigger(Pad::enButtonDown) && m_EnemyNo > 0)
+	{
+
+		m_EnemyNo -= 1;
+
+	}
+
 	if (!LockEnemy)
 	{
 		m_ZAttent = false;
-		game->GetGameCamara()->LookOnCamera(m_Enemypos, false);
+		game->GetGameCamara()->LookOnCamera(m_EnemyBox[m_EnemyNo].Position, false);
 		return;
 	}
 	
 	
-	D3DXVECTOR3 pPos = m_Enemypos;
+	D3DXVECTOR3 pPos = m_EnemyBox[m_EnemyNo].Position;
 	D3DXVec3Subtract(&pPos, &pPos, &m_Position);
 
 	if (D3DXVec3Length(&pPos) > 5000)
@@ -125,54 +168,23 @@ void CPlayer::OnLock()
 
 		D3DXVECTOR3 Def;
 		D3DXVECTOR3 UP = { 0.0f,1.0f,0.0f };
-		D3DXVECTOR3 topos = m_Enemypos - m_Position;
+		D3DXVECTOR3 topos = m_EnemyBox[m_EnemyNo].Position - m_Position;
 		D3DXVec3Normalize(&topos, &topos);
 		D3DXQUATERNION mul;
 		D3DXVECTOR3 rotAxis;
 		D3DXVec3Cross(&rotAxis, &UP, &topos);
 
-		D3DXVec3Subtract(&Def, &m_Enemypos, &m_Position);
+		D3DXVec3Subtract(&Def, &m_EnemyBox[m_EnemyNo].Position, &m_Position);
 		D3DXQuaternionRotationAxis(&m_Rotation, &UP, atan2f(Def.x, Def.z));
 		D3DXQuaternionRotationAxis(&mul, &-rotAxis, topos.y);
 		D3DXQuaternionMultiply(&m_Rotation, &m_Rotation, &mul);
-		game->GetGameCamara()->LookOnCamera(m_Enemypos,true);
+		game->GetGameCamara()->LookOnCamera(m_EnemyBox[m_EnemyNo].Position,true);
 		
 		
 	}
 
 }
 
-void CPlayer::PlayerAnimation()
-{
-
-	float R_stickX = m_Pad.GetLStickXF() *2.0f;
-	float R_stickZ = m_Pad.GetLStickYF() *2.0f;
-	
-
-
-
-	if (fabs(R_stickX) > 0 || fabs(R_stickZ) > 0)
-	{
-		
-		m_AnimationNo = Run_anim;
-		m_Animation.SetAnimationEndTime(Run_anim, -1.0f);
-	}
-
-	else
-	{
-		m_AnimationNo = Stand_anim;
-	}
-
-	if (m_Pad.IsPress(Pad::enButtonRB1)&&!m_BattleMotion)
-	{
-		m_AnimationNo = Battle_anim;
-		m_BattleMotion = true;
-		
-	}
-
-	
-	
-}
 
 void CPlayer::MovePlayer()
 {
@@ -212,7 +224,7 @@ void CPlayer::MovePlayer()
 	//上昇
 	if (m_Pad.IsPress(Pad::enButtonY)&& m_Position.y <= 2190)
 	{
-		AnglemoveSpeed.y = 20;
+		AnglemoveSpeed.y = 10;
 
 		m_CharacterController.Jump();
 	}
@@ -225,9 +237,16 @@ void CPlayer::MovePlayer()
 	}
 
 	//移動量の計算
-	if (m_Pad.GetLStickXF() != 0 && m_Pad.GetLStickYF() != 0 && m_Inertia < NomalSpeed && !m_Oveline)
+	if (m_Pad.GetLStickXF() != 0 && m_Pad.GetLStickYF() != 0  && !m_Oveline)
 	{
-		m_Inertia += 1.5f;
+		//浮いている時の移動方法
+		if (!m_CharacterController.IsOnGround() && m_Inertia < NomalSpeed)
+		{
+
+			m_Inertia += 1.5f;
+
+		}
+
 		if (m_X_input != m_Pad.GetLStickXF())
 		{
 
@@ -262,13 +281,6 @@ void CPlayer::MovePlayer()
 			moveDir.x = cameraX.x * m_X_input + cameraZ.x * m_Y_input;
 			moveDir.y = 0.0f;
 			moveDir.z = cameraX.z * m_X_input + cameraZ.z * m_Y_input;
-			
-			/*if (m_Pad.GetLStickXF() != 0 && m_Pad.GetLStickYF() != 0)
-			{
-				
-				m_Inertia -= 15.5f;
-
-			}*/
 
 	}
 	
@@ -292,11 +304,22 @@ void CPlayer::MovePlayer()
 	
 	if (m_CharacterController.IsOnGround())
 	{
-		m_CharacterController.SetGravity(-9.8f);
+		m_CharacterController.SetGravity(-60.8f);
 	}
 
-	AnglemoveSpeed.x = moveDir.x * m_Inertia;
-	AnglemoveSpeed.z = moveDir.z * m_Inertia;
+	//浮いている時の移動量
+	if (!m_CharacterController.IsOnGround())
+	{
+		AnglemoveSpeed.x = moveDir.x * m_Inertia;
+		AnglemoveSpeed.z = moveDir.z * m_Inertia;
+	}
+
+	//地面についている時の移動量
+	else
+	{
+		AnglemoveSpeed.x = moveDir.x * 8;
+		AnglemoveSpeed.z = moveDir.z * 8 ;
+	}
 
 	m_CharacterController.SetMoveSpeed(AnglemoveSpeed);
 	m_CharacterController.Execute();
@@ -326,7 +349,7 @@ const D3DXVECTOR3& CPlayer::InitBootht(D3DXVECTOR3& MoveSpeed)
 		if (m_Pad.GetLStickXF() != 0 && m_Pad.GetLStickYF() != 0)
 		{
 			m_Inertia = NomalSpeed;
-			m_Inertia *= 4;
+			m_Inertia *= 2;
 			
 
 		}
@@ -388,9 +411,13 @@ void CPlayer::TransformAngle()
 	D3DXQUATERNION mul;
 	D3DXVECTOR3 rotAxis;
 	D3DXVec3Cross(&rotAxis, &UP, &topos);
+	D3DXMATRIX Ahead = m_Skinmodel.GetMatrix(); //プレイヤーの行列を取得
 
 	D3DXQuaternionRotationAxis(&m_Rotation, &UP, atan2(topos.x, topos.z));
 	D3DXQuaternionRotationAxis(&mul, &-rotAxis, topos.y);
+	//D3DXQuaternionRotationAxis(&mul, &D3DXVECTOR3{ Ahead.m[2][0],Ahead.m[2][1],Ahead.m[2][2] }, (-m_Pad.GetLStickXF()) / 3);
+	//D3DXQuaternionRotationAxis(&mul, &D3DXVECTOR3{ Ahead.m[3][0],Ahead.m[3][1],Ahead.m[3][2] }, (-m_Pad.GetLStickYF()) / 3);
+
 	D3DXQuaternionMultiply(&m_Rotation, &m_Rotation, &mul);
 
 	
@@ -432,6 +459,7 @@ void CPlayer::InitBullet()
 		game->AddPlayerBullets(bullet);
 		m_bulletFireInterval = 10;
 		m_PlayerSE->Init("Assets/Sound/SE/BulletSound2.wav");
+		m_PlayerSE->SetVolume(0.1f);
 		m_PlayerSE->Play(true);
 		m_PlayerSE->Update();
 	}
@@ -445,25 +473,21 @@ void CPlayer::InitBullet()
 //アニメーションの処理
 void CPlayer::Animetion()
 {
-	if (m_AnimationNo == Battle_anim && !m_BattleMotion)
+	
+	if (m_Pad.GetLStickXF() != 0 && m_Pad.GetLStickYF() != 0 && m_CharacterController.IsOnGround())
 	{
-		m_Animation.PlayAnimation(Battle_anim, 0.4f);
-		m_BattleMotion = true;
+		if (!m_Animation.IsPlay())
+		{
+
+			m_Animation.PlayAnimation(0);
+		}
+	}
+	else
+	{
+		m_Animation.SetAnimetionLoopFlag(0, false);
 	}
 
-	else if (m_Inertia != 0 && !m_IsMove)
-	{
-		m_Animation.PlayAnimation(Run_anim,0.6f);
-		m_AnimationNo = Run_anim;
-		m_IsMove = true;
-	}
-
-	else if (m_Inertia == 0 && m_IsMove)
-	{
-
-		m_Animation.PlayAnimation(Stand_anim);
-		m_IsMove = false;
-	}
+	
 	m_Animation.Update(1.0f / 60.0f);
 }
 
@@ -472,6 +496,7 @@ void CPlayer::Render()
 {
 	m_Skinmodel.SetShadowMap(false);
 	m_Skinmodel.SetShadowRecieve(false);
+	//m_ParticleEmitter.Render(game->GetCamera()->GetViewMatrix(), game->GetCamera()->GetProjectionMatrix());
 	m_Skinmodel.Draw(&game->GetCamera()->GetViewMatrix(), &game->GetCamera()->GetProjectionMatrix());
 }
 
@@ -481,7 +506,7 @@ void CPlayer::LightEyePosRender(D3DXMATRIX&  lightViewMatrix, D3DXMATRIX&	lightP
 	
 	m_Skinmodel.SetShadowMap(true);
 	m_Skinmodel.SetShadowRecieve(false);
-	m_Skinmodel.Draw(&lightViewMatrix, &lightProjMatrix);
+	//m_Skinmodel.Draw(&lightViewMatrix, &lightProjMatrix);
 	
 }
 

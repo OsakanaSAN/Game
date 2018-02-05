@@ -1,6 +1,7 @@
 #pragma once
 #include "myEngine/GameManager/IGameObject.h"
 #include "myEngine/Sound/CSoundSource.h"
+#include "myEngine/Physics/SphereCollider.h"
 
 class Bullet
 {
@@ -12,7 +13,7 @@ public:
 	void Render();
 	const D3DXVECTOR3& Getops() 
 	{
-		return position;
+		return m_position;
 	}
 	const D3DXMATRIX& getMatrix() const
 	{
@@ -40,11 +41,15 @@ private:
 	static SkinModelData* modelData;
 	Animation animation;
 	Light light;
-	D3DXVECTOR3			position;
-	D3DXVECTOR3			moveSpeed;
-	D3DXVECTOR3			PlayerFrontPosition;
-	D3DXQUATERNION		rot;
-	CSoundSource*		m_BulletSe;
+	D3DXVECTOR3				m_position;
+	D3DXVECTOR3				moveSpeed;
+	D3DXVECTOR3				PlayerFrontPosition;
+	D3DXQUATERNION			m_rotation;
+	CSoundSource*			m_BulletSe;
+	SphereCollider*			m_collider;
+	RigidBody*				m_rigidbody;
+	CharacterController*		m_characterController;
+	
 
 	bool IsLifeDown = false;
 	int life;		//éıñΩÅB

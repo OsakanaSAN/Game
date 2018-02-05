@@ -18,7 +18,7 @@ void CSoundSource::InitCommon()
 {
 	
 	m_dspSettings.SrcChannelCount = INPUTCHANNELS;
-	m_dspSettings.DstChannelCount = game->GetSoundEngine().GetNumChannel();
+	m_dspSettings.DstChannelCount = game->GetSoundEngine()->GetNumChannel();
 	m_dspSettings.pMatrixCoefficients = m_matrixCoefficients;
 	m_dspSettings.pDelayTimes = nullptr;
 	m_dspSettings.DopplerFactor = 1.0f;
@@ -35,12 +35,12 @@ void CSoundSource::Init(char* filePath, bool is3DSound)
 	game->AddSound(this);
 	m_Number = COUNT;
 	COUNT++;
-	m_waveFile = game->GetSoundEngine().GetWaveFileBank().FindWaveFile(0, filePath);
+	m_waveFile = game->GetSoundEngine()->GetWaveFileBank().FindWaveFile(0, filePath);
 	if (!m_waveFile) {
 		m_waveFile.reset(new CWaveFile);
 		m_waveFile->Open(filePath);
 		m_waveFile->AllocReadBuffer(m_waveFile->GetSize());	//waveファイルのサイズ分の読み込みバッファを確保する。
-		game->GetSoundEngine().GetWaveFileBank().RegistWaveFile(0, m_waveFile);
+		game->GetSoundEngine()->GetWaveFileBank().RegistWaveFile(0, m_waveFile);
 		unsigned int dummy;
 		m_waveFile->Read(m_waveFile->GetReadBuffer(), m_waveFile->GetSize(), &dummy);
 		m_waveFile->ResetFile();
@@ -48,9 +48,9 @@ void CSoundSource::Init(char* filePath, bool is3DSound)
 	}
 
 	//サウンドボイスソースを作成。
-	m_sourceVoice = game->GetSoundEngine().CreateXAudio2SourceVoice(m_waveFile.get(), is3DSound);
+	m_sourceVoice = game->GetSoundEngine()->CreateXAudio2SourceVoice(m_waveFile.get(), is3DSound);
 	if (is3DSound) {
-		game->GetSoundEngine().Add3DSoundSource(this);
+		game->GetSoundEngine()->Add3DSoundSource(this);
 	}
 	InitCommon();
 
@@ -60,21 +60,21 @@ void CSoundSource::Init(char* filePath, bool is3DSound)
 void CSoundSource::Init(const NameKey& nameKey, bool is3DSound)
 {
 	
-	m_waveFile = game->GetSoundEngine().GetWaveFileBank().FindWaveFile(0, nameKey);
+	m_waveFile = game->GetSoundEngine()->GetWaveFileBank().FindWaveFile(0, nameKey);
 	if (!m_waveFile) {
 		m_waveFile.reset(new CWaveFile);
 		m_waveFile->Open(nameKey.GetName());
-		game->GetSoundEngine().GetWaveFileBank().RegistWaveFile(0, m_waveFile);
+		game->GetSoundEngine()->GetWaveFileBank().RegistWaveFile(0, m_waveFile);
 		m_waveFile->AllocReadBuffer(m_waveFile->GetSize());	//waveファイルのサイズ分の読み込みバッファを確保する。
-		game->GetSoundEngine().GetWaveFileBank().RegistWaveFile(0, m_waveFile);
+		game->GetSoundEngine()->GetWaveFileBank().RegistWaveFile(0, m_waveFile);
 		unsigned int dummy;
 		m_waveFile->Read(m_waveFile->GetReadBuffer(), m_waveFile->GetSize(), &dummy);
 		m_waveFile->ResetFile();
 	}
 	//サウンドボイスソースを作成。
-	m_sourceVoice = game->GetSoundEngine().CreateXAudio2SourceVoice(m_waveFile.get(), is3DSound);
+	m_sourceVoice = game->GetSoundEngine()->CreateXAudio2SourceVoice(m_waveFile.get(), is3DSound);
 	if (is3DSound) {
-		game->GetSoundEngine().Add3DSoundSource(this);
+		game->GetSoundEngine()->Add3DSoundSource(this);
 	}
 	InitCommon();
 
@@ -95,9 +95,9 @@ void CSoundSource::InitStreaming(char* filePath, bool is3DSound, unsigned int ri
 	m_readStartPos = 0;
 	m_currentBufferingSize = 0;
 	//サウンドボイスソースを作成。
-	m_sourceVoice = game->GetSoundEngine().CreateXAudio2SourceVoice(m_waveFile.get(), is3DSound);
+	m_sourceVoice = game->GetSoundEngine()->CreateXAudio2SourceVoice(m_waveFile.get(), is3DSound);
 	if (is3DSound) {
-		game->GetSoundEngine().Add3DSoundSource(this);
+		game->GetSoundEngine()->Add3DSoundSource(this);
 	}
 	InitCommon();
 
@@ -214,7 +214,7 @@ void CSoundSource::UpdateStreaming()
 void CSoundSource::Remove3DSound()
 {
 	if (m_is3DSound) {
-		game->GetSoundEngine().Remove3DSoundSource(this);
+		game->GetSoundEngine()->Remove3DSoundSource(this);
 		m_is3DSound = false;
 	}
 }
@@ -259,7 +259,7 @@ void CSoundSource::Update()
 
 void CSoundSource::SoundDete()
 {
-	game->Sound_Dete(m_Number);
+	//game->Sound_Dete(m_Number);
 	Release();
 	
 }

@@ -21,8 +21,8 @@ void C2DImage::Initialize()
 	this->m_texCenter = D3DXVECTOR2({ 0.0f,0.0f });	//テクスチャの中点セット
 
 	//(float)imgInfo.Width / 2, (float)imgInfo.Height / 2;
-	m_TextureSize.x = (float)imgInfo.Width;
-	m_TextureSize.y = (float)imgInfo.Height;
+	m_TextureSize.x = (float)imgInfo.Width + 100;
+	m_TextureSize.y = (float)imgInfo.Height + 100;
 	RECT rec = { 0, 0, imgInfo.Width, imgInfo.Height };			//描画領域
 	memcpy(&this->m_rect, &rec, sizeof(RECT));					//描画領域セット
 }
@@ -46,6 +46,5 @@ void C2DImage::SetupMatrices()
 	m_scale.x = m_Size.x / m_TextureSize.x;
 	m_scale.y = m_Size.y / m_TextureSize.y;
 	D3DXMatrixIdentity(&this->m_transformMatrix);	//ワールド行列初期化
-
 	D3DXMatrixTransformation2D(&this->m_transformMatrix,NULL, 0.0f, &this->m_scale, NULL, D3DXToRadian(this->m_angle), &this->m_position);	//変換行列作成
 }

@@ -15,11 +15,11 @@ GameCamera::~GameCamera()
 void GameCamera::Strat()
 {
 
-	Springcamera.Init(Eyepos, camera.GetLookatPt(),80.0f); //バネカメラの初期化
+	Springcamera.Init(Eyepos, camera.GetLookatPt(),400.0f); //バネカメラの初期化
 	Springcamera.SetPosition(Eyepos);
 	Springcamera.SetTarget (D3DXVECTOR3(0.0f, 7.0f, 0.0f));
 
-	CameraCol.Init(0.2f); //剛体カメラの初期化
+	CameraCol.Init(1.0f); //剛体カメラの初期化
 	
 }
 

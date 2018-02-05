@@ -4,7 +4,7 @@
 
 static SMapChipLocInfo mapChipInfo[] = 
 {
-#include "locationInfo.h"//"Tutorial.h"
+#include /*"locationInfo.h"*/"Tutorial.h"
 
 };
 
@@ -15,6 +15,12 @@ Map::Map()
 
 Map::~Map()
 {
+	delete skydoom;
+	for (MapChip* mapchip : mapChipList)
+	{
+		delete mapchip;
+	}
+	mapChipList.clear();
 }
 void Map::Start()
 {
@@ -38,6 +44,12 @@ void Map::Init()
 		if (mapChipInfo[i].modelName == "Enemy")
 		{
 			game->InitEnemy(mapChipInfo[i].pos);
+			game->GetGameScene()->CountUp(1);
+		}
+
+		else if (mapChipInfo[i].modelName == "Player")
+		{
+			game->GetPlayer()->SetPos(mapChipInfo[i].pos);
 		}
 		else {
 			MapChip* mapChip = new MapChip;
@@ -52,8 +64,9 @@ void Map::Update()
 {
 	skydoom->Update();
 	//マップチップを一個ずつ更新。
-	for (int i = 0; i < mapChipList.size(); i++) {
-		mapChipList[i]->Update();
+	for (MapChip* mapchip : mapChipList)
+	{
+		mapchip->Update();
 	}
 	
 }
@@ -61,8 +74,9 @@ void Map::Render()
 {
 	skydoom->Drow();
 	//マップチップを一個ずつ描画。
-	for (int i = 0; i < mapChipList.size(); i++) {
-		mapChipList[i]->Draw();
+	for (MapChip* mapchip : mapChipList)
+	{
+		mapchip->Render();
 	}
 }
 
@@ -70,7 +84,8 @@ void Map::ShadowMapRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightProjMatri
 {
 	//skydoom->Drow();
 	//マップチップを一個ずつ描画。
-	for (int i = 0; i < mapChipList.size(); i++) {
-		mapChipList[i]->LightEyePosRender(lightViewMatrix, lightProjMatrix);
+	for (MapChip* mapchip : mapChipList)
+	{
+		mapchip->LightEyePosRender(lightViewMatrix, lightProjMatrix);
 	}
 }

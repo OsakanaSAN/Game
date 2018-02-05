@@ -12,7 +12,9 @@ MapChip::MapChip() :
 
 MapChip::~MapChip()
 {
-	g_physicsWorld->RemoveRigidBody(&rigidBody);
+	g_physicsWorld->RemoveRigidBody(rigidBody);
+	//rigidBody.Release();
+	//modelData.Release();
 }
 void MapChip::Init(SMapChipLocInfo& locInfo)
 {
@@ -74,6 +76,7 @@ void MapChip::Init(SMapChipLocInfo& locInfo)
 	
 	if (locInfo.modelName != "Sea3")
 	{
+		rigidBody = new RigidBody;
 		//ここから衝突判定絡みの初期化。
 		//スキンモデルからメッシュコライダーを作成する。
 		D3DXMATRIX* rootBoneMatrix = modelData.GetRootBoneWorldMatrix();
@@ -87,9 +90,9 @@ void MapChip::Init(SMapChipLocInfo& locInfo)
 		rbInfo.pos = position;
 		rbInfo.rot = rotation;
 		//剛体を作成。
-		rigidBody.Create(rbInfo);
+		rigidBody->Create(rbInfo);
 		//作成した剛体を物理ワールドに追加。
-		g_physicsWorld->AddRigidBody(&rigidBody);
+		g_physicsWorld->AddRigidBody(rigidBody);
 	}
 
 }
@@ -117,7 +120,7 @@ void MapChip::Update()
 
 	model.UpdateWorldMatrix(position, rotation, { 1.0f, 1.0f, 1.0f });
 }
-void MapChip::Draw()
+void MapChip::Render()
 {
 	model.SetShadowMap(false);
 	model.SetShadowRecieve(true);

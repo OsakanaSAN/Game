@@ -5,13 +5,15 @@
 SkinModelData* Bullet::modelData = NULL;
 
 
+
 Bullet::Bullet()
 {
-	position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	moveSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_BulletSe = new CSoundSource;
 	m_BulletSe->Init("Assets/Sound/SE/BulletSound2.wav");
 	m_BulletSe->SetVolume(0.2f);
+	
 	
 }
 
@@ -24,11 +26,11 @@ Bullet::~Bullet()
 }
 void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 {
-	position = pos;
+	m_position = pos;
 	PlayerFrontPosition = moveSpeed;
 	D3DXVec3Normalize(&PlayerFrontPosition,&PlayerFrontPosition);
 	
-	this->moveSpeed = PlayerFrontPosition * 3.5f ;//1.5f; //弾速調整
+	this->moveSpeed = PlayerFrontPosition ;//1.5f; //弾速調整
 	//ライトを初期化。
 	light.SetDiffuseLightDirection(0, D3DXVECTOR4(0.707f, 0.0f, -0.707f, 1.0f));
 	light.SetDiffuseLightDirection(1, D3DXVECTOR4(-0.707f, 0.0f, -0.707f, 1.0f));
@@ -40,13 +42,29 @@ void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 	light.SetDiffuseLightColor(2, D3DXVECTOR4(1.0f, 1.0f, 0.2f, 1.0f));
 	light.SetDiffuseLightColor(3, D3DXVECTOR4(1.0f, 1.0f, 0.2f, 1.0f));
 	light.SetAmbientLight(D3DXVECTOR4(10.0f, 10.0f, 5.0f, 1.0f));
+	
+	/*m_collider = new SphereCollider;
+	m_rigidbody = new RigidBody;
 
+	m_collider->Create(1.0f);
+	RigidBodyInfo rbInfo;
+	rbInfo.collider = m_collider;
+	rbInfo.localInertia = { 1.0f, 1.0f, 1.0f };
+	rbInfo.mass = 0.0f;
+	rbInfo.pos = m_position;
+	rbInfo.rot = m_rotation;
+	m_rigidbody->Create(rbInfo);
+	g_physicsWorld->AddRigidBody(m_rigidbody);*/
+ 
+	m_characterController = new CharacterController;
+	m_characterController->Init(0.3f, 0.3f, m_position);
+	m_characterController->SetGravity(0.0f);
 	if (modelData == NULL) {
 		//モデルをロード。
 		modelData = new SkinModelData;
 		modelData->LoadModelData("Assets/modelData/Bullet2.X", NULL);
 	}
-	rot = game->GetPlayer()->GetRot(); //プレイヤーの回転
+	m_rotation = game->GetPlayer()->GetRot(); //プレイヤーの回転
 	model.Init(modelData);
 	model.SetLight(&light);
 	life = 120;
@@ -55,22 +73,36 @@ void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 bool Bullet::Update()
 {
 	life--;
-	
-	if (life < 0 || IsHit) {
+	//if (m_characterController->IsHitWall())
+	//{
+	//	MessageBox(NULL, "当たったよ", "IsHit", MB_OK);
+	//}
+
+	 if (life < 0 || m_characterController->IsHitWall() || IsHit /*|| m_characterController->IsOnGround()*/) {
+		
 		//死亡。
 		if (IsHit)
 		{
 			m_BulletSe->Init("Assets/Sound/SE/HitSound.wav");
+			m_BulletSe->SetVolume(0.1f);
 			m_BulletSe->Play(0);
+			
+			
 		}
-		//delete(this);
-		//m_BulletSe->Release();
+
+	
+		m_characterController->RemoveRigidBoby();
 		return false;
-	}
+	 }
+	
 
+	m_position = moveSpeed * 50.0f;
+	m_characterController->SetMoveSpeed(m_position);
+	m_characterController->Execute();
+	m_position = m_characterController->GetPosition();
+	
 
-	position += moveSpeed;
-	BPad.Update();
+	model.UpdateWorldMatrix(m_position, m_rotation, D3DXVECTOR3(0.3f, 0.3f, 0.3f));
 	return true;
 }
 void Bullet::LockOn(D3DXVECTOR3 lock)
@@ -87,7 +119,7 @@ void Bullet::Render()
 
 	model.SetShadowMap(false);
 	model.SetShadowRecieve(true);
-	model.UpdateWorldMatrix(position, rot, D3DXVECTOR3(0.1f, 0.1f, 0.3f));
+	
 	model.Draw(&game->GetCamera()->GetViewMatrix(), &game->GetCamera()->GetProjectionMatrix());
 }
 
@@ -95,7 +127,7 @@ void Bullet::LightEyePosRender(D3DXMATRIX&  lightViewMatrix, D3DXMATRIX&	lightPr
 {
 	model.SetShadowMap(true);
 	model.SetShadowRecieve(false);
-	model.UpdateWorldMatrix(position, rot, D3DXVECTOR3(0.3f, 0.3f, 0.3f));
+	model.UpdateWorldMatrix(m_position, m_rotation, D3DXVECTOR3(0.3f, 0.3f, 0.3f));
 	//model.Draw(lightViewMatrix, lightProjMatrix);
 
 }

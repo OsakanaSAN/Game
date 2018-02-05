@@ -21,6 +21,7 @@
 #include "myEngine/GameManager/GameObjectManager.h"
 #include "myEngine/Graphics/PostEffect/Bloom.h"
 #include "myEngine/Sound/CSoundEngine.h"
+#include "Scene/GameScene.h"
 
  /*!
  * @brief	ゲームクラス。
@@ -47,6 +48,9 @@ public:
 	 * @brief	3Dモデルの描画。
 	 */
 	void Render();
+
+	//リストの更新処理
+	void ListUpdate();
 
 	//			2Dの描画
 	void Render2D();
@@ -113,8 +117,14 @@ public:
 	//現在のマップを取得
 	Map* GetMap()
 	{
-		return &map;
+		return map;
 	}
+	//マップのインスタンス作成
+	void NewMap()
+	{
+		map = new Map;
+	}
+
 	//現在のプレイヤーを取得
 	CPlayer* GetPlayer()
 	{
@@ -124,9 +134,24 @@ public:
 	{
 		return &g_fade;
 	}
+	//ゲームシーンの取得
+	CGameScene* GetGameScene()
+	{
+		return m_GameScene;
+	}
+	void NewGameScene()
+	{
+		m_GameScene = new CGameScene;
+	}
+
+
 	void SetGameScene()
 	{
 		Scene = Game_Scene;
+	}
+	void SetResult()
+	{
+		Scene = Result_Scene;
 	}
 	//敵を生成するための関数
 	void InitEnemy(D3DXVECTOR3 Setpos) 
@@ -137,7 +162,7 @@ public:
 		enemy->SetPos(Setpos);
 	}
 
-	CSoundEngine& GetSoundEngine()
+	CSoundEngine* GetSoundEngine()
 	{
 		return m_SoundEngine;
 	}
@@ -156,11 +181,13 @@ private:
 	CPlayer			player;					//プレイヤー
 	CEnemy			enemy;					//敵
 	Pad				pad;						//パッド
-	Map				map;						//マップ
+	Map*			map;						//マップ
+
 	CHud			Hud;						//HUD
 	TITLE			title;					//タイトル画面
+	CGameScene*      m_GameScene;            //ゲームシーン
 	CFade			g_fade;
-	CSoundEngine	m_SoundEngine;
+	CSoundEngine*	m_SoundEngine;
 	
 
 	CPrimitive prim;				//プリミティブ

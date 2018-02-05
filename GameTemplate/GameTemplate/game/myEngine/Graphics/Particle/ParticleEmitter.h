@@ -40,9 +40,14 @@ public:
 	void Init(const SParicleEmitParameter& param);
 	void Update();
 	void Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix);
+	void SetPosition(D3DXVECTOR3 SetPosition)
+	{
+		Position = SetPosition;
+	}
 private:
 	SParicleEmitParameter	param;			//!<パラメータ。
 	std::list<CParticle*>	particleList;	//!<パーティクルのリスト。
 	float					timer;			//!<タイマー
+	D3DXVECTOR3				Position;
 };
 

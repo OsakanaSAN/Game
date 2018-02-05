@@ -99,6 +99,11 @@ public:
 	{
 		return &m_rigidBody;
 	}
+	//壁との衝突検知
+	bool IsHitWall()
+	{
+		return m_isHit_Wall;
+	}
 	/*!
 	* @brief	剛体を物理エンジンから削除。。
 	*/
@@ -113,4 +118,5 @@ private:
 	float				m_height = 0.0f;		
 	RigidBody			m_rigidBody;					//剛体。
 	float				m_gravity = -9.8f;				//重力。
+	bool                m_isHit_Wall = false;
 };

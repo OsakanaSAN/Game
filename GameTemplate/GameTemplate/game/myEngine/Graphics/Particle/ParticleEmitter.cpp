@@ -24,11 +24,38 @@ void CParticleEmitter::Update()
 		p->Init(param);
 		timer = 0.0f;
 		particleList.push_back(p);
+		p->SetPosition(Position);
 	}
 	timer += 1.0f / 60.0f;
-	for (auto p : particleList) {
-		p->Update();
+
+	auto IsParticle = particleList.begin();
+	while (IsParticle != particleList.end())
+	{
+		if ((*IsParticle)->IsDete())
+		{
+			(*IsParticle)->Delete();
+			IsParticle = particleList.erase(IsParticle);
+
+		}
+
+		else
+		{
+			(*IsParticle)->Update();
+			IsParticle++;
+		
+		}
+
+
 	}
+
+	/*for (auto p : particleList) {
+		p->Update();
+		if ((*p->IsDete))
+		{
+			p = particleList.erase(p);
+		}
+		
+	}*/
 }
 void CParticleEmitter::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix)
 {

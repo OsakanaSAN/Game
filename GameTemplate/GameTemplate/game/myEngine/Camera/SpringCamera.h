@@ -201,8 +201,8 @@ private:
 	D3DXVECTOR3	m_positionMoveSpeed = { 0.0f,0.0f,0.0f };	//!<視点の移動速度。
 
 	float		m_maxMoveSpeed = 0.0f;					//!<最高移動速度。
-	float		m_targetDampingRate = 5.0f;				//!<減衰率。値が大きいほどカメラが遅れ付いてくる。
-	float		m_dampingRate = 2.3f;					//!<減衰率。
-	float		m_dampingRateVel = 5.0f;
+	float		m_targetDampingRate = 10.0f;				//!<減衰率。値が大きいほどカメラが遅れ付いてくる。
+	float		m_dampingRate = 1.0f;					//!<減衰率。
+	float		m_dampingRateVel = 10.0f;
 };
 

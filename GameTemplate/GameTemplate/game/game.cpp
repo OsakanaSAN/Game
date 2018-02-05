@@ -19,14 +19,15 @@ Game::Game()
 Game::~Game()
 {
 	//delete &player;
-	//auto SoundIt = Sounds.begin();
-	//while (SoundIt != Sounds.end()) {
-	//	(*SoundIt)->Release();
-	//		//死亡
-	//		SoundIt = Sounds.erase(SoundIt);
-	//		count++;
-	//}
-	//m_SoundEngine.Release();
+	
+	/*for (CSoundSource* soundit : Sounds)
+	{
+		soundit->Release();
+		delete soundit;
+	}
+	Sounds.clear();
+	m_SoundEngine->Release();
+	delete m_SoundEngine;*/
 	
 }
 /*!
@@ -34,7 +35,8 @@ Game::~Game()
  */
 void Game::Start()
 {
-	m_SoundEngine.Init();
+	m_SoundEngine = new CSoundEngine;
+	m_SoundEngine->Init();
 	
 
 	Gamecamera.Strat();
@@ -42,14 +44,14 @@ void Game::Start()
 	g_physicsWorld->Init();
 	Hud.Start(); //スプライト
 
-	map.Init();
+	//map.Init();
 
 	//プレイヤーのインスタンスを生成
-	player.Start();
+	//player.Start();
 
-	game->GetCamera()->SetLookatPt(player.GetPos());
-	D3DXVECTOR3 l = player.GetPos() - game->GetCamera()->GetEyePt();
-	Gamecamera.SetPLength(D3DXVec3Length(&l));
+	//game->GetCamera()->SetLookatPt(player.GetPos());
+	//D3DXVECTOR3 l = player.GetPos() - game->GetCamera()->GetEyePt();
+	//Gamecamera.SetPLength(D3DXVec3Length(&l));
 	title.Start();
 }
 /*!
@@ -57,7 +59,7 @@ void Game::Start()
  */
 void Game::Update()
 {
-	m_SoundEngine.Update();
+	m_SoundEngine->Update();
 	g_fade.Update();
 	switch (Scene)
 	{
@@ -69,66 +71,66 @@ void Game::Update()
 	case Title_Scene:
 
 
-
+		g_physicsWorld->Update();
 		title.Update();
 		break;
 
 	case Game_Scene:
 
-		player.Update(); //プレイヤーの更新
-		Gamecamera.Update(); //カメラのアップデート
-	
-
-		auto EnemyIt = Enemys.begin();
-		while (EnemyIt != Enemys.end()) {
-			if ((*EnemyIt)->IsEnd()) {
-				//死亡
-				EnemyIt = Enemys.erase(EnemyIt);
-				count++;
-			}
-			else {
-				(*EnemyIt)->Update();
-				EnemyIt++;
-			}
-
-
-		}
-
-		auto bulletIt = PlayerBullets.begin();
-		while (bulletIt != PlayerBullets.end()) {
-			if (!(*bulletIt)->Update()) {
-				//死亡
-				bulletIt = PlayerBullets.erase(bulletIt);
-			}
-			else {
-				bulletIt++;
-			}
-
-
-		}
-
-		auto EbulletIt = EnemyBullets.begin();
-		while (EbulletIt != EnemyBullets.end()) {
-
-			if (!(*EbulletIt)->Update()) {
-				//死亡
-				EbulletIt = EnemyBullets.erase(EbulletIt);
-				
-			}
-			else {
-				EbulletIt++;
-			}
-
-
-		}
-
-
-		
-		map.Update();
-		
+		m_GameScene->Update();
 		Hud.Update();
 		break;
 	}
+}
+
+void Game::ListUpdate()
+{
+
+	auto EnemyIt = Enemys.begin();
+	while (EnemyIt != Enemys.end()) {
+		if ((*EnemyIt)->IsEnd()) {
+			//死亡
+			//敵の残り数
+			game->GetGameScene()->CountDown(1);
+			EnemyIt = Enemys.erase(EnemyIt);
+			count++;
+		}
+		else {
+			(*EnemyIt)->Update();
+			EnemyIt++;
+		}
+
+
+	}
+
+	auto bulletIt = PlayerBullets.begin();
+	while (bulletIt != PlayerBullets.end()) {
+		if (!(*bulletIt)->Update()) {
+			//死亡
+			bulletIt = PlayerBullets.erase(bulletIt);
+		}
+		else {
+			bulletIt++;
+		}
+
+
+	}
+
+	auto EbulletIt = EnemyBullets.begin();
+	while (EbulletIt != EnemyBullets.end()) {
+
+		if (!(*EbulletIt)->Update()) {
+			//死亡
+			EbulletIt = EnemyBullets.erase(EbulletIt);
+			
+		}
+		else {
+			EbulletIt++;
+		}
+
+
+	}
+
 }
 
 /*!
@@ -142,29 +144,31 @@ void Game::Render()
 	//タイトル画面の描画
 	case Title_Scene:
 
-		//title.Drow(spt);
+		title.Drow(spt);
+
 		break;
 	//ゲーム画面の描画
 	case Game_Scene:
 
-		
+		m_GameScene->Render();
+		//
 
-		player.Render();//プレイヤー描画
+		//player.Render();//プレイヤー描画
 
-		for (auto Enemy : Enemys) {
-			Enemy->Render();
-		}
+		//for (auto Enemy : Enemys) {
+		//	Enemy->Render();
+		//}
 
-		map.Render();
+		//map.Render();
 
-		for (auto bullet : PlayerBullets) {
-			
-			bullet->Render();
-		}
+		//for (auto bullet : PlayerBullets) {
+		//	
+		//	bullet->Render();
+		//}
 
-		for (auto bullet : EnemyBullets) {
-			bullet->Render();
-		}
+		//for (auto bullet : EnemyBullets) {
+		//	bullet->Render();
+		//}
 
 		
 		break;
@@ -186,6 +190,9 @@ void Game::Render2D()
 
 	case Game_Scene:
 		Hud.Drow(spt);
+		for (auto Enemy : game->GetEnemys()) {
+			Enemy->Render2D();
+		}
 		break;
 
 	}

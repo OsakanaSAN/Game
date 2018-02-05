@@ -95,6 +95,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,6 +154,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Character\GroupEnemy.cpp" />
+    <ClCompile Include="HUD\GUI.cpp" />
     <ClCompile Include="myEngine\Graphics\PostEffect\Bloom.cpp" />
     <ClCompile Include="HUD\Hud.cpp" />
     <ClCompile Include="myEngine\Graphics\PostEffect\PostEffect.cpp" />
@@ -191,6 +194,7 @@
     <ClCompile Include="GameCamera\RadarMap.cpp" />
     <ClCompile Include="myEngine\Graphics\Particle\ParticleEmitter.cpp" />
     <ClCompile Include="myEngine\Graphics\Particle\Particle.cpp" />
+    <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Scene\Result.cpp" />
     <ClCompile Include="Map\Sea.cpp" />
     <ClCompile Include="myEngine\Graphics\ShadowMap.cpp" />
@@ -208,6 +212,9 @@
     <ClCompile Include="myEngine\Graphics\Sprite\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Character\GroupEnemy.h" />
+    <ClInclude Include="HUD\GUI.h" />
+    <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="myEngine\Graphics\PostEffect\Bloom.h" />
     <ClInclude Include="HUD\Hud.h" />
     <ClInclude Include="myEngine\Graphics\Sprite\IndexBuffer.h" />

@@ -23,11 +23,12 @@ void CHud::Start()
 	m_boot->SetSize(m_BootSize);
 	m_boot->Setposition({ 500.0f,50.0f });
 	m_Circle = new Sprite;
-	m_Circle->Loadtex("Assets/sprite/HUD1.png");
+	m_Circle->Loadtex("Assets/sprite/HUD2.png");
+	m_Circle->Initialize();
 	m_Circle->Setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Circle->SetSize({ 100.0f,100.0f });
+	m_Circle->Setposition({ 650.0f, 320.0f });
 	
-	m_Circle->Initialize();
 	
 }
 
@@ -47,7 +48,7 @@ void CHud::Update()
 		m_boot->SetSize({ m_BootSize.x + BoothtTime ,m_BootSize.y });
 	}
 
-	m_Circle->Setposition({ 620.0f, 320.0f });
+	
 	m_boot->Update();
 	m_Circle->Update();
 	m_pad.Update();

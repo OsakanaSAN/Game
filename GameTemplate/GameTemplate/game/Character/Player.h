@@ -6,6 +6,14 @@
 #include "myEngine\Graphics\Camera.h"
 #include "Item/Bullet.h"
 #include "myEngine/Sound/CSoundSource.h"
+#include "myEngine/Graphics/Particle/Particle.h"
+#include "myEngine/Graphics/Particle/ParticleEmitter.h"
+
+struct EenemyBoX {
+	D3DXVECTOR3 Position;
+	int         Number;
+
+};
 
 class CPlayer : public IGameObject
 {
@@ -26,6 +34,10 @@ public:
 	const D3DXVECTOR3& GetPos()
 	{
 		return m_Position;
+	}
+	const void SetPos(D3DXVECTOR3& pos)
+	{
+		m_Position = pos;
 	}
 	//ブースと時間取得
 	float GetBoothtTime()
@@ -56,6 +68,10 @@ public:
 	void Animetion();
 
 private:
+
+
+	CParticleEmitter		m_ParticleEmitter;
+
 	SkinModel				m_Skinmodel;								//スキンモデル
 	SkinModelData			m_SkinmodelData;							//スキンモデルデーター
 	Light					m_Light;									//プレイヤーのライト
@@ -87,10 +103,11 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////////////
 	//エネミーに注目するための変数
-	D3DXVECTOR3           m_Enemypos;
-	int                   m_EnemyNo = 0;
-	int                   m_LockNo = 0;
-	bool                  m_NoEenemy = false;						//エネミーが存在しているかの判定
+	D3DXVECTOR3				m_Enemypos;
+	int						m_EnemyNo = 0;
+	int						m_MaxEnemy = 1;
+	bool					m_NoEenemy = false;						//エネミーが存在しているかの判定
+	EenemyBoX				m_EnemyBox[30];
 /////////////////////////////////////////////////////////////////////////////////////
 	
 };

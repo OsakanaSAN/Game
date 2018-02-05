@@ -37,7 +37,10 @@ void CParticle::Init( const SParicleEmitParameter& param )
 	D3DXVECTOR4 uv(0.0f, 0.0f, 1.0f, 1.0f);
 	moveSpeed = param.initSpeed;
 
+	//Particleを出す位置
 	position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+
 	float add = ((rand() % 255) - 128) / 128.0f;
 	moveSpeed.x += add * 0.3f;
 	moveSpeed.y += add * 0.3f;
@@ -80,7 +83,7 @@ void CParticle::Init( const SParicleEmitParameter& param )
 	LPD3DXBUFFER  compileErrorBuffer = NULL;
 	hr = D3DXCreateEffectFromFile(
 		g_pd3dDevice,
-		"ColorTexPrim.fx",
+		"Assets/Shader/ColorTexPrim.fx",
 		NULL,
 		NULL,
 #ifdef _DEBUG
@@ -100,7 +103,7 @@ void CParticle::Init( const SParicleEmitParameter& param )
 void CParticle::Update()
 {
 	float deltaTime = 1.0f / 60.0f;
-	//moveSpeed.y -= 0.1f;
+	moveSpeed.y += 0.05f;
 	D3DXVECTOR3 add = moveSpeed * deltaTime;
 	position += add;
 #if 0
@@ -150,6 +153,13 @@ void CParticle::Update()
 }
 void CParticle::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix)
 {
+
+	if (Time > 2.5f)
+	{
+		isDete = true;
+		return;
+	}
+	Time += GameTime().GetFrameDeltaTime();
 	D3DXMATRIX m, mTrans,viewRot;
 	D3DXMatrixTranslation(&mTrans, position.x, position.y, position.z);
 	//1:カメラの回転行列を求める
@@ -191,4 +201,9 @@ void CParticle::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatri
 	g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 	g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+}
+void CParticle::Delete()
+{
+
+	delete this;
 }

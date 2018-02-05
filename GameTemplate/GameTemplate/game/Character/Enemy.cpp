@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Enemy.h"
 
+
 int fg = 10;
 CEnemy::CEnemy()
 {
@@ -14,6 +15,7 @@ CEnemy::~CEnemy()
 
 void CEnemy::Start()
 {
+	m_GUI = new CGUI;
 	m_Light.SetDiffuseLightDirection(0, D3DXVECTOR4(0.707f, 0.0f, -0.707f, 1.0f));
 	m_Light.SetDiffuseLightDirection(1, D3DXVECTOR4(-0.707f, 0.0f, -0.707f, 1.0f));
 	m_Light.SetDiffuseLightDirection(2, D3DXVECTOR4(0.0f, 0.707f, -0.707f, 1.0f));
@@ -31,17 +33,37 @@ void CEnemy::Start()
 	m_CharacterController.Init(1.0f, 1.0f, m_Position);
 	m_CharacterController.SetGravity(-9.8f); //重力の設定
 	m_IsDete = false;
+	RouteSearch();
+	
+	m_GUI->Start({ m_HP /100,0.5f }, "Assets/sprite/Enemy_HP.png");
+	
+	
+	SParicleEmitParameter SparticleEmit;
+	SparticleEmit.texturePath = "Assets/Particle/smoke.png";
+	SparticleEmit.w = 2.0f;
+	SparticleEmit.h = 2.0f;
+	SparticleEmit.intervalTime = 0.2f;
+	SparticleEmit.initSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_ParticleEmitter.Init(SparticleEmit);
 
 }
 
 void CEnemy::Update()
 {
+	m_GUI->SetPosition({ m_Position.x,m_Position.y + 4,m_Position.z });
+	m_GUI->Update();
+
 	m_MoveSpeed = m_CharacterController.GetMoveSpeed();
 	EnemyMove();
 	//EnemyBulletON();
 	EndEnemy();
-	
+	if (m_HP < 200.0f)
+	{
 
+		m_ParticleEmitter.SetPosition({m_Position.x,m_Position.y + 2.5f,m_Position.z});
+		m_ParticleEmitter.Update();
+
+	}
 	m_Position = m_CharacterController.GetPosition();
 	m_Skinmodel.UpdateWorldMatrix(m_Position, m_Rotation, D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 
@@ -60,14 +82,15 @@ void CEnemy::EnemyBulletON()
 	D3DXVec3Normalize(&Pos, &Pos);
 
 	m_BulletTime += GameTime().GetFrameDeltaTime();  //60分の1秒
-	if (D3DXVec3Length(&pPos) < 200 && m_BulletTime > 2.0f) {
+	if (D3DXVec3Length(&pPos) < 200 && m_BulletTime > 5.0f) {
 		Bullet* bullet = new Bullet();
 		D3DXVECTOR3 bulletPos = m_Position;
 		bulletPos.y += 1.0f;
 		bullet->Start(bulletPos, Pos);//プレイヤーの前方向を渡す
 		game->AddEnemyBullets(bullet);
-		//bulletFireInterval = 20 ; //秒間3発
 		m_BulletTime = 0.0f;
+		
+		
 	}
 
 	m_BulletFireInterval--;
@@ -80,6 +103,8 @@ void CEnemy::EnemyBulletON()
 //敵の移動関数
 void CEnemy::EnemyMove()
 {
+	
+
 	if (m_CharacterController.IsJump()) {
 		
 		m_CharacterController.SetPosition(m_Position);
@@ -89,27 +114,42 @@ void CEnemy::EnemyMove()
 	}
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-	D3DXVECTOR3 pPos = game->GetPlayer()->GetPos(); //プレイヤーの現在地
+	D3DXVECTOR3 SubVect;
 	int pSpeeed = game->GetPlayer()->GetMoveSpeed();//プレイヤの移動速度
+	m_SubPosition.y = 0.0f;
 
-	D3DXVec3Subtract(&pPos, &pPos, &m_Position);
+	D3DXVec3Subtract(&SubVect, &m_SubPosition, &m_Position);
 
+	
 	//敵の移動
-	if (D3DXVec3Length(&pPos) > 1)
+	if (D3DXVec3Length(&SubVect) > 5 )
 	{
-		
-		m_MoveSpeed.x = pPos.x * 0.01f;
-		m_MoveSpeed.z = pPos.z * 0.01f;
-		//MoveSpeed.y = pPos.y * 0.5f;
+		D3DXVec3Normalize(&SubVect, &SubVect);
+		m_MoveSpeed = SubVect * 20.5f;
 
-		D3DXVECTOR3 Def;
-		D3DXVECTOR3 UP = { 0.0f,1.0f,0.0f };
-		D3DXVec3Subtract(&Def, &pPos, &m_MoveSpeed);
-		D3DXQuaternionRotationAxis(&m_Rotation, &UP, atan2f(Def.x, Def.z));
+
+		
+		m_CharacterController.Jump();
+		m_CharacterController.SetPosition(m_Position);
+		m_CharacterController.SetMoveSpeed(m_MoveSpeed);
+		m_CharacterController.Execute();
 	}
-	m_CharacterController.SetPosition(m_Position);
-	m_CharacterController.SetMoveSpeed(m_MoveSpeed);
-	m_CharacterController.Execute();
+	
+	else
+	{
+		RouteSearch();
+	}
+
+	if (m_CharacterController.IsHitWall())
+	{
+		BranchRoute();
+
+	}
+
+	D3DXVECTOR3 Def;
+	D3DXVECTOR3 UP = { 0.0f,1.0f,0.0f };
+	D3DXVec3Subtract(&Def, &game->GetPlayer()->GetPos(), &m_Position);
+	D3DXQuaternionRotationAxis(&m_Rotation, &UP, atan2f(Def.x, Def.z));
 	
 }
 
@@ -124,18 +164,23 @@ void CEnemy::EndEnemy()
 	{
 		D3DXVECTOR3 DetBullet = m_Position - bullet->Getops();
 		DetBullet.y += 8;
+		
 
 		float length = D3DXVec3Length(&DetBullet);
 		
 
 		if (length < 10.0f)
 		{
-			m_HP -= 10;
+			m_HP -= 100.0f;
+			m_GUI->setSize({ m_HP / 100,0.5f });
 			bullet->SetIsHit(true);
-			if (m_HP < 0)
+			
+		
+			if (m_HP <= 0)
 			{
 				
 				m_IsDete = true;
+				m_CharacterController.RemoveRigidBoby();
 
 			}
 			//this->characterController.RemoveRigidBoby();
@@ -146,14 +191,91 @@ void CEnemy::EndEnemy()
 	//characterController.SetMoveSpeed(Movespeed);
 }
 
+void CEnemy::BranchRoute()
+{
+
+	m_SubPosition = m_AdjacentRoute[m_ZNumber][m_XNumber].m_RoutePos;
+	m_XNumber++;
+	if (m_XNumber == 3)
+	{
+		m_ZNumber++;
+		m_XNumber = 0;
+		if (m_ZNumber == 3)
+		{
+			m_ZNumber = 0;
+		}
+	}
+
+
+}
+
+void CEnemy::RouteSearch()
+{
+	D3DXVECTOR3 TargetPosition = game->GetPlayer()->GetPos();	//敵から見たターゲット
+	D3DXVECTOR3 MyPosition = m_Position;						//現在位置
+	MyPosition.x += 40.0f;
+	MyPosition.z += 40.0f;
+	int Numbeer = 1;
+	D3DXVECTOR3 Length = {0,10000,0};
+	D3DXVECTOR3 SubVect = {0,0,0};
+
+
+
+	/*
+	エネミーを中心に座標を格納
+	□□□
+	□□□
+	□□□
+	プレイヤーに一番近い地点をサブポイントとして移動させる。
+
+	*/
+	for (int Route_Z = 0;Route_Z < 3;Route_Z++)
+	{
+
+		for (int Route_X = 0;Route_X < 3;Route_X++)
+		{
+			m_AdjacentRoute[Route_Z][Route_X].m_RoutePos = MyPosition;
+			m_AdjacentRoute[Route_Z][Route_X].m_RouteNumber = Numbeer;
+			D3DXVec3Subtract(&SubVect,&TargetPosition,& m_AdjacentRoute[Route_Z][Route_X].m_RoutePos);
+			if (D3DXVec3Length(&Length) > D3DXVec3Length(&SubVect))
+			{
+				Length = SubVect;
+				m_SubPosition = m_AdjacentRoute[Route_Z][Route_X].m_RoutePos;
+				m_AdjacentRoute[Route_Z][Route_X].m_RouteNumber = Numbeer;
+				Numbeer += 1;
+				//m_XNumber = Route_X;
+				//m_ZNumber = Route_Z;
+			}
+
+			
+			MyPosition.x -= 40.0f;
+		}
+
+		MyPosition.x += 120.0f;
+		MyPosition.z -= 40.0f;
+	}
+
+
+
+}
+
 void CEnemy::Render()
 {
 	if (m_IsDete) { return; };
+	
 	m_Skinmodel.SetShadowMap(false);
 	m_Skinmodel.SetShadowRecieve(false);
+	
 	m_Skinmodel.Draw(&game->GetCamera()->GetViewMatrix(),&game->GetCamera()->GetProjectionMatrix());
+	
+	
+	
 
-
+}
+void CEnemy::Render2D()
+{
+	m_GUI->Render(game->GetCamera()->GetViewMatrix(), game->GetCamera()->GetProjectionMatrix());
+	m_ParticleEmitter.Render(game->GetCamera()->GetViewMatrix(), game->GetCamera()->GetProjectionMatrix());
 }
 void CEnemy::LightEyePosRender(D3DXMATRIX&  lightViewMatrix, D3DXMATRIX&	lightProjMatrix)
 {

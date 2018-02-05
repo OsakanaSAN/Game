@@ -1,8 +1,6 @@
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\game.pch
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\vc140.pdb
-c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\vc140.idb
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\stdafx.obj
-c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\rigidbody.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\csoundengine.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\csoundsource.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\wavefilebank.obj
@@ -13,6 +11,7 @@ c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\primitive.ob
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\radarmap.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\particleemitter.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\particle.obj
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\gamescene.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\result.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\sea.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\shadowmap.obj
@@ -22,11 +21,9 @@ c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\springcamera
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\sprite.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\title.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\vertexbuffer.obj
-c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\enemy.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\fade.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\game.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\gamecamera.obj
-c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\gameobjectmanager.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\igameobject.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\main.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\map.obj
@@ -42,6 +39,8 @@ c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\capsulecolli
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\charactercontroller.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\meshcollider.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\physics.obj
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\rigidbody.obj
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\groupenemy.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\bloom.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\hud.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\posteffect.obj
@@ -49,10 +48,13 @@ c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\indexbuffer.
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\bullet.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\c2dimage.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\cameracollisionsolver.obj
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\enemy.obj
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\gameobjectmanager.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\debug\game.ilk
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\debug\game.exe
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\debug\game.pdb
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\game.res
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\vc140.idb
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\game.tlog\cl.command.1.tlog
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\game.tlog\cl.read.1.tlog
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\game.tlog\cl.write.1.tlog

@@ -374,7 +374,7 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 		float3 L = -g_light.diffuseLightDir[0]; //ライトの向き
 		float3 N = Wnormal.xyz;                  //法線ベクトル 
 		float3 R = -L + 2.0f * dot(N,L)* N; //反射ベクトルの計算
-		lig += pow(max(0.0f,dot(R,toSun)),10.0f);   //スペキュラーの計算
+		//lig += pow(max(0.0f,dot(R,toSun)),10.0f);   //スペキュラーの計算
 		
 		//lig.xyz += g_light.ambient.xyz; //アンビエントの加算
 		Wcolor.xyz = lig.xyz;

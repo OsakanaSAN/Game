@@ -28,7 +28,11 @@ void RigidBody::Create(RigidBodyInfo& rbInfo)
 	transform.setOrigin(btVector3(rbInfo.pos.x, rbInfo.pos.y, rbInfo.pos.z));
 	transform.setRotation(btQuaternion(rbInfo.rot.x, rbInfo.rot.y, rbInfo.rot.z, rbInfo.rot.w));
 	myMotionState = new btDefaultMotionState;
-	btRigidBody::btRigidBodyConstructionInfo btRbInfo(rbInfo.mass, myMotionState, rbInfo.collider->GetBody(), btVector3(0, 0, 0));
+	btRigidBody::btRigidBodyConstructionInfo btRbInfo(
+		rbInfo.mass, 
+		myMotionState, 
+		rbInfo.collider->GetBody(), 
+		btVector3(rbInfo.localInertia.x, rbInfo.localInertia.y, rbInfo.localInertia.z));
 	//„‘Ì‚ğì¬B
 	rigidBody = new btRigidBody(btRbInfo);
 }

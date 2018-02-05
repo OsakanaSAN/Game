@@ -10,7 +10,7 @@ float CalcSpringScalar(
 	float& moveSpeed)
 	
 {
-	float deltaTime = min(1.0f / 30.0f, GameTime().GetFrameDeltaTime());
+	float deltaTime = min(1.0f / 60.0f, GameTime().GetFrameDeltaTime());
 
 	float dampingRate = 0.2f;
 	float distance;
@@ -61,7 +61,7 @@ float CalcSpringScalar(
 D3DXVECTOR3 CalcSpringVector(D3DXVECTOR3 pos, D3DXVECTOR3 target, D3DXVECTOR3 Speed,
 	float Maxspeed, float down)
 {
-	float deltaTime = 1.0f / 30.0f;//min(1.0f / 30.0f, 1.0f / 60.0f);
+	float deltaTime = 1.0f / 60.0f;//min(1.0f / 30.0f, 1.0f / 60.0f);
 	D3DXVECTOR3 distans;
 	D3DXVec3Subtract(&distans, &target, &pos);
 	D3DXVECTOR3 originarDir = distans;
