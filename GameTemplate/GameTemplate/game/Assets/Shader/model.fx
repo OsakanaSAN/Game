@@ -12,7 +12,7 @@ float		g_numBone;			//骨の数。
 float3      g_Eyeposition;         //視点
 
 
-int g_isShadowReciever;				    //シャドウレシーバー？１ならシャドウレシーバー。
+int         g_isShadowReciever;				    //シャドウレシーバー？１ならシャドウレシーバー。
 float4x4 	g_lightViewMatrix;			//ライトビュー行列。
 float4x4 	g_lightProjectionMatrix;	//ライトプロジェクション行列。
 
@@ -24,8 +24,8 @@ float4x4	g_viewMatrixRotInv;		//!<カメラの回転行列の逆行列。
 bool  g_isHasNormalMap;			//法線マップ保持している？
 bool  g_isWave;                 //波の判定
 float g_moveUV;                 //UVの移動量   
-float g_Fog_X;
-float g_Fog_Y;              
+float2 g_Fog;
+              
 
 texture g_diffuseTexture;		//ディフューズテクスチャ。
 sampler g_diffuseTextureSampler = 
@@ -76,8 +76,21 @@ sampler_state
 	AddressV = Wrap;
 };
 
+//法線マップ2枚目用
+texture g_normalTexture2;		//法線マップ。
+sampler g_normalMapSampler2 = 
+sampler_state
+{
+	Texture = <g_normalTexture>;
+    MipFilter = LINEAR;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    AddressU = Wrap;
+	AddressV = Wrap;
+};
+
 texture g_CubeTexture;		//キューブテクスチャ。
-sampler g_CubeTextureSampler = 
+samplerCUBE g_CubeTextureSampler = 
 sampler_state
 {
 	Texture = <g_CubeTexture>;
@@ -121,6 +134,16 @@ struct VS_OUTPUT
     float4  Fog				: COLOR1;
     	
 };
+
+/*!
+ * @brief	ピクセルシェーダーからの出力。
+ */
+struct PSOutput{
+	float4	color		: COLOR0;		//レンダリングターゲット0に書き込み。
+	float4	depth		: COLOR1;		//レンダリングターゲット1に書き込み。
+	float4  velocity 	: COLOR2;		//レンダリングターゲット2に書き込み。
+};
+
 /*!
  *@brief	ワールド座標とワールド法線をスキン行列から計算する。
  *@param[in]	In		入力頂点。
@@ -191,7 +214,7 @@ VS_OUTPUT VSMain( VS_INPUT In, uniform bool hasSkin )
     o.uv = In.uv;
     
     //フォグ係数の計算
-    o.Fog = g_Fog_X + o.Pos.w * g_Fog_Y;
+    
     
     if(g_isShadowReciever == 1){
      	float4 worldPos = float4(Pos.x,Pos.y,Pos.z,1.0f); 
@@ -211,24 +234,20 @@ VS_OUTPUT VSMain( VS_INPUT In, uniform bool hasSkin )
  */
 float4 PSMain( VS_OUTPUT In ) : COLOR
 {
-	//距離フォグ
-	//float z = length(In.worldPos.xyz - g_Eyeposition);
-	//z = max(In.Fog.x, 0.0f);
-	//float t = min(z / In.Fog.y,1.0f);
-	//color.xyz = lerp(color.xyz,float3(0.75f, 0.75f, 0.95f),t);
 	
-	float4 color = tex2D(g_diffuseTextureSampler, In.Tex0.xy * 6);
+	float4 color = tex2D(g_diffuseTextureSampler, In.Tex0);
 	
     float3 normal = In.Normal;
    	
    	float4 lig = DiffuseLight(normal);      //ディフューズライトの計算
    	
+   	lig.xyz += g_light.ambient.xyz; //アンビエントの加算
 	float3 eye = normalize(g_Eyeposition - In.worldPos.xyz); 
 	float3 L = -g_light.diffuseLightDir[0]; //ライトの向き
 	float3 N = normal.xyz;                  //法線ベクトル 
 	float3 R = -L + 2.0f * dot(N,L)* N; //反射ベクトルの計算
 	
-	color *= lig + pow(max(0,dot(R,eye)),10.0f);   //スペキュラーの計算
+	color *= lig + pow(max(0,dot(R,eye)),20.0f);   //スペキュラーの計算
 	
 	if(g_isShadowReciever == 1)
 	{
@@ -240,20 +259,24 @@ float4 PSMain( VS_OUTPUT In ) : COLOR
 		float4 shadowVal = tex2D(g_shadowMapTextureSampler,shadowMapUV);	//シャドウマップは影が落ちているところはグレースケールになっている。
 		
 		
-		//if(shadowMapUV.x >= 0.0f && shadowMapUV.x <= 1.0f && shadowMapUV.y >= 0.0f, shadowMapUV.y <= 1.0f){
+		if(shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f && shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f)
+		{
 			float Depth  = In.lightViewPos.z  / In.lightViewPos.w;  		//ライトから見たZ値
 			Depth =  min(1.0f ,Depth);
-			
-			if(Depth > shadowVal.x )
+			if(Depth > shadowVal.x)
 			{
-				color = float4(0.0,0.0f,0.0f,1.0f);
+				color = float4(shadowVal.xyz * 0.5f,shadowVal.x);
+				
 				return color;
 			}
-		//}
+		}
 	 }
-	lig.xyz += g_light.ambient.xyz; //アンビエントの加算
-	color *= lig ;
-
+	 
+	 
+	//lig.xyz += g_light.ambient.xyz; //アンビエントの加算
+	//color *= lig ;
+	
+	
 	return color;
 }
 
@@ -313,19 +336,20 @@ VS_OUTPUT VSMainWave( VS_INPUT In)
 float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 {
 
-    float3 normal = In.Normal;
-    float4 Wcolor = tex2D(g_diffuseTextureSampler, In.Tex0);;
+    	float3 normal = In.Normal;
+    	float4 Wcolor = float4(0.5f,0.5f,0.5f,1.0f);//tex2D(g_diffuseTextureSampler, In.Tex0.xy * 5.0f);
+    	
   
       	 float3 Wnormal = In.Normal;
     	//法線マップがある。
-    	float2 baseUV = In.Tex0.xy * 10.0f;
+    	float2 baseUV = In.Tex0.xy * 5.0f;
 		float3 tangent = normalize(In.Tangent);
 		float2 moveUV = g_moveUV;
 		
 		//法線マップ3枚使用
 		float3 binSpaceNormal2 = tex2D( g_normalMapSampler, (baseUV + moveUV));
 		moveUV.x *= -1.0f;
-		float3 binSpaceNormal = tex2D( g_normalMapSampler, (baseUV + moveUV));
+		float3 binSpaceNormal = tex2D( g_normalMapSampler2, (baseUV + moveUV));
 		moveUV.y *= -1.0f;
 		float3 binSpaceNormal3 = tex2D( g_normalMapSampler, (baseUV + moveUV));
 		
@@ -341,6 +365,7 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 		
 		
 	#if 1
+	
 		//タンジェントスペース法線
 		//float3 tangent = normalize(In.Tangent);
 		
@@ -358,7 +383,7 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 		Wnormal += tangent * binSpaceNormal2.x + biNormal * binSpaceNormal2.y + normal * binSpaceNormal2.z; 
 		Wnormal += tangent * binSpaceNormal3.x + biNormal * binSpaceNormal3.y + normal * binSpaceNormal3.z;
 		Wnormal = normalize(Wnormal);
-		float4 lig = pow(DiffuseLight(Wnormal), 20.0f);      //ディフューズライトの計算
+		float4 lig = pow(DiffuseLight(Wnormal), 15.0f);     //ディフューズライトの計算
 		
 	#else 
 		//オブジェクトスペース法線。
@@ -367,19 +392,25 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 		Wnormal += binSpaceNormal3;
 		Wnormal = normalize(Wnormal);
 		float4 lig = DiffuseLight(Wnormal);      //ディフューズライトの計算
+		lig.xyz += g_light.ambient.xyz; 		//アンビエントの加算
 		
 	#endif
-		
+	
+		/*
 	    float3 toSun = normalize(g_Eyeposition - In.worldPos.xyz); 
-		float3 L = -g_light.diffuseLightDir[0]; //ライトの向き
-		float3 N = Wnormal.xyz;                  //法線ベクトル 
-		float3 R = -L + 2.0f * dot(N,L)* N; //反射ベクトルの計算
-		//lig += pow(max(0.0f,dot(R,toSun)),10.0f);   //スペキュラーの計算
+	    for(int i = 0;i < 4 ;i++)
+	    {
+			float3 L = -g_light.diffuseLightDir[0]; //ライトの向き
+			float3 N = Wnormal.xyz;                  //法線ベクトル 
+			float3 R = -L + 2.0f * dot(N,L)* N; 	//反射ベクトルの計算
+			lig *= pow(max(0.0f,dot(R,toSun)),10.0f);   //スペキュラーの計算
+		}
+		*/
 		
-		//lig.xyz += g_light.ambient.xyz; //アンビエントの加算
-		Wcolor.xyz = lig.xyz;
-		//Wcolor.a = 5.0f; //水面の透過処理
-		return float4(Wcolor.x,Wcolor.y,Wcolor.z,0.5f);
+		Wcolor.xyz *= lig.xyz;
+		Wcolor.xyz += g_light.ambient.xyz; 					//アンビエントの加算
+		Wcolor.a = 0.5f; //水面の透過処理
+		return Wcolor;
 		
 
 }
@@ -394,7 +425,9 @@ VS_OUTPUT VSMainSky( VS_INPUT In)
 	
 	o.worldPos = Pos;
     o.Pos = mul(float4(Pos.xyz, 1.0f), g_mViewProj);
+    o.lightViewPos.w = o.Pos.w;
     o.Normal = normalize(Normal);
+    //o.velocity = mul(float4(o.Pos.xyz, 1.0f), g_mViewProj);
     o.Tangent = normalize(Tangent);
     o.Tex0 = In.Tex0;
     o.uv = In.uv;
@@ -407,8 +440,30 @@ VS_OUTPUT VSMainSky( VS_INPUT In)
 float4 PSskyMain(VS_OUTPUT In ): COLOR
 {   
     float3 normal = In.Normal;
-	float4 color = texCUBE(g_CubeTextureSampler, -normal );
-	return color;
+	float4 diffuseColor = texCUBE(g_CubeTextureSampler, -normal );
+	float4 color = 0;
+	//空のテクスチャを白黒化
+	float3 monochrome = float3(0.29900f, 0.58700f, 0.11400f );
+	float Y  =  dot(monochrome, diffuseColor);
+	//白黒化したテクスチャをn乗して白に近い成分だけ抜き出す。
+	float cloudRate = pow(Y, 3.0f );
+	color = 1.0f + 0.25f * 0.5f;
+	//大気の色もモノクロ化
+	float colorY = max( 0.0f, dot(monochrome, color) );
+	float nightRate = 0.0f;
+	//雲の色。昼間は1.0fで夜間は0.3f
+	float cloudColor = lerp(3.0f, 0.1f,pow( 1.0f - nightRate, 3.0f));
+	//空の色と雲の色との間を雲率で線形補完。
+	color.xyz = lerp( color.xyz, cloudColor, cloudRate ) ;
+	PSOutput psOut = (PSOutput)0;
+	psOut.color = color * 1.1f;
+	psOut.depth = In.lightViewPos.w;
+	//psOut.velocity.xy =  In.velocity.xy / In.velocity.w - In.Pos.xy / In.Pos.w;
+	psOut.velocity.xy *= 0.5f;
+	psOut.velocity.xy += 0.5f;
+	psOut.velocity.zw = 0.0f;
+	
+	return diffuseColor;
 }
 
 
@@ -476,4 +531,15 @@ technique NoSkinModelRenderToSkyMap
 		VertexShader 	= compile vs_3_0 VSMainSky();
 		PixelShader		 = compile ps_3_0 PSskyMain(); 
 	}
+}
+
+//地形用の書き込みテクニック
+technique NoSkinModelRenderTerrain
+{
+	pass p0
+	{
+		VertexShader 	= compile vs_3_0 VSMainSky();
+		PixelShader		 = compile ps_3_0 PSskyMain(); 
+	}
+
 }

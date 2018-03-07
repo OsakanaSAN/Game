@@ -22,17 +22,18 @@ CParticle::CParticle() :
 }
 CParticle::~CParticle()
 {
-	if(shaderEffect != nullptr){
+	/*if(shaderEffect != nullptr){
 		shaderEffect->Release();
-	}
+	}*/
 	if(texture != nullptr){
 		texture->Release();
 	}
 }
-void CParticle::Init( const SParicleEmitParameter& param )
+void CParticle::Init( const SParicleEmitParameter& param,const LPDIRECT3DTEXTURE9 settexture, ID3DXEffect& effect)
 {
 	float halfW = param.w * 0.5f;
 	float halfH = param.h * 0.5f;
+	m_EndTime = param.timer;
 	
 	D3DXVECTOR4 uv(0.0f, 0.0f, 1.0f, 1.0f);
 	moveSpeed = param.initSpeed;
@@ -68,6 +69,9 @@ void CParticle::Init( const SParicleEmitParameter& param )
 	short index[]{
 		0,1,2,3
 	};
+
+	
+
 	primitive.Create(
 		CPrimitive::eTriangleStrip,
 		4,
@@ -78,34 +82,37 @@ void CParticle::Init( const SParicleEmitParameter& param )
 		D3DFMT_INDEX16,
 		index
 		);
-	HRESULT hr = D3DXCreateTextureFromFileA(g_pd3dDevice, param.texturePath, &texture);
+
+	texture = settexture;		//テクスチャのセット
 	
-	LPD3DXBUFFER  compileErrorBuffer = NULL;
-	hr = D3DXCreateEffectFromFile(
-		g_pd3dDevice,
-		"Assets/Shader/ColorTexPrim.fx",
-		NULL,
-		NULL,
-#ifdef _DEBUG
-		D3DXSHADER_DEBUG,
-#else
-		D3DXSHADER_SKIPVALIDATION,
-#endif
-		NULL,
-		&shaderEffect,
-		&compileErrorBuffer
-		);
-	if (FAILED(hr)) {
-		MessageBox(NULL, (char*)(compileErrorBuffer->GetBufferPointer()), "error", MB_OK);
-		std::abort();
-	}
+	shaderEffect = &effect;		//エフェクトファイルセット
+
+	
 }
 void CParticle::Update()
 {
+	
+	if (Time >= m_EndTime)
+	{
+		isDete = true;
+		return;
+	}
+	//例 2  2        
+	else if (Time >= m_EndTime / 2)
+	{
+		m_alpha -= 0.05f;
+		if (m_alpha <= 0) {
+			m_alpha = 0;
+		}
+	}
+	Time += GameTime().GetFrameDeltaTime();
+
 	float deltaTime = 1.0f / 60.0f;
-	moveSpeed.y += 0.05f;
+	//moveSpeed.y -= 0.05f;
 	D3DXVECTOR3 add = moveSpeed * deltaTime;
 	position += add;
+
+
 #if 0
 	position.Add(addPos);
 	CMatrix mTrans;
@@ -153,13 +160,8 @@ void CParticle::Update()
 }
 void CParticle::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix)
 {
+	if (isDete||shaderEffect == nullptr || texture ==nullptr) { return; }
 
-	if (Time > 2.5f)
-	{
-		isDete = true;
-		return;
-	}
-	Time += GameTime().GetFrameDeltaTime();
 	D3DXMATRIX m, mTrans,viewRot;
 	D3DXMatrixTranslation(&mTrans, position.x, position.y, position.z);
 	//1:カメラの回転行列を求める
@@ -169,26 +171,21 @@ void CParticle::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatri
 	viewRot.m[3][2] = 0.0f;
 	viewRot.m[3][3] = 1.0f;
 	//2:1で求めた回転行列をワールド行列に乗算する。
-	m = viewRot * mTrans * viewMatrix * projMatrix ;
-
-	/*g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-	g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);*/
+	m = viewRot * mTrans  * (viewMatrix  * projMatrix) ;
 
 	//アルファブレンディングを有効にする。
 	g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 	g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-
-	//shaderEffect->SetTechnique("ColorTexPrimTrans");
-	shaderEffect->SetTechnique("ColorTexPrimAdd");
-	
-	shaderEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
-	shaderEffect->BeginPass( 0);
 	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
 
-	shaderEffect->SetValue("g_mWVP", &m, sizeof(m));
+
+	shaderEffect->SetTechnique("ColorTexPrimAdd");
+	shaderEffect->SetMatrix("g_mWVP", &m);
+
 	shaderEffect->SetTexture("g_texture", texture);
+	shaderEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
+	shaderEffect->BeginPass(0);
 	shaderEffect->CommitChanges();
 
 	g_pd3dDevice->SetStreamSource(0, primitive.GetVertexBuffer()->GetBody(), 0, primitive.GetVertexBuffer()->GetStride());
@@ -197,11 +194,14 @@ void CParticle::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatri
 	g_pd3dDevice->DrawIndexedPrimitive(primitive.GetD3DPrimitiveType(), 0, 0, primitive.GetNumVertex(), 0, primitive.GetNumPolygon());
 	shaderEffect->EndPass();
 	shaderEffect->End();
+
 	g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 	g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+
 }
+
 void CParticle::Delete()
 {
 

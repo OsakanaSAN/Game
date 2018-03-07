@@ -114,7 +114,7 @@ void CSoundSource::Release()
 		m_sourceVoice = nullptr;
 	}
 	Remove3DSound();
-	delete(this);
+	//delete(this);
 }
 void CSoundSource::Play(char* buff, unsigned int bufferSize)
 {

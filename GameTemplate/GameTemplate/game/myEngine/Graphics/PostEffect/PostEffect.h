@@ -1,5 +1,7 @@
 #pragma once
 #include "myEngine/Graphics/Sprite/Primitive.h"
+#include "Monochrome.h"
+#include "ZoomBlur.h"
 class CPostEffect
 {
 public:
@@ -14,9 +16,11 @@ public:
 	CRenderTarget* GetMainRenderTarget();
 private:
 	CBloom          bloom;
+	CMonochrome		monochro;
+	CZoomBlur		zoomBlur;
 	LPD3DXEFFECT m_CopyEffct;
 	LPD3DXEFFECT m_SepiaEffct;			//セピア調のフィルターをするシェーダー。
-
+	bool		Zoom = false;
 };
 
 extern CPostEffect* g_PostEffect;

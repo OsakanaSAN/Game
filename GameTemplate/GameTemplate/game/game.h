@@ -22,10 +22,16 @@
 #include "myEngine/Graphics/PostEffect/Bloom.h"
 #include "myEngine/Sound/CSoundEngine.h"
 #include "Scene/GameScene.h"
+#include "Scene/Result.h"
+#include "HUD/ScoreCheckre.h"
+#include "Scene/SelectScene.h"
 
  /*!
  * @brief	ゲームクラス。
  */
+
+
+
 class Game{
 public:
 	/*!
@@ -55,21 +61,18 @@ public:
 	//			2Dの描画
 	void Render2D();
 
-	Camera* GetCamera()
+	void NewGameCamera()
 	{
-		return Gamecamera.Getcamera();
-	}
+		Gamecamera = new GameCamera;
+	 }
 	GameCamera* GetGameCamara()
 	{
-		return &Gamecamera;
+		return Gamecamera;
 	}
+
 	Pad* GetPad()
 	{
 		return &pad;
-	}
-	CEnemy* GetEnemy()
-	{
-		return &enemy;
 	}
 	//プレイヤーの弾のリスト
 	const std::list<Bullet*>& GetPlayerBullet()
@@ -126,14 +129,42 @@ public:
 	}
 
 	//現在のプレイヤーを取得
+	void NewPlayer()
+	{
+		m_player = new CPlayer;
+	}
+	void DeletePlayer()
+	{
+		delete m_player;
+		m_player = NULL;
+	}
+
 	CPlayer* GetPlayer()
 	{
-		return &player;
+		return m_player;
 	}
 	CFade* GetFade()
 	{
 		return &g_fade;
 	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Scene関係
+
+	//ゲームシーンの取得
+	TITLE* GetTitle()
+	{
+		return m_title;
+	}
+
+	void NewTitle()
+	{
+		m_title = new TITLE;
+	}
+
+
 	//ゲームシーンの取得
 	CGameScene* GetGameScene()
 	{
@@ -144,7 +175,27 @@ public:
 		m_GameScene = new CGameScene;
 	}
 
+	//リザルトシーンの取得
+	CResult* GetResult()
+	{
+		return m_Result;
+	}
+	//リザルトの生成
+	void NewResult()
+	{
+		m_Result = new CResult;
+	}
+	//リザルトシーンの取得
+	CScoreCheckre* GetScorecheckre()
+	{
+		return m_ScoreCheck;
+	}
+	
 
+	void SetTitleScene()
+	{
+		Scene = Title_Scene;
+	}
 	void SetGameScene()
 	{
 		Scene = Game_Scene;
@@ -153,6 +204,15 @@ public:
 	{
 		Scene = Result_Scene;
 	}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void NewScoreCheckre()
+	{
+		m_ScoreCheck = new CScoreCheckre;
+	}
+
+
 	//敵を生成するための関数
 	void InitEnemy(D3DXVECTOR3 Setpos) 
 	{
@@ -162,10 +222,20 @@ public:
 		enemy->SetPos(Setpos);
 	}
 
+	void DeleteEnemy()
+	{
+		for (CEnemy* enemy : Enemys)
+		{
+			delete enemy;
+		}
+		Enemys.clear();
+	}
+
 	CSoundEngine* GetSoundEngine()
 	{
 		return m_SoundEngine;
 	}
+
 
 private:
 	enum SceneState {
@@ -177,15 +247,18 @@ private:
 	
 	D3DXVECTOR3		toEyePos;		//注視点から視点までのベクトル。
 	D3DXVECTOR3		oldPos;
-	GameCamera		Gamecamera;		//カメラ
-	CPlayer			player;					//プレイヤー
-	CEnemy			enemy;					//敵
+	GameCamera*		Gamecamera;		//カメラ
+	CPlayer*		m_player;					//プレイヤー
+
 	Pad				pad;						//パッド
 	Map*			map;						//マップ
-
+	
 	CHud			Hud;						//HUD
-	TITLE			title;					//タイトル画面
-	CGameScene*      m_GameScene;            //ゲームシーン
+	TITLE*			m_title;					//タイトル画面
+	CSelectScene*	m_SelectScene;
+	CGameScene*     m_GameScene;				//ゲームシーン
+	CResult*        m_Result;					//リザルト画面
+	CScoreCheckre*	m_ScoreCheck;				//スコアチェック
 	CFade			g_fade;
 	CSoundEngine*	m_SoundEngine;
 	

@@ -20,6 +20,8 @@ sampler_state
     MipFilter = NONE;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
 };
 
 

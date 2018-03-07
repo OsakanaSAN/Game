@@ -92,20 +92,41 @@ public:
 	{
 		return WaveTex;
 	}
+	LPDIRECT3DTEXTURE9 GetWaveTex2()
+	{
+		return WaveTex2;
+	}
 	void SetWaveTexture()
 	{
 		//D3DXIMAGE_INFO imgInfo;
 	     HRESULT hr = D3DXCreateTextureFromFileA(
 			g_pd3dDevice,
-			"Assets/modelData/NormalMap4.png",
+			"Assets/modelData/Wave_Nomal.png",
 			&WaveTex
 		 );	//テクスチャ読込
 		 this->NormalMap = WaveTex;
+
+	
 	}
-	void SetSkyTexture(LPDIRECT3DCUBETEXTURE9 cube)
+	void SetWaveTexture2()
 	{
-		this->CubeMap = cube;
-		this->IsSky = true;
+		//D3DXIMAGE_INFO imgInfo;
+		HRESULT hr = D3DXCreateTextureFromFileA(
+			g_pd3dDevice,
+			"Assets/modelData/Wave_Nomal2.png",
+			&WaveTex2
+		);	//テクスチャ読込
+
+	}
+	
+	const void SetSkyTexture()
+	{
+		HRESULT hr = D3DXCreateCubeTextureFromFile(
+			g_pd3dDevice,
+			"Assets/modelData/skyCubeMap.dds",
+			&CubeMap
+		);
+		IsSky = true;
 
 	}
 
@@ -114,6 +135,8 @@ public:
 		this->NormalMap = settex;
 	}
 
+	
+//	void DrawMeshContainer_InstancingDrawCommon(IDirect3DDevice9* pd3dDevice, D3DXMESHCONTAINER_DERIVED* meshContainer, int materialID);
 
 	/*!
 	*@brief	オリジナルメッシュの先頭を取得する。
@@ -134,9 +157,10 @@ private:
 	bool				IsDrawShadowMap = false; 
 	bool                IsRecieveShadow = false;
 	//水面の判定
-	bool                IsWave = false;
+	bool					IsWave = false;
 	LPDIRECT3DTEXTURE9      NormalMap = NULL;
 	LPDIRECT3DTEXTURE9      WaveTex = NULL;
+	LPDIRECT3DTEXTURE9      WaveTex2 = NULL;
 
 	//空用の判定
 	bool                 IsSky = false;

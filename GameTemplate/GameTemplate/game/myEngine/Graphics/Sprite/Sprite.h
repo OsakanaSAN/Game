@@ -11,6 +11,7 @@ public:
 	 void Setposition(D3DXVECTOR2 pos)
 	 {
 		this->m_position = pos;
+		position = pos;
 	 }
 	 D3DXVECTOR2 GetSize()
 	 {

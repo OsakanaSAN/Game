@@ -18,15 +18,7 @@ public:
 	void Init(SMapChipLocInfo& locInfo);
 	void Update();
 	void Render();
-	void CreateCubeTexture()
-	{
-		HRESULT hr = D3DXCreateCubeTextureFromFile(
-			g_pd3dDevice,
-			"Assets/modelData/CubeMap3.dds",
-			&this->CubeMap
-		);
-		model.SetSkyTexture(CubeMap);
-	}
+	
 	void LightEyePosRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightProjMatrix);
 private:
 	SkinModel model;

@@ -155,6 +155,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Character\GroupEnemy.cpp" />
+    <ClCompile Include="myEngine\Graphics\PostEffect\Monochrome.cpp" />
+    <ClCompile Include="myEngine\Graphics\PostEffect\Dof.cpp" />
     <ClCompile Include="HUD\GUI.cpp" />
     <ClCompile Include="myEngine\Graphics\PostEffect\Bloom.cpp" />
     <ClCompile Include="HUD\Hud.cpp" />
@@ -202,6 +204,8 @@
     <ClCompile Include="myEngine\Physics\SphereCollider.cpp" />
     <ClCompile Include="myEngine\Camera\SpringCamera.cpp" />
     <ClCompile Include="myEngine\Graphics\Sprite\Sprite.cpp" />
+    <ClCompile Include="HUD\ScoreCheckre.cpp" />
+    <ClCompile Include="Scene\SelectScene.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -210,9 +214,14 @@
     </ClCompile>
     <ClCompile Include="Scene\TITLE.cpp" />
     <ClCompile Include="myEngine\Graphics\Sprite\VertexBuffer.cpp" />
+    <ClCompile Include="Map\Sun.cpp" />
+    <ClCompile Include="myEngine\Graphics\PostEffect\ZoomBlur.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character\GroupEnemy.h" />
+    <ClInclude Include="Map\DebagRoom.h" />
+    <ClInclude Include="myEngine\Graphics\PostEffect\Monochrome.h" />
+    <ClInclude Include="myEngine\Graphics\PostEffect\Dof.h" />
     <ClInclude Include="HUD\GUI.h" />
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="myEngine\Graphics\PostEffect\Bloom.h" />
@@ -269,10 +278,14 @@
     <ClInclude Include="myEngine\Physics\SphereCollider.h" />
     <ClInclude Include="myEngine\Camera\SpringCamera.h" />
     <ClInclude Include="myEngine\Graphics\Sprite\Sprite.h" />
+    <ClInclude Include="HUD\ScoreCheckre.h" />
+    <ClInclude Include="Scene\SelectScene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="Scene\TITLE.h" />
     <ClInclude Include="myEngine\Graphics\Sprite\VertexBuffer.h" />
+    <ClInclude Include="Map\Sun.h" />
+    <ClInclude Include="myEngine\Graphics\PostEffect\ZoomBlur.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />

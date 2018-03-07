@@ -44,13 +44,13 @@ void GameCamera::CameraAngle()
 	}
 	if (QuickTurn)
 	{
-		D3DXMATRIX mRot;
-		D3DXMatrixRotationY(&mRot, 0.314f * 1);
+		//D3DXMATRIX m_rot;
+		D3DXMatrixRotationY(&m_rot, 0.314f * 1);
 		Quick += 0.1f;
 		D3DXVECTOR3 mEyepos = Eyepos;
-		Eyepos.x = mEyepos.x * mRot.m[0][0] + mEyepos.y * mRot.m[1][0] + mEyepos.z * mRot.m[2][0] + mRot.m[3][0];
-		Eyepos.y = mEyepos.x * mRot.m[0][1] + mEyepos.y * mRot.m[1][1] + mEyepos.z * mRot.m[2][1] + mRot.m[3][1];
-		Eyepos.z = mEyepos.x * mRot.m[0][2] + mEyepos.y * mRot.m[1][2] + mEyepos.z * mRot.m[2][2] + mRot.m[3][2];
+		Eyepos.x = mEyepos.x * m_rot.m[0][0] + mEyepos.y * m_rot.m[1][0] + mEyepos.z * m_rot.m[2][0] + m_rot.m[3][0];
+		Eyepos.y = mEyepos.x * m_rot.m[0][1] + mEyepos.y * m_rot.m[1][1] + mEyepos.z * m_rot.m[2][1] + m_rot.m[3][1];
+		Eyepos.z = mEyepos.x * m_rot.m[0][2] + mEyepos.y * m_rot.m[1][2] + mEyepos.z * m_rot.m[2][2] + m_rot.m[3][2];
 		if (Quick > 1.0)
 		{
 			QuickTurn = false;
@@ -62,13 +62,13 @@ void GameCamera::CameraAngle()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	if (fabs(rStick_x) > 0.0f)
 	{
-		D3DXMATRIX mRot;
-		D3DXMatrixRotationY(&mRot, 0.1f*rStick_x);
+		D3DXMATRIX m_rot;
+		D3DXMatrixRotationY(&m_rot, 0.1f*rStick_x);
 		
 		D3DXVECTOR3 mEyepos = Eyepos;
-		Eyepos.x = mEyepos.x * mRot.m[0][0] + mEyepos.y * mRot.m[1][0] + mEyepos.z * mRot.m[2][0] + mRot.m[3][0];
-		Eyepos.y = mEyepos.x * mRot.m[0][1] + mEyepos.y * mRot.m[1][1] + mEyepos.z * mRot.m[2][1] + mRot.m[3][1];
-		Eyepos.z = mEyepos.x * mRot.m[0][2] + mEyepos.y * mRot.m[1][2] + mEyepos.z * mRot.m[2][2] + mRot.m[3][2];
+		Eyepos.x = mEyepos.x * m_rot.m[0][0] + mEyepos.y * m_rot.m[1][0] + mEyepos.z * m_rot.m[2][0] + m_rot.m[3][0];
+		Eyepos.y = mEyepos.x * m_rot.m[0][1] + mEyepos.y * m_rot.m[1][1] + mEyepos.z * m_rot.m[2][1] + m_rot.m[3][1];
+		Eyepos.z = mEyepos.x * m_rot.m[0][2] + mEyepos.y * m_rot.m[1][2] + mEyepos.z * m_rot.m[2][2] + m_rot.m[3][2];
 
 	}
 
@@ -77,13 +77,13 @@ void GameCamera::CameraAngle()
 		D3DXVECTOR3 rotAxis;
 		D3DXVec3Cross(&rotAxis, &Up, &Eyepos);
 		D3DXVec3Normalize(&rotAxis, &rotAxis);
-		D3DXMATRIX mRot;
-		D3DXMatrixRotationAxis(&mRot, &rotAxis, 0.1f*rStick_y);
+		//D3DXMATRIX mRot;
+		D3DXMatrixRotationAxis(&m_rot, &rotAxis, 0.1f*rStick_y);
 		D3DXVECTOR3 toPositionOld = Eyepos;
 		D3DXVECTOR3 mEyepos = Eyepos;
-		Eyepos.x = mEyepos.x * mRot.m[0][0] + mEyepos.y * mRot.m[1][0] + mEyepos.z * mRot.m[2][0] + mRot.m[3][0];
-		Eyepos.y = mEyepos.x * mRot.m[0][1] + mEyepos.y * mRot.m[1][1] + mEyepos.z * mRot.m[2][1] + mRot.m[3][1];
-		Eyepos.z = mEyepos.x * mRot.m[0][2] + mEyepos.y * mRot.m[1][2] + mEyepos.z * mRot.m[2][2] + mRot.m[3][2];
+		Eyepos.x = mEyepos.x * m_rot.m[0][0] + mEyepos.y * m_rot.m[1][0] + mEyepos.z * m_rot.m[2][0] + m_rot.m[3][0];
+		Eyepos.y = mEyepos.x * m_rot.m[0][1] + mEyepos.y * m_rot.m[1][1] + mEyepos.z * m_rot.m[2][1] + m_rot.m[3][1];
+		Eyepos.z = mEyepos.x * m_rot.m[0][2] + mEyepos.y * m_rot.m[1][2] + mEyepos.z * m_rot.m[2][2] + m_rot.m[3][2];
 
 		D3DXVECTOR3 toPosDir = Eyepos;
 		D3DXVec3Normalize(&toPosDir, &toPosDir);
@@ -115,7 +115,7 @@ void GameCamera::CameraAngle()
 	else if (game->GetPlayer() != NULL )
 	{
 		Vpos = game->GetPlayer()->GetPos();
-		Vpos.y += 4.0f;
+		Vpos.y += 8.0f;
 		Springcamera.SetTarTarget(Vpos);
 		D3DXVec3Add(&Vpos, &Vpos, &Eyepos);
 		Springcamera.SetTarPosition(Vpos);

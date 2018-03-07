@@ -29,15 +29,22 @@ public:
 		LookOn = on;
 		LookTag = LookPos;
 	}
+	D3DXMATRIX GetCameraMatrix()
+	{
+
+		return m_rot;
+	}
 private:
 	Camera          camera;  //カメラ
 	SpringCamera    Springcamera; //バネカメラ
 
-	D3DXVECTOR3     Eyepos = { 3.0f,0.0f, 3.0f };  //カメラの位置
-	D3DXVECTOR3     Up = { 0.0f,1.0f,0.0f };
+	D3DXVECTOR3     Eyepos = { 12.0f,0.0f, 12.0f };  //カメラの位置
+	D3DXVECTOR3     Up =	{ 0.0f,1.0f,0.0f };
 	D3DXVECTOR3     toEyePos;//注視点から視点までのベクトル。
 	D3DXVECTOR3     Lookpos; //注視点
 	D3DXVECTOR3     Vpos;    //回転
+	D3DXMATRIX		m_rot;
+
 	CharacterController  CameraControl;
 	D3DXVECTOR3     OldPlayerPos;
 	CameraCollisionSolver CameraCol;

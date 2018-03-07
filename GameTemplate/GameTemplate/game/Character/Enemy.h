@@ -23,6 +23,10 @@ public:
 	void Update();
 	void Render();
 	void EndEnemy();
+	void Delete()
+	{
+		delete this;
+	}
 	//死んでいるかを返す
 	bool IsEnd()
 	{
@@ -58,7 +62,7 @@ private:
 		CParticleEmitter		m_ParticleEmitter;
 		
 		SkinModel				m_Skinmodel;
-		SkinModelData			m_SkinmodelData;
+		SkinModelData*			m_SkinmodelData;
 		Light					m_Light;
 		D3DXVECTOR3				m_Position = { 0.0f,50.0f,10.0f };
 
@@ -68,7 +72,8 @@ private:
 		Camera*               m_Camera;
 		bool                  m_IsDete;
 		Pad                   m_Pad;          //パット
-		  float                   m_HP = 400.0f;     //敵のHP
+		  float               m_HP = 400.0f;     //敵のHP
+		  float				  m_MaxHp = 400.0f;
 		  int					m_BulletFireInterval;	//弾丸をもう一度打てるようになるまでのインターバル
 		  int                   m_Tactics = 2; //戦術
 		  D3DXVECTOR3           m_TimeVec;

@@ -48,7 +48,7 @@ private:
 	};
 
 	int			m_Cabetu = UP;
-	const float m_FADE_TIME = 1.5f;		//!<フェードアウトの時間。(単位：秒)
+	const float m_FADE_TIME = 0.5f;		//!<フェードアウトの時間。(単位：秒)
 
 	Sprite*		m_Sprite;				//!ブラックアウト用のスプライト。
 	

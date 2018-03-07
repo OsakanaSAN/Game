@@ -1,6 +1,8 @@
 #pragma once
 #include "myEngine/GameManager/IGameObject.h"
 #include "Skydoom.h"
+#include "Sea.h"
+#include "Sun.h"
 
 class MapChip;
 
@@ -17,5 +19,7 @@ public:
 private:
 	std::list<MapChip*>	mapChipList;	//マップチップのリスト。
 	Skydoom*                skydoom;
+	Sea*					sea;
+	CSun*					sun;
 };
 

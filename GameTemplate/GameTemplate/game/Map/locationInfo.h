@@ -70,3 +70,11 @@
 	D3DXVECTOR3(-516.00f, 176.00f, 519.00f),             //平行移動
 	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f ),  //回転
 },
+//Wave
+{
+	"Wave",
+	D3DXVECTOR3(0.00f, 20.00f, 0.00f),             //平行移動
+	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f),  //回転
+},
+
+

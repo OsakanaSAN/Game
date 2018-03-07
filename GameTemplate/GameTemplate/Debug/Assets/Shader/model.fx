@@ -240,16 +240,17 @@ float4 PSMain( VS_OUTPUT In ) : COLOR
 		float4 shadowVal = tex2D(g_shadowMapTextureSampler,shadowMapUV);	//シャドウマップは影が落ちているところはグレースケールになっている。
 		
 		
-		//if(shadowMapUV.x >= 0.0f && shadowMapUV.x <= 1.0f && shadowMapUV.y >= 0.0f, shadowMapUV.y <= 1.0f){
+		if(shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f && shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f)
+		{
 			float Depth  = In.lightViewPos.z  / In.lightViewPos.w;  		//ライトから見たZ値
 			Depth =  min(1.0f ,Depth);
-			
-			if(Depth > shadowVal.x )
+			if(Depth > shadowVal.x)
 			{
 				color = float4(0.0,0.0f,0.0f,1.0f);
+				
 				return color;
 			}
-		//}
+		}
 	 }
 	lig.xyz += g_light.ambient.xyz; //アンビエントの加算
 	color *= lig ;
@@ -318,7 +319,7 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
   
       	 float3 Wnormal = In.Normal;
     	//法線マップがある。
-    	float2 baseUV = In.Tex0.xy * 20.0f;
+    	float2 baseUV = In.Tex0.xy * 10.0f;
 		float3 tangent = normalize(In.Tangent);
 		float2 moveUV = g_moveUV;
 		
@@ -374,12 +375,12 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 		float3 L = -g_light.diffuseLightDir[0]; //ライトの向き
 		float3 N = Wnormal.xyz;                  //法線ベクトル 
 		float3 R = -L + 2.0f * dot(N,L)* N; //反射ベクトルの計算
-		lig += pow(max(0.0f,dot(R,toSun)),10.0f);   //スペキュラーの計算
+		//lig += pow(max(0.0f,dot(R,toSun)),10.0f);   //スペキュラーの計算
 		
 		//lig.xyz += g_light.ambient.xyz; //アンビエントの加算
 		Wcolor.xyz = lig.xyz;
-		Wcolor.w = 0.5f; //水面の透過処理
-		return Wcolor;
+		//Wcolor.a = 5.0f; //水面の透過処理
+		return float4(Wcolor.x,Wcolor.y,Wcolor.z,0.5f);
 		
 
 }

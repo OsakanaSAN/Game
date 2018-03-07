@@ -1,7 +1,1 @@
-﻿  btConvexHull.cpp
-  btConvexHullComputer.cpp
-  btGeometryUtil.cpp
-  btPolarDecomposition.cpp
-  btVector3.cpp
-  コードを生成中...
-  LinearMath.vcxproj -> C:\Users\kbc16b03\Desktop\Game\GameTemplate\GameTemplate\\bulletPhysics\lib\Release\LinearMath.lib
+﻿  LinearMath.vcxproj -> C:\Users\kbc16b03\Desktop\Game\GameTemplate\GameTemplate\\bulletPhysics\lib\Release\LinearMath.lib

@@ -22,25 +22,28 @@ void Skydoom::Init(D3DXVECTOR3 pos, D3DXQUATERNION rot)
 	
 	modelData.LoadModelData("Assets/modelData/sky.X",NULL);
 	model.Init(&modelData);
-	CreateCubeTexture();
+	
+
 	light.SetAmbientLight({ 0.5f,1.0f,1.0f,1.0f });
 	model.SetLight(&light);
-	model.UpdateWorldMatrix(position, rotation, D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	model.SetSkyTexture();
+
+	
 	
 
 }
 void Skydoom::Update()
 {
 	
-	position.x = game->GetPlayer()->GetPos().x;
-	position.z = game->GetPlayer()->GetPos().z;
+	//position.x = game->GetPlayer()->GetPos().x;
+	//position.z = game->GetPlayer()->GetPos().z;
 
 	//D3DXQuaternionRotationAxis(&rotation, &D3DXVECTOR3{0.0f,1.0f,0.0f},rotSky);
-	model.UpdateWorldMatrix(position, rotation, D3DXVECTOR3(20.0f, 20.0f, 20.0f));
+	model.UpdateWorldMatrix(position, rotation, D3DXVECTOR3(15.0f, 15.0f, 15.0f));
 }
 
-void Skydoom::Drow()
+void Skydoom::Render()
 {
 	model.SetWave(false);
-	model.Draw(&game->GetCamera()->GetViewMatrix(), &game->GetCamera()->GetProjectionMatrix());
+	model.Draw(&game->GetGameCamara()->Getcamera()->GetViewMatrix(), &game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
 }

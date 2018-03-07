@@ -12,12 +12,18 @@ public:
 	{
 		position = setpos;
 	}
+	void SetEndTime(float et)
+	{
+		m_EndTime = et;
+	}
+
 	bool IsDete()
 	{
 		return isDete;
 	}
+
 	void Delete();
-	void Init(const SParicleEmitParameter& param);
+	void Init(const SParicleEmitParameter& param, const LPDIRECT3DTEXTURE9 texture, ID3DXEffect& effct);
 	void Update();
 	void Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix);
 private:
@@ -27,7 +33,9 @@ private:
 
 	D3DXVECTOR3			moveSpeed;			//!<速度。
 	D3DXVECTOR3			position;			//!<座標。
+	float				m_EndTime;			//消す時間
 	float				Time;
+	float				m_alpha = 1.0f;
 	bool                isDete = false;
 
 };

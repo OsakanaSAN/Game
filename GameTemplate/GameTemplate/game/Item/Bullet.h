@@ -2,7 +2,16 @@
 #include "myEngine/GameManager/IGameObject.h"
 #include "myEngine/Sound/CSoundSource.h"
 #include "myEngine/Physics/SphereCollider.h"
+#include "myEngine/Graphics/Particle/ParticleEmitter.h"
 
+
+enum BulletState
+{
+	e_Update,
+	e_IsHit,
+	e_IsDete,
+
+};
 class Bullet
 {
 public:
@@ -10,6 +19,7 @@ public:
 	~Bullet();
 	void Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed);
 	bool Update();
+	void Render2D();
 	void Render();
 	const D3DXVECTOR3& Getops() 
 	{
@@ -32,15 +42,21 @@ public:
 	{
 		IsHit = hit;
 	}
+	bool GetIsHit()
+	{
+		return IsHit;
+	}
 	void LightEyePosRender(D3DXMATRIX&  lightViewMatrix, D3DXMATRIX& lightProjMatrix);
 	void LockOn(D3DXVECTOR3 lock);
+	
+
 private:
-	Pad      BPad;
-	SkinModel model;
-	D3DXMATRIX  Mat;
-	static SkinModelData* modelData;
-	Animation animation;
-	Light light;
+	Pad						BPad;
+	SkinModel				model;
+	D3DXMATRIX				Mat;
+	static SkinModelData*		modelData;
+	Animation				animation;
+	Light					m_light;
 	D3DXVECTOR3				m_position;
 	D3DXVECTOR3				moveSpeed;
 	D3DXVECTOR3				PlayerFrontPosition;
@@ -48,8 +64,10 @@ private:
 	CSoundSource*			m_BulletSe;
 	SphereCollider*			m_collider;
 	RigidBody*				m_rigidbody;
-	CharacterController*		m_characterController;
-	
+	CharacterController*	m_characterController;
+	CParticleEmitter*		m_particleEmit;
+	BulletState				m_state;
+	float					m_time;
 
 	bool IsLifeDown = false;
 	int life;		//éıñΩÅB

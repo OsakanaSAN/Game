@@ -37,22 +37,10 @@ void Game::Start()
 {
 	m_SoundEngine = new CSoundEngine;
 	m_SoundEngine->Init();
-	
 
-	Gamecamera.Strat();
-	g_physicsWorld = new PhysicsWorld;
-	g_physicsWorld->Init();
 	Hud.Start(); //スプライト
-
-	//map.Init();
-
-	//プレイヤーのインスタンスを生成
-	//player.Start();
-
-	//game->GetCamera()->SetLookatPt(player.GetPos());
-	//D3DXVECTOR3 l = player.GetPos() - game->GetCamera()->GetEyePt();
-	//Gamecamera.SetPLength(D3DXVec3Length(&l));
-	title.Start();
+	m_title = new TITLE;
+	m_title->Start();
 }
 /*!
  * @brief	更新。
@@ -65,18 +53,18 @@ void Game::Update()
 	{
 
 	case Result_Scene:
-
+		m_Result->Update();
 		break;
 
 	case Title_Scene:
 
 
-		g_physicsWorld->Update();
-		title.Update();
+		
+		m_title->Update();
 		break;
 
 	case Game_Scene:
-
+		g_physicsWorld->Update();
 		m_GameScene->Update();
 		Hud.Update();
 		break;
@@ -92,6 +80,7 @@ void Game::ListUpdate()
 			//死亡
 			//敵の残り数
 			game->GetGameScene()->CountDown(1);
+			(*EnemyIt)->Delete();
 			EnemyIt = Enemys.erase(EnemyIt);
 			count++;
 		}
@@ -102,10 +91,10 @@ void Game::ListUpdate()
 
 
 	}
-
 	auto bulletIt = PlayerBullets.begin();
 	while (bulletIt != PlayerBullets.end()) {
-		if (!(*bulletIt)->Update()) {
+		if (!(*bulletIt)->Update())
+		{
 			//死亡
 			bulletIt = PlayerBullets.erase(bulletIt);
 		}
@@ -144,32 +133,13 @@ void Game::Render()
 	//タイトル画面の描画
 	case Title_Scene:
 
-		title.Drow(spt);
+		m_title->Drow(spt);
 
 		break;
 	//ゲーム画面の描画
 	case Game_Scene:
 
 		m_GameScene->Render();
-		//
-
-		//player.Render();//プレイヤー描画
-
-		//for (auto Enemy : Enemys) {
-		//	Enemy->Render();
-		//}
-
-		//map.Render();
-
-		//for (auto bullet : PlayerBullets) {
-		//	
-		//	bullet->Render();
-		//}
-
-		//for (auto bullet : EnemyBullets) {
-		//	bullet->Render();
-		//}
-
 		
 		break;
 	case Result_Scene:
@@ -185,14 +155,26 @@ void Game::Render2D()
 	switch (Scene)
 	{
 	case Title_Scene:
-		title.Drow(spt);
+		m_title->Drow(spt);
 		break;
 
 	case Game_Scene:
 		Hud.Drow(spt);
-		for (auto Enemy : game->GetEnemys()) {
+		for (const auto& Enemy : game->GetEnemys()) {
 			Enemy->Render2D();
 		}
+		g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+		g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+		g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+		g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+		/*for (auto Bullet : game->GetPlayerBullet())
+		{
+			Bullet->Render2D();
+		}*/
+		break;
+	case Result_Scene:
+		m_Result->Render(spt);
+		m_ScoreCheck->Render(spt);
 		break;
 
 	}

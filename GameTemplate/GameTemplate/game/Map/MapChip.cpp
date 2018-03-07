@@ -12,9 +12,13 @@ MapChip::MapChip() :
 
 MapChip::~MapChip()
 {
-	g_physicsWorld->RemoveRigidBody(rigidBody);
-	//rigidBody.Release();
-	//modelData.Release();
+	if (rigidBody != NULL)
+	{
+		g_physicsWorld->RemoveRigidBody(rigidBody);
+		rigidBody->Release();
+		delete rigidBody;
+		modelData.Release();
+	}
 }
 void MapChip::Init(SMapChipLocInfo& locInfo)
 {
@@ -28,74 +32,63 @@ void MapChip::Init(SMapChipLocInfo& locInfo)
 
 	
 
-	//ライトを初期化。
-	//light.SetAmbientLight({ 1,1,1,1 });
-	if (locInfo.modelName != "skydoom") {
-		light.SetDiffuseLightDirection(0, D3DXVECTOR4(0.707f, -0.707f, 0.0f, 1.0f));
-		light.SetDiffuseLightDirection(1, D3DXVECTOR4(-0.707f, 0.0f, -0.707f,1.0f));
-		light.SetDiffuseLightDirection(2, D3DXVECTOR4(0.0f, 0.707f, -0.707f, 1.0f));
-		light.SetDiffuseLightDirection(3, D3DXVECTOR4(0.0f, -0.707f, -0.707f,1.0f));
-
-		light.SetDiffuseLightColor(0, D3DXVECTOR4(0.6f, 0.6f, 0.6f, 1.0f));
-		light.SetDiffuseLightColor(1, D3DXVECTOR4(0.6f, 0.6f, 0.6f, 1.0f));
-		light.SetDiffuseLightColor(2, D3DXVECTOR4(0.6f, 0.6f, 0.6f, 1.0f));
-		light.SetDiffuseLightColor(3, D3DXVECTOR4(0.6f, 0.6f, 0.6f, 1.0f));
-
-		light.SetAmbientLight(D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
-	}
-
-	model.SetLight(&light);
+	
+	
 	position = locInfo.pos;
 	rotation = locInfo.rotation;
 	model.Init(&modelData);
-
-	if (locInfo.modelName == "Sea3") {
-		CreateCubeTexture();
-
-		light.SetDiffuseLightDirection(0, D3DXVECTOR4( 0.707f, -0.707f, 0.0f, 1.0f));
+	//ライトを初期化。
+	if (locInfo.modelName != "Map4")
+	{
+		light.SetDiffuseLightDirection(0, D3DXVECTOR4(0.707f, -0.707f, 0.0f, 1.0f));
 		light.SetDiffuseLightDirection(1, D3DXVECTOR4(-0.707f, 0.0f, -0.707f, 1.0f));
 		light.SetDiffuseLightDirection(2, D3DXVECTOR4(0.0f, 0.707f, -0.707f, 1.0f));
 		light.SetDiffuseLightDirection(3, D3DXVECTOR4(0.0f, -0.707f, -0.707f, 1.0f));
 
-		
+
 		light.SetDiffuseLightColor(0, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
 		light.SetDiffuseLightColor(1, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
 		light.SetDiffuseLightColor(2, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
 		light.SetDiffuseLightColor(3, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
-		
+
 
 		light.SetAmbientLight(D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
-		model.SetLight(&light);
-		model.SetWaveTexture();
-		model.SetWave(true);
-	
-	}
-	
 
-	model.UpdateWorldMatrix(position, rotation, { 1.0f, 1.0f, 1.0f });
-	
-	if (locInfo.modelName != "Sea3")
+	}
+	else
 	{
-		rigidBody = new RigidBody;
-		//ここから衝突判定絡みの初期化。
-		//スキンモデルからメッシュコライダーを作成する。
-		D3DXMATRIX* rootBoneMatrix = modelData.GetRootBoneWorldMatrix();
 
-		meshCollider.CreateFromSkinModel(&model, rootBoneMatrix);
-		//続いて剛体を作成する。
-		//まずは剛体を作成するための情報を設定。
-		RigidBodyInfo rbInfo;
-		rbInfo.collider = &meshCollider;	//剛体のコリジョンを設定する。
-		rbInfo.mass = 0.0f;					//質量を0にすると動かない剛体になる。
-		rbInfo.pos = position;
-		rbInfo.rot = rotation;
-		//剛体を作成。
-		rigidBody->Create(rbInfo);
-		//作成した剛体を物理ワールドに追加。
-		g_physicsWorld->AddRigidBody(rigidBody);
+		light.SetAmbientLight({ 0.1f,0.1f,0.1f,1.0f });
+
 	}
+
+	model.SetLight(&light);
+
+	rigidBody = new RigidBody;
+	//ここから衝突判定絡みの初期化。
+	//スキンモデルからメッシュコライダーを作成する。
+	D3DXMATRIX* rootBoneMatrix = modelData.GetRootBoneWorldMatrix();
+	model.UpdateWorldMatrix(position, rotation, { 1.0f, 1.0f, 1.0f });
+
+	meshCollider.CreateFromSkinModel(&model, rootBoneMatrix);
+	//続いて剛体を作成する。
+	//まずは剛体を作成するための情報を設定。
+	RigidBodyInfo rbInfo;
+	rbInfo.collider = &meshCollider;	//剛体のコリジョンを設定する。
+	rbInfo.mass = 0.0f;					//質量を0にすると動かない剛体になる。
+	rbInfo.pos = position;
+	rbInfo.rot = rotation;
+	//剛体を作成。
+	rigidBody->Create(rbInfo);
+	//作成した剛体を物理ワールドに追加。
+	g_physicsWorld->AddRigidBody(rigidBody);
+	
+
 
 }
+	
+
+
 void MapChip::Update()
 {
 	//ライトの回転
@@ -117,14 +110,13 @@ void MapChip::Update()
 		light.SetDiffuseLightDirection(i, dir);
 	}
 	
-
 	model.UpdateWorldMatrix(position, rotation, { 1.0f, 1.0f, 1.0f });
 }
 void MapChip::Render()
 {
 	model.SetShadowMap(false);
 	model.SetShadowRecieve(true);
-	model.Draw(&game->GetCamera()->GetViewMatrix(), &game->GetCamera()->GetProjectionMatrix());
+	model.Draw(&game->GetGameCamara()->Getcamera()->GetViewMatrix(), &game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
 }
 void MapChip::LightEyePosRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightProjMatrix)
 {

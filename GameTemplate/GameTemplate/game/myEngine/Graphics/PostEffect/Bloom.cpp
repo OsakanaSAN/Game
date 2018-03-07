@@ -31,9 +31,19 @@ CBloom::CBloom()
 		D3DMULTISAMPLE_NONE,	//マルチサンプリングの種類。今回はマルチサンプリングは行わないのでD3DMULTISAMPLE_NONEでいい。
 		0						//マルチサンプリングの品質レベル。今回はマルチサンプリングは行わないので0でいい。
 	);
+	//輝度抽出用のレンダリングターゲットを作成する。
+	m_combineRenderTarget.Create(
+		640,		//幅と高さはフレームバッファと同じにしておく。
+		360,
+		1,
+		D3DFMT_A16B16G16R16F,	//ここも浮動小数点バッファにする。
+		D3DFMT_D16,				//使わないので16bit。本来は作成する必要もない。
+		D3DMULTISAMPLE_NONE,	//マルチサンプリングの種類。今回はマルチサンプリングは行わないのでD3DMULTISAMPLE_NONEでいい。
+		0						//マルチサンプリングの品質レベル。今回はマルチサンプリングは行わないので0でいい。
+	);
 
 	int W = 1280;
-	int H = 720;
+	int H =  720;
 	for (int i = 0;i < MGF_DOWN_SAMPLE_COUNT;i++)
 	{
 		//ブラーをかけるためのダウンサンプリング用のレンダリングターゲットを作成。
@@ -48,6 +58,11 @@ CBloom::CBloom()
 			D3DMULTISAMPLE_NONE,	//マルチサンプリングの種類。今回はマルチサンプリングは行わないのでD3DMULTISAMPLE_NONEでいい。
 			0						//マルチサンプリングの品質レベル。今回はマルチサンプリングは行わないので0でいい。
 		);
+
+	}
+	W = 1280;
+	for (int i = 0;i < MGF_DOWN_SAMPLE_COUNT;i++)
+	{
 		H /= 2;
 		//縦ブラー用。
 		m_downSamplingRenderTarget[i][1].Create(
@@ -98,9 +113,9 @@ void CBloom::Render()
 	}
 
 	//ガウスブラーで使う重みテーブルを更新。
-	UpdateWeight(1.0f);
+	UpdateWeight(25.0f);
 	//輝度を抽出したテクスチャをXブラー
-	for (int i = 0;i <MGF_DOWN_SAMPLE_COUNT;i++)
+	for (int i = 0;i < MGF_DOWN_SAMPLE_COUNT;i++)
 	{
 		{
 			g_pd3dDevice->SetRenderTarget(0, m_downSamplingRenderTarget[i][0].GetRenderTarget());
@@ -108,16 +123,27 @@ void CBloom::Render()
 			m_BloomEffect->SetTechnique("XBlur");
 			m_BloomEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
 			m_BloomEffect->BeginPass(0);
+
+			//輝度のテクスチャサイズ転送
 			float size[2] = {
 				(float)(m_luminanceRenderTarget.GetWidth()),
 				(float)(m_luminanceRenderTarget.GetHeight())
 			};
+			m_BloomEffect->SetValue("g_luminanceTexSize", size, sizeof(size));
+
+			//オフセット転送
 			float offset[] = {
-				16.0f / (float)(m_luminanceRenderTarget.GetWidth()),
+				16.0f / size[0],
 				0.0f
 			};
-			m_BloomEffect->SetValue("g_luminanceTexSize", size, sizeof(size));
 			m_BloomEffect->SetValue("g_offset", offset, sizeof(size));
+
+			//レンダリングターゲットのサイズを転送
+			float renderTargetSize[2];
+			renderTargetSize[0] = (float)m_downSamplingRenderTarget[i][0].GetWidth();
+			renderTargetSize[1] = (float)m_downSamplingRenderTarget[i][0].GetHeight();
+			m_BloomEffect->SetValue("g_renderTargetSize", renderTargetSize, sizeof(renderTargetSize));
+
 			m_BloomEffect->SetValue("g_weight", weights, sizeof(weights));
 
 			m_BloomEffect->SetTexture("g_blur", m_luminanceRenderTarget.GetTexture());
@@ -128,39 +154,80 @@ void CBloom::Render()
 			m_BloomEffect->EndPass();
 			m_BloomEffect->End();
 		}
+
 		//輝度を抽出したテクスチャをYブラー
-			{
-				g_pd3dDevice->SetRenderTarget(0, m_downSamplingRenderTarget[i][1].GetRenderTarget());
+		{
+			g_pd3dDevice->SetRenderTarget(0, m_downSamplingRenderTarget[i][1].GetRenderTarget());
 
-				m_BloomEffect->SetTechnique("YBlur");
-				m_BloomEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
-				m_BloomEffect->BeginPass(0);
-				float size[2] = {
-					(float)(m_downSamplingRenderTarget[i][0].GetWidth()),
-					(float)(m_downSamplingRenderTarget[i][0].GetHeight())
-				};
-				float offset[] = {
-					0.0f ,
-					16.0f / (float)(m_downSamplingRenderTarget[i][0].GetHeight())
-				};
-				m_BloomEffect->SetValue("g_luminanceTexSize", size, sizeof(size));
-				m_BloomEffect->SetValue("g_offset", offset, sizeof(size));
-				m_BloomEffect->SetValue("g_weight", weights, sizeof(weights));
+			m_BloomEffect->SetTechnique("YBlur");
+			m_BloomEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
+			m_BloomEffect->BeginPass(0);
+			//輝度テクスチャ転送
+			float size[2] = {
+				(float)(m_downSamplingRenderTarget[i][0].GetWidth()),
+				(float)(m_downSamplingRenderTarget[i][0].GetHeight())
+			};
+			m_BloomEffect->SetValue("g_luminanceTexSize", size, sizeof(size));
 
-				m_BloomEffect->SetTexture("g_blur", m_downSamplingRenderTarget[i][0].GetTexture());
-				m_BloomEffect->CommitChanges();
-				g_PostEffect->RenderPrimitive();
-				//DrawQuadPrimitive();
+			//オフセット転送
+			float offset[] = {
+				0.0f ,
+				16.0f / size[1],
+			};
+			m_BloomEffect->SetValue("g_offset", offset, sizeof(size));
 
-				m_BloomEffect->EndPass();
-				m_BloomEffect->End();
+			//レンダリングターゲットのサイズを転送。
+			float renderTargetSize[2];
+			renderTargetSize[0] = (float)m_downSamplingRenderTarget[i][1].GetWidth();
+			renderTargetSize[1] = (float)m_downSamplingRenderTarget[i][1].GetHeight();
+			m_BloomEffect->SetValue("g_renderTargetSize", renderTargetSize, sizeof(renderTargetSize));
 
-			}
-			{
+
+			m_BloomEffect->SetValue("g_weight", weights, sizeof(weights));
+
+			m_BloomEffect->SetTexture("g_blur", m_downSamplingRenderTarget[i][0].GetTexture());
+			m_BloomEffect->CommitChanges();
+			g_PostEffect->RenderPrimitive();
+
+			m_BloomEffect->EndPass();
+			m_BloomEffect->End();
+
+		}
+	}
+
+	//ボケフィルターの合成
+	{
+		g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+		g_pd3dDevice->SetRenderTarget(0, m_combineRenderTarget.GetRenderTarget());
+		//g_pd3dDevice->Clear(0, nullptr, D3DCLEAR_TARGET, 0, 1.0f, 0);
+
+		float offset[] = {
+			0.5f / (float)(m_combineRenderTarget.GetWidth()) ,
+			0.5f / (float)(m_combineRenderTarget.GetHeight()),
+		};
+		m_BloomEffect->SetTechnique("Combine");
+		m_BloomEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
+		m_BloomEffect->BeginPass(0);
+
+		m_BloomEffect->SetTexture("g_combineTex00", m_downSamplingRenderTarget[0][1].GetTexture());
+		m_BloomEffect->SetTexture("g_combineTex01", m_downSamplingRenderTarget[1][1].GetTexture());
+		m_BloomEffect->SetTexture("g_combineTex02", m_downSamplingRenderTarget[2][1].GetTexture());
+		m_BloomEffect->SetTexture("g_combineTex03", m_downSamplingRenderTarget[3][1].GetTexture());
+		m_BloomEffect->SetTexture("g_combineTex04", m_downSamplingRenderTarget[4][1].GetTexture());
+
+		m_BloomEffect->SetValue("g_offset", offset, sizeof(offset));
+		m_BloomEffect->CommitChanges();
+		g_PostEffect->RenderPrimitive();
+		m_BloomEffect->EndPass();
+		m_BloomEffect->End();
+	}
+
+
+	{
 				//最終合成。
 				float offset[] = {
-					0.5f / m_downSamplingRenderTarget[i][1].GetWidth() ,
-					0.5f / m_downSamplingRenderTarget[i][1].GetHeight()
+					0.5f / (float)m_combineRenderTarget.GetWidth() ,
+					0.5f / (float)m_combineRenderTarget.GetHeight()
 				};
 				//戻す。
 				g_pd3dDevice->SetRenderTarget(0, rt->GetRenderTarget());
@@ -172,7 +239,7 @@ void CBloom::Render()
 				m_BloomEffect->SetTechnique("Final");
 				m_BloomEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
 				m_BloomEffect->BeginPass(0);
-				m_BloomEffect->SetTexture("g_blur", m_downSamplingRenderTarget[i][1].GetTexture());
+				m_BloomEffect->SetTexture("g_blur", m_combineRenderTarget.GetTexture());
 				m_BloomEffect->SetValue("g_offset", offset, sizeof(offset));
 				m_BloomEffect->CommitChanges();
 
@@ -186,6 +253,6 @@ void CBloom::Render()
 				g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 				g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 			}
-	}
+	
 	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 }

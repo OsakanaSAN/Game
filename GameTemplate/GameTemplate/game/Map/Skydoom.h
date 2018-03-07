@@ -6,17 +6,8 @@ public:
 	~Skydoom();
 	void Init(D3DXVECTOR3 pos, D3DXQUATERNION rot);
 	void Update();
-	void Drow();
+	void Render();
 
-	void CreateCubeTexture()
-	{
-		HRESULT hr = D3DXCreateCubeTextureFromFile(
-			g_pd3dDevice,
-			"Assets/modelData/skyCubeMap.dds",
-			&this->CubeMap
-		);
-		model.SetSkyTexture(CubeMap);
-	}
 
 private:
 	SkinModel model;                   
@@ -26,7 +17,7 @@ private:
 	D3DXQUATERNION rotation;
 	Light light;
 	float rotSky = 0.5f;
-	LPDIRECT3DCUBETEXTURE9      CubeMap = NULL;
+	LPDIRECT3DCUBETEXTURE9*      CubeMap = NULL;
 
 };
 

@@ -86,6 +86,7 @@ void CPostEffect::InitPrimitive()
 //メインレンダリングターゲットの内容を現在のレンダリングターゲットにコピー
 void CPostEffect::MainRTToCurrentRT()
 {
+	
 	// Zテストで失敗してもらったら困るので、Zテストは無効にしておく。
 	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
 	// αブレンドもいらない。
@@ -182,6 +183,13 @@ void CPostEffect::Render()
 
 	game->Render();
 	bloom.Render();
+	monochro.Render();
+	if (game->GetPlayer()->GetZoomBlur())
+	{
+
+		zoomBlur.Render();
+
+	}
 
 	// ハンズオン 1-2 レンダリングターゲットを戻す。
 	g_pd3dDevice->SetRenderTarget(0, frameBufferRT);

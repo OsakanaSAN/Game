@@ -10,6 +10,17 @@ TITLE::TITLE()
 
 TITLE::~TITLE()
 {
+
+	for (int i = 0;i < 3;i++)
+	{
+		delete m_Title_Sound[i];
+	}
+	for (int i = 0;i < 4;i++)
+	{
+
+		Title[i]->TexRelease();
+		delete Title[i];
+	}
 }
 
 void TITLE::Start()
@@ -113,11 +124,15 @@ void TITLE::Update()
 				m_Title_Sound[0]->Release();
 				m_Title_Sound[1]->Release();
 				m_Title_Sound[2]->Release();
+				g_physicsWorld = new PhysicsWorld;
+				g_physicsWorld->Init();
 				game->SetGameScene();
 				game->NewGameScene();
 				game->GetGameScene()->Start();
 				game->GetFade()->StartFadeIn();
 				m_state = End;
+				delete this;
+
 				return;
 		}
 

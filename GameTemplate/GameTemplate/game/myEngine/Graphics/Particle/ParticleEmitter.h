@@ -14,6 +14,7 @@ struct SParicleEmitParameter {
 	float w;							//!<パーティクルの幅。
 	float h;							//!<パーティクルの高さ。
 	float intervalTime;					//!<パーティクルの発生間隔。
+	float timer;						//消えるまでの時間
 	D3DXVECTOR3 initSpeed;				//!<初速度
 
 };
@@ -47,7 +48,9 @@ public:
 private:
 	SParicleEmitParameter	param;			//!<パラメータ。
 	std::list<CParticle*>	particleList;	//!<パーティクルのリスト。
-	float					timer;			//!<タイマー
+	float					timer = 0;			//!<タイマー
 	D3DXVECTOR3				Position;
+	LPDIRECT3DTEXTURE9		texture;			//!<テクスチャ。
+	static ID3DXEffect*		shaderEffect;		//!<シェーダーエフェクト。
 };
 

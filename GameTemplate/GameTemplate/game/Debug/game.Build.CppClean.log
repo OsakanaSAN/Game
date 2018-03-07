@@ -2,7 +2,6 @@ c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\game.pch
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\vc140.pdb
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\stdafx.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\csoundengine.obj
-c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\csoundsource.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\wavefilebank.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\wavfile.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\system.obj
@@ -24,6 +23,7 @@ c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\vertexbuffer
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\fade.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\game.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\gamecamera.obj
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\gameobjectmanager.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\igameobject.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\main.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\map.obj
@@ -49,7 +49,8 @@ c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\bullet.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\c2dimage.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\cameracollisionsolver.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\enemy.obj
-c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\gameobjectmanager.obj
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\csoundsource.obj
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\debug\gui.obj
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\debug\game.ilk
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\debug\game.exe
 c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\debug\game.pdb

@@ -9,7 +9,7 @@ public:
 	//テクスチャを取得。
 	LPDIRECT3DTEXTURE9 GetTexture()
 	{
-		return SrenderTarget.GetTexture();
+		return SrenderTarget[0].GetTexture();
 	}
 	//初期化。
 	void Init();
@@ -40,7 +40,8 @@ public:
 	//シャドウマップに書き込み。
 	void Draw();
 private:
-	CRenderTarget SrenderTarget;		//シャドウマップを書きこむレンダリングターゲット。
+	static const int			NUM_SHADOW_MAP = 3;
+	CRenderTarget SrenderTarget[NUM_SHADOW_MAP];		//シャドウマップを書きこむレンダリングターゲット。
 	D3DXMATRIX  lightViewMatrix;	//ライトビューマトリクス。
 	D3DXMATRIX	lightProjMatrix;	//ライトプロジェクションマトリクス。
 	D3DXVECTOR3 viewPosition;		//ライトビューの視点。

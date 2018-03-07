@@ -34,45 +34,42 @@ CShadowMap::~CShadowMap()
 void CShadowMap::Init()
 {
 	//レンダリングターゲットを初期化。
-	SrenderTarget.Create(
+	SrenderTarget[0].Create(
 		1280,
-		720,
+		1280,
 		1,						//レンダリングターゲットにはミップマップは不要なので一枚のみ。
 		D3DFMT_R16F,		    //Zの精度
 		D3DFMT_D24S8,		    //学生のＰＣで24bitの深度バッファを作成できなかったので、16ビットで深度バッファを作成する。
 		D3DMULTISAMPLE_NONE,	//マルチサンプリングはなし。
 		0						//マルチサンプリングしないので０を指定。
 	);
+	for (int i = 1;i < 3;i++)
+	{
+		int W = 1280;
+		int H = 1280;
+		SrenderTarget[1].Create(
+			W,
+			H,
+			1,						//レンダリングターゲットにはミップマップは不要なので一枚のみ。
+			D3DFMT_R16F,		    //Zの精度
+			D3DFMT_D24S8,		    //学生のＰＣで24bitの深度バッファを作成できなかったので、16ビットで深度バッファを作成する。
+			D3DMULTISAMPLE_NONE,	//マルチサンプリングはなし。
+			0						//マルチサンプリングしないので０を指定。
+		);
+
+	}
 }
 
 
 //更新。
 void CShadowMap::Update()
 {
-	////ライトビューの注視点。視点。
-	////これは各自のゲームで調整するように。
-	//D3DXVec3Subtract(&m_lightDirection, &viewTarget, &viewPosition);
-	//D3DXVec3Normalize(&m_lightDirection, &m_lightDirection);
-
-	//D3DXVECTOR3 lightUp;
-	//D3DXVECTOR3 Up = { 0,1,0 };
-	//float t = fabsf(D3DXVec3Dot(&m_lightDirection, &Up));
-	//if (fabsf((t - 1.0f)) < 0.00001f) {
-	//	//ライトの方向がほぼY軸と並行。
-	//	lightUp = { 1,0,0 };
-	//}
-	//else {
-	//	lightUp = { 0,1,0 };
-	//}
-	////ライトからみたビュー行列を作成。
-	//D3DXVECTOR3 target;
-	//D3DXVec3Add(&target, &viewPosition, &m_lightDirection);
-	//D3DXMatrixLookAtLH(&lightViewMatrix, &viewPosition, &target, &lightUp);
+	if (game->GetPlayer() == NULL) { return; }
+	
 
 	D3DXVECTOR3 target = game->GetPlayer()->GetPos();
 	D3DXVECTOR3 viewPos = target;
 	viewPos.y += 30;
-	viewPos.x += 10;
 	shadowCount++;
 	if (shadowCount == 3)
 	{
@@ -100,7 +97,13 @@ void CShadowMap::Update()
 		D3DXMatrixLookAtLH(&lightViewMatrix, &viewPosition, &viewTarget, &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
 	}
 	//D3DXMATRIXA16 matProj;
-	D3DXMatrixPerspectiveFovLH(&lightProjMatrix, m_viewAngle, aspect, Near, Far);
+	D3DXMatrixPerspectiveFovLH(
+		&lightProjMatrix, 
+		m_viewAngle, 
+		aspect, 
+		Near, 
+		Far
+	    );
 
 
 }
@@ -108,7 +111,7 @@ void CShadowMap::Update()
 //シャドウマップに書き込み。
 void CShadowMap::Draw()
 {
-	
+	if (game->GetPlayer() == NULL) { return; }
 		Update();
 		g_pd3dDevice->BeginScene();
 		LPDIRECT3DSURFACE9 renderTargetBackup;
@@ -116,15 +119,16 @@ void CShadowMap::Draw()
 		g_pd3dDevice->GetRenderTarget(0, &renderTargetBackup);		//元々のレンダリングターゲットを保存。後で戻す必要があるので。
 		g_pd3dDevice->GetDepthStencilSurface(&depthBufferBackup);	//元々のデプスステンシルバッファを保存。後で戻す必要があるので。
 																	//レンダリングターゲットを変更する。
-		g_pd3dDevice->SetRenderTarget(0, SrenderTarget.GetRenderTarget());
-		g_pd3dDevice->SetDepthStencilSurface(SrenderTarget.GetDepthStencilBuffer());
+		g_pd3dDevice->SetRenderTarget(0, SrenderTarget[0].GetRenderTarget());
+		g_pd3dDevice->SetDepthStencilSurface(SrenderTarget[0].GetDepthStencilBuffer());
 		//書き込み先を変更したのでクリア。
 		g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xffffffff, 1.0f, 0);
 
 		game->GetPlayer()->LightEyePosRender(lightViewMatrix, lightProjMatrix);
-		/*for (auto Enemy : game->GetEnemys()) {
+
+		for (const auto& Enemy : game->GetEnemys()) {
 			Enemy->LightEyePosRender(lightViewMatrix, lightProjMatrix);
-		}*/
+		}
 		/*for (auto bullet : game->GetPlayerBullet()) {
 			bullet->LightEyePosRender(lightViewMatrix, lightProjMatrix);
 		}*/

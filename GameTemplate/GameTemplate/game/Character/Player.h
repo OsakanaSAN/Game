@@ -24,12 +24,12 @@ public:
 	void Update();	//プレイヤーのアップデート関数
 	void Render();	//プレイヤーの描画関数
 	void LightEyePosRender(D3DXMATRIX&  lightViewMatrix, D3DXMATRIX&	lightProjMatrix); //影描画用関数
-	void PlayerAnimation();	//プレイヤーのアニメーション関数
 	void MovePlayer();		//プレイヤの移動の処理をする関数
 	void OnLock();			//ロックオン処理関数 
 	void InitBullet();		//弾の生成関数
 	void TransformAngle();		//プレイヤーの回転の処理関数
 	const D3DXVECTOR3& InitBootht(D3DXVECTOR3& MoveSpeed); //ブーストの処理関数
+
 	//現在地を取得
 	const D3DXVECTOR3& GetPos()
 	{
@@ -42,7 +42,7 @@ public:
 	//ブースと時間取得
 	float GetBoothtTime()
 	{
-		return m_BoothtTime;
+		return m_DashTime;
 	}
 
 	const D3DXMATRIX& GetWorldMatrix()
@@ -67,9 +67,25 @@ public:
 	}
 	void Animetion();
 
+
+	int GetMaxHp()
+	{
+		return m_MaxHp;
+	}
+
+	int GetHp()
+	{
+		return m_Hp;
+	}
+	bool GetZoomBlur()
+	{
+		return m_ZoomBlurOn;
+	}
+
 private:
 
-
+	int						m_MaxHp = 200;
+	int						m_Hp	= 200;
 	CParticleEmitter		m_ParticleEmitter;
 
 	SkinModel				m_Skinmodel;								//スキンモデル
@@ -109,6 +125,8 @@ private:
 	bool					m_NoEenemy = false;						//エネミーが存在しているかの判定
 	EenemyBoX				m_EnemyBox[30];
 /////////////////////////////////////////////////////////////////////////////////////
+	bool					m_ZoomBlurOn = false;
+	float					m_Radian = 0.0f;
 	
 };
 

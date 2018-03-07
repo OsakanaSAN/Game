@@ -11,24 +11,32 @@ CEnemy::CEnemy()
 CEnemy::~CEnemy()
 {
 
+	m_CharacterController.RemoveRigidBoby();
+	m_SkinmodelData->Release();
+	delete m_SkinmodelData;
+	delete m_GUI;
 }
 
 void CEnemy::Start()
 {
 	m_GUI = new CGUI;
-	m_Light.SetDiffuseLightDirection(0, D3DXVECTOR4(0.707f, 0.0f, -0.707f, 1.0f));
-	m_Light.SetDiffuseLightDirection(1, D3DXVECTOR4(-0.707f, 0.0f, -0.707f, 1.0f));
-	m_Light.SetDiffuseLightDirection(2, D3DXVECTOR4(0.0f, 0.707f, -0.707f, 1.0f));
-	m_Light.SetDiffuseLightDirection(3, D3DXVECTOR4(0.0f, -0.707f, -0.707f, 1.0f));
+	//m_Light.SetDiffuseLightDirection(0, D3DXVECTOR4(0.707f, 0.0f, -0.707f, 1.0f));
+	//m_Light.SetDiffuseLightDirection(1, D3DXVECTOR4(-0.707f, 0.0f, -0.707f, 1.0f));
+	//m_Light.SetDiffuseLightDirection(2, D3DXVECTOR4(0.0f, 0.707f, -0.707f, 1.0f));
+	//m_Light.SetDiffuseLightDirection(3, D3DXVECTOR4(0.0f, -0.707f, -0.707f, 1.0f));
 
-	m_Light.SetDiffuseLightColor(0, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
-	m_Light.SetDiffuseLightColor(1, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
-	m_Light.SetDiffuseLightColor(2, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
-	m_Light.SetDiffuseLightColor(3, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
-	m_Light.SetAmbientLight({ 0.5f,0.5f,0.8f,0.3f });
+	//m_Light.SetDiffuseLightColor(0, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
+	//m_Light.SetDiffuseLightColor(1, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
+	//m_Light.SetDiffuseLightColor(2, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
+	//m_Light.SetDiffuseLightColor(3, D3DXVECTOR4(0.5f, 0.5f, 1.0f, 1.0f));
+	m_Light.SetAmbientLight({ 1.5f,1.5f,2.5f,1.0f });
 
-	m_SkinmodelData.LoadModelData("Assets/modelData/robo4.x", NULL);
-	m_Skinmodel.Init(&m_SkinmodelData);
+	m_SkinmodelData = new SkinModelData;
+	m_SkinmodelData->LoadModelData("Assets/modelData/robo4.x", NULL);
+	
+
+	m_Skinmodel.Init(m_SkinmodelData);
+
 	m_Skinmodel.SetLight(&m_Light);
 	m_CharacterController.Init(1.0f, 1.0f, m_Position);
 	m_CharacterController.SetGravity(-9.8f); //èdóÕÇÃê›íË
@@ -42,7 +50,8 @@ void CEnemy::Start()
 	SparticleEmit.texturePath = "Assets/Particle/smoke.png";
 	SparticleEmit.w = 2.0f;
 	SparticleEmit.h = 2.0f;
-	SparticleEmit.intervalTime = 0.2f;
+	SparticleEmit.intervalTime = 0.5f;
+	SparticleEmit.timer = 1.0f;
 	SparticleEmit.initSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_ParticleEmitter.Init(SparticleEmit);
 
@@ -55,7 +64,7 @@ void CEnemy::Update()
 
 	m_MoveSpeed = m_CharacterController.GetMoveSpeed();
 	EnemyMove();
-	//EnemyBulletON();
+	EnemyBulletON();
 	EndEnemy();
 	if (m_HP < 200.0f)
 	{
@@ -65,7 +74,7 @@ void CEnemy::Update()
 
 	}
 	m_Position = m_CharacterController.GetPosition();
-	m_Skinmodel.UpdateWorldMatrix(m_Position, m_Rotation, D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	m_Skinmodel.UpdateWorldMatrix(m_Position, m_Rotation, D3DXVECTOR3(2.0f, 2.0f, 2.0f));
 
 }
 
@@ -169,10 +178,11 @@ void CEnemy::EndEnemy()
 		float length = D3DXVec3Length(&DetBullet);
 		
 
-		if (length < 10.0f)
+		if (length < 10.0f && !bullet->GetIsHit())
 		{
 			m_HP -= 100.0f;
-			m_GUI->setSize({ m_HP / 100,0.5f });
+			float PercentHp = (float)100.0f / 400.0f ;
+			m_GUI->setSize({ PercentHp,0.5f });
 			bullet->SetIsHit(true);
 			
 		
@@ -181,14 +191,14 @@ void CEnemy::EndEnemy()
 				
 				m_IsDete = true;
 				m_CharacterController.RemoveRigidBoby();
+				game->GetScorecheckre()->SetScore();
 
 			}
-			//this->characterController.RemoveRigidBoby();
+			
 		}
 
 	}
 
-	//characterController.SetMoveSpeed(Movespeed);
 }
 
 void CEnemy::BranchRoute()
@@ -266,16 +276,16 @@ void CEnemy::Render()
 	m_Skinmodel.SetShadowMap(false);
 	m_Skinmodel.SetShadowRecieve(false);
 	
-	m_Skinmodel.Draw(&game->GetCamera()->GetViewMatrix(),&game->GetCamera()->GetProjectionMatrix());
+	m_Skinmodel.Draw(&game->GetGameCamara()->Getcamera()->GetViewMatrix(),&game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
 	
-	
+	//m_ParticleEmitter.Render(game->GetCamera()->GetViewMatrix(), game->GetCamera()->GetProjectionMatrix());
 	
 
 }
 void CEnemy::Render2D()
 {
-	m_GUI->Render(game->GetCamera()->GetViewMatrix(), game->GetCamera()->GetProjectionMatrix());
-	m_ParticleEmitter.Render(game->GetCamera()->GetViewMatrix(), game->GetCamera()->GetProjectionMatrix());
+	m_GUI->Render(game->GetGameCamara()->Getcamera()->GetViewMatrix(), game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
+	//m_ParticleEmitter.Render(game->GetCamera()->GetViewMatrix(), game->GetCamera()->GetProjectionMatrix());
 }
 void CEnemy::LightEyePosRender(D3DXMATRIX&  lightViewMatrix, D3DXMATRIX&	lightProjMatrix)
 {
