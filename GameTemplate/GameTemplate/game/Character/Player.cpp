@@ -470,7 +470,7 @@ void CPlayer::InitBullet()
 	D3DXVECTOR3 Length;
 	
 	//D3DXVec3Normalize(&Epos, &Epos);
-	if (m_Pad.IsPress(Pad::enButtonRB1) && m_bulletIntervalTime > BULLETTIME) {
+	if (m_Pad.IsPress(Pad::enButtonRB1) && m_bulletIntervalTime >= BULLETTIME) {
 		Bullet* bullet = new Bullet();
 		D3DXVECTOR3 bulletPos = m_Position;
 		bulletPos.y += 5.0f;
@@ -501,7 +501,7 @@ void CPlayer::InitBullet()
 		m_PlayerSE->Update();
 	}
 
-	if (m_bulletIntervalTime < BULLETTIME) {
+	if (m_bulletIntervalTime <= BULLETTIME) {
 		m_bulletIntervalTime += GameTime().GetFrameDeltaTime();
 	}
 
