@@ -8,7 +8,7 @@
 {
 	"bill3",
 	D3DXVECTOR3(337.00f, 0.00f, 7.60f),             //平行移動
-	D3DXQUATERNION(0.00f, 0.30f, 0.00f, 0.95f ),  //回転
+	D3DXQUATERNION(0.00f, 0.30f, 0.00f, 1.00f ),  //回転
 },
 //bill3
 {
@@ -67,19 +67,19 @@
 //Enemy
 {
 	"Enemy",
-	D3DXVECTOR3(106.10f, 10.80f, -14.47f),             //平行移動
+	D3DXVECTOR3(106.10f, 86.00f, -498.60f),             //平行移動
 	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f ),  //回転
 },
 //Enemy
 {
 	"Enemy",
-	D3DXVECTOR3(0.00f, 18.54f, -110.00f),             //平行移動
+	D3DXVECTOR3(-662.00f, 229.00f, -359.00f),             //平行移動
 	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f ),  //回転
 },
 //Enemy
 {
 	"Enemy",
-	D3DXVECTOR3(-45.70f, 49.80f, 115.70f),             //平行移動
+	D3DXVECTOR3(852.00f, 59.20f, -492.00f),             //平行移動
 	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f ),  //回転
 },
 //skydoom
@@ -97,26 +97,26 @@
 //Wave
 {
 	"Wave",
-	D3DXVECTOR3(0.00f, 40.00f, 1444.60f),             //平行移動
+	D3DXVECTOR3(0.00f, 40.00f, 1404.00f),             //平行移動
 	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f),  //回転
 },
 //NoMove_Ship 1
 {
 	"NoMove_Ship",
 	D3DXVECTOR3(0.00f, 40.00f, -501.40f),             //平行移動
-	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f),  //回転
+	D3DXQUATERNION(0.00f, -0.71f, 0.00f, 0.71f ),  //回転
 },
 //NoMove_Ship 1
 {
 	"NoMove_Ship",
 	D3DXVECTOR3(273.00f, 40.00f, -465.80f),             //平行移動
-	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f),  //回転
+	D3DXQUATERNION(0.00f, -0.71f, 0.00f, 0.71f ),  //回転
 },
 //NoMove_Ship 1
 {
 	"NoMove_Ship",
 	D3DXVECTOR3(-199.00f, 40.00f, -398.40f),             //平行移動
-	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f),  //回転
+	D3DXQUATERNION(0.00f, -0.71f, 0.00f, 0.71f ),  //回転
 },
 //NoMove_Ship 1
 {
@@ -130,9 +130,16 @@
 	D3DXVECTOR3(611.00f, 40.00f, -626.40f),             //平行移動
 	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f),  //回転
 },
-//Sun
+//Enemy
+{
+	"Enemy",
+	D3DXVECTOR3(1017.00f, 59.20f, 126.00f),             //平行移動
+	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f ),  //回転
+},
+
+//Enemy
 {
 	"Sun",
-	D3DXVECTOR3(4000.00f, 1000.00f, 0.00f),             //平行移動
+	D3DXVECTOR3(1017.00f, 800.00f, 00.00f),             //平行移動
 	D3DXQUATERNION(0.00f, 0.00f, 0.00f, 1.00f),  //回転
 },

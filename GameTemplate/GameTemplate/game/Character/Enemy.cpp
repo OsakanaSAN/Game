@@ -88,25 +88,34 @@ void CEnemy::EnemyBulletON()
 	D3DXVec3Subtract(&pPos, &pPos, &m_Position);
 	//プレイヤーを追う弾
 	D3DXVECTOR3 Pos = game->GetPlayer()->GetPos() - m_Position;
-	D3DXVec3Normalize(&Pos, &Pos);
+	//D3DXVec3Normalize(&Pos, &Pos);
 
-	m_BulletTime += GameTime().GetFrameDeltaTime();  //60分の1秒
-	if (D3DXVec3Length(&pPos) < 200 && m_BulletTime > 5.0f) {
-		Bullet* bullet = new Bullet();
-		D3DXVECTOR3 bulletPos = m_Position;
-		bulletPos.y += 1.0f;
-		bullet->Start(bulletPos, Pos);//プレイヤーの前方向を渡す
-		game->AddEnemyBullets(bullet);
-		m_BulletTime = 0.0f;
-		
-		
+	if (D3DXVec3Length(&pPos) <= 200.0f)
+	{
+
+		m_BulletTime += GameTime().GetFrameDeltaTime();  //タイマーの所得
+
+		if (!m_rando)
+		{
+			//乱数によるインターバルの設定
+			m_randoTime = g_Random->GetRandInt() % 10 + 3;
+			m_rando = true;
+		}
+
+		if (m_BulletTime > m_rando) {
+			Bullet* bullet = new Bullet();
+			D3DXVECTOR3 bulletPos = m_Position;
+			bulletPos.y += 3.0f;
+			bullet->Start(bulletPos, Pos);//プレイヤーの前方向を渡す
+			game->AddEnemyBullets(bullet);
+			m_BulletTime = 0.0f;
+			m_rando = false;
+
+
+		}
+
+
 	}
-
-	m_BulletFireInterval--;
-	if (m_BulletFireInterval < 0) {
-		m_BulletFireInterval = 0;
-	}
-
 }
 
 //敵の移動関数
@@ -123,28 +132,26 @@ void CEnemy::EnemyMove()
 	}
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-	D3DXVECTOR3 SubVect;
-	int pSpeeed = game->GetPlayer()->GetMoveSpeed();//プレイヤの移動速度
+	D3DXVECTOR3 SubVect,NewPlayerposition;
 	m_SubPosition.y = 0.0f;
 
 	D3DXVec3Subtract(&SubVect, &m_SubPosition, &m_Position);
-
+	D3DXVec3Subtract(&NewPlayerposition, &m_SubPosition, &game->GetPlayer()->GetPos());
+	//D3DXVec3Normalize(&NewPlayerposition, &NewPlayerposition);
 	
 	//敵の移動
-	if (D3DXVec3Length(&SubVect) > 5 )
+	if (D3DXVec3Length(&SubVect) > 20 )
 	{
 		D3DXVec3Normalize(&SubVect, &SubVect);
 		m_MoveSpeed = SubVect * 20.5f;
-
-
-		
 		m_CharacterController.Jump();
+		//m_CharacterController.SetGravity(0.0f);
 		m_CharacterController.SetPosition(m_Position);
 		m_CharacterController.SetMoveSpeed(m_MoveSpeed);
 		m_CharacterController.Execute();
 	}
 	
-	else
+	if(D3DXVec3Length(&NewPlayerposition) >= 30)
 	{
 		RouteSearch();
 	}
@@ -168,8 +175,12 @@ void CEnemy::EndEnemy()
 	auto& Bullets = game->GetPlayerBullet();
 	D3DXVECTOR3 Movespeed = { 0.0f,0.0f,0.0f };
 
+	if (m_Position.y <= -50)
+	{
+		m_HP = 0;
+	}
 	//プレイヤーとの弾の当たり判定の計算
-	for (auto bullet : Bullets)
+	for (const auto& bullet : Bullets)
 	{
 		D3DXVECTOR3 DetBullet = m_Position - bullet->Getops();
 		DetBullet.y += 8;
@@ -178,7 +189,7 @@ void CEnemy::EndEnemy()
 		float length = D3DXVec3Length(&DetBullet);
 		
 
-		if (length < 10.0f && !bullet->GetIsHit())
+		if (length < 8.0f && !bullet->GetIsHit())
 		{
 			m_HP -= 100.0f;
 			float PercentHp = (float)100.0f / 400.0f ;
@@ -186,19 +197,20 @@ void CEnemy::EndEnemy()
 			bullet->SetIsHit(true);
 			
 		
-			if (m_HP <= 0)
-			{
-				
-				m_IsDete = true;
-				m_CharacterController.RemoveRigidBoby();
-				game->GetScorecheckre()->SetScore();
-
-			}
+			
 			
 		}
 
 	}
 
+	if (m_HP <= 0)
+	{
+
+		m_IsDete = true;
+		m_CharacterController.RemoveRigidBoby();
+		game->GetScorecheckre()->SetScore();
+
+	}
 }
 
 void CEnemy::BranchRoute()
@@ -223,8 +235,8 @@ void CEnemy::RouteSearch()
 {
 	D3DXVECTOR3 TargetPosition = game->GetPlayer()->GetPos();	//敵から見たターゲット
 	D3DXVECTOR3 MyPosition = m_Position;						//現在位置
-	MyPosition.x += 40.0f;
-	MyPosition.z += 40.0f;
+	MyPosition.x += 50.0f;
+	MyPosition.z += 50.0f;
 	int Numbeer = 1;
 	D3DXVECTOR3 Length = {0,10000,0};
 	D3DXVECTOR3 SubVect = {0,0,0};

@@ -52,7 +52,7 @@ void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 	
  
 	m_characterController = new CharacterController;
-	m_characterController->Init(0.3f, 0.3f, m_position);
+	m_characterController->Init(1.0f, 1.0f, m_position);
 	m_characterController->SetGravity(0.0f);
 	//モデルをロード。
 	if (modelData == NULL) {

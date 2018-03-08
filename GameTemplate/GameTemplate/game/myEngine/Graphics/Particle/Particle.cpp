@@ -182,7 +182,7 @@ void CParticle::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatri
 
 	shaderEffect->SetTechnique("ColorTexPrimAdd");
 	shaderEffect->SetMatrix("g_mWVP", &m);
-
+	shaderEffect->SetFloat("g_alpha", 0.5f);
 	shaderEffect->SetTexture("g_texture", texture);
 	shaderEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
 	shaderEffect->BeginPass(0);

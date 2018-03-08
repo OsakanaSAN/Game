@@ -196,6 +196,7 @@
     <ClCompile Include="GameCamera\RadarMap.cpp" />
     <ClCompile Include="myEngine\Graphics\Particle\ParticleEmitter.cpp" />
     <ClCompile Include="myEngine\Graphics\Particle\Particle.cpp" />
+    <ClCompile Include="myEngine\Random\MyRandom.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Scene\Result.cpp" />
     <ClCompile Include="Map\Sea.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="myEngine\Graphics\PostEffect\Monochrome.h" />
     <ClInclude Include="myEngine\Graphics\PostEffect\Dof.h" />
     <ClInclude Include="HUD\GUI.h" />
+    <ClInclude Include="myEngine\Random\MyRandom.h" />
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="myEngine\Graphics\PostEffect\Bloom.h" />
     <ClInclude Include="HUD\Hud.h" />

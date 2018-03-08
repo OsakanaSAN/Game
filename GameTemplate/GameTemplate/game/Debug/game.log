@@ -1,3 +1,4 @@
-﻿  Monochrome.cpp
+﻿  Player.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\character\player.cpp(421): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
   game.vcxproj -> C:\Users\kbc16b03\Desktop\Game\GameTemplate\GameTemplate\Debug\game.exe
   game.vcxproj -> C:\Users\kbc16b03\Desktop\Game\GameTemplate\GameTemplate\Debug\game.pdb (Full PDB)

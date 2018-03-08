@@ -30,11 +30,12 @@ public:
 	void TransformAngle();		//プレイヤーの回転の処理関数
 	const D3DXVECTOR3& InitBootht(D3DXVECTOR3& MoveSpeed); //ブーストの処理関数
 
-	//現在地を取得
+	//ゲッター
 	const D3DXVECTOR3& GetPos()
 	{
 		return m_Position;
 	}
+	//セッター
 	const void SetPos(D3DXVECTOR3& pos)
 	{
 		m_Position = pos;
@@ -44,7 +45,7 @@ public:
 	{
 		return m_DashTime;
 	}
-
+	//ワールド行列の取得
 	const D3DXMATRIX& GetWorldMatrix()
 	{
 		return m_Skinmodel.GetWorldMatrix();
@@ -65,18 +66,20 @@ public:
 	{
 		return m_MoveSpeed;
 	}
+	//アニメーションを判定する関数
 	void Animetion();
 
-
+	//最大HPを取得する
 	int GetMaxHp()
 	{
 		return m_MaxHp;
 	}
-
+	//現在のHPを取得
 	int GetHp()
 	{
 		return m_Hp;
 	}
+	//Zoomブラーをかけるかの判定を返す
 	bool GetZoomBlur()
 	{
 		return m_ZoomBlurOn;
@@ -84,38 +87,34 @@ public:
 
 private:
 
-	int						m_MaxHp = 200;
-	int						m_Hp	= 200;
-	CParticleEmitter		m_ParticleEmitter;
-
+	int						m_MaxHp = 200;								//プレイヤーの最大HP
+	int						m_Hp	= 200;								//プレイヤーの現在のHP
+	CParticleEmitter		m_ParticleEmitter;							//パーティクル
 	SkinModel				m_Skinmodel;								//スキンモデル
 	SkinModelData			m_SkinmodelData;							//スキンモデルデーター
 	Light					m_Light;									//プレイヤーのライト
-	D3DXVECTOR3				m_Position = { 0.0f,60.0f,0.0f };			//プレイヤーの現在位置	
+	D3DXVECTOR3				m_Position = { 0.0f,0.0f,0.0f };			//プレイヤーの現在位置	
 	D3DXQUATERNION			m_Rotation = { 0.0f, 0.0f, 0.0f, 1.0f };	//回転
 	CharacterController		m_CharacterController;						//キャラクターコントローラー
 	CSoundSource*			m_PlayerSE;									//プレイヤーのSE
-
-	float				  m_BoothtTime;								//ブーストの時間を格納
-	int					  m_MoveSpeed = 0;							//速さ
-	bool				  m_NoBoothtInput;
-	Animation             m_Animation;								//アニメーション
-	Pad                   m_Pad;									//パット
-	int                   m_AnimationNo;							//現在のアニメーション番号
-	Camera*               m_Camera;									//カメラ
-	bool                  m_IsMove = false;
-
-	int					  m_bulletFireInterval;						//弾丸をもう一度打てるようになるまでのインターバル
-	float                 m_DashTime = 0;							//
-	float                 m_SpeedDown = 1.0f;
-	bool                  m_ZAttent = false;
-	float                 m_Inertia = 6;							//慣性
-	float                 m_X_input = 0;							//x軸の入力量保管
-	float                 m_Y_input = 0;							//y軸の入力量保管
-	float                 m_X_input_old = 0;						//過去のx軸の入力量保管
-	float                 m_Y_input_old = 0;						//過去のy軸の入力量保管
-	bool                  m_Oveline = false;
-	bool                  m_BattleMotion = false;					//攻撃中
+	float					m_BoothtTime;								//ブーストの時間を格納
+	int						m_MoveSpeed = 0;							//キャラクターの移動速度
+	bool					m_NoBoothtInput;							/*ブースと時間の上限を超えてもR2が押し続けている時に
+																		  切り替わりが発生するのを防ぐため*/
+	Animation				m_Animation;								//アニメーション
+	Pad						m_Pad;										//パット
+	int						m_AnimationNo;								//現在のアニメーション番号
+	bool					m_IsMove = false;							//移動中かの判定
+	float					m_bulletIntervalTime;						//弾丸をもう一度打てるようになるまでのインターバル
+	float					m_DashTime = 0;								//現在のブースと時間を格納
+	bool					m_ZAttent = false;							//敵に注目するかの判定
+	float					m_Inertia = 6;								//慣性
+	float					m_X_input = 0;								//x軸の入力量保管
+	float					m_Y_input = 0;								//y軸の入力量保管
+	float					m_X_input_old = 0;							//過去のx軸の入力量保管
+	float					m_Y_input_old = 0;							//過去のy軸の入力量保管
+	bool					m_Oveline = false;
+	bool					m_BattleMotion = false;					//攻撃中
 
 /////////////////////////////////////////////////////////////////////////////////////
 	//エネミーに注目するための変数
@@ -125,8 +124,8 @@ private:
 	bool					m_NoEenemy = false;						//エネミーが存在しているかの判定
 	EenemyBoX				m_EnemyBox[30];
 /////////////////////////////////////////////////////////////////////////////////////
-	bool					m_ZoomBlurOn = false;
-	float					m_Radian = 0.0f;
+	bool					m_ZoomBlurOn = false;					//Zoomブラーをオンにする
+	float					m_Radian = 0.0f;						//プレイヤーを傾ける処理
 	
 };
 

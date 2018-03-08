@@ -3,7 +3,7 @@
 #include "game.h"
 #define  TURBOTIME 5
 #define  NomalSpeed 25
-
+#define	 BULLETTIME 0.2f
 
 
 enum
@@ -79,10 +79,7 @@ void CPlayer::Start()
 
 void CPlayer::Update()
 {
-	
-
-	
-	m_Camera = game->GetGameCamara()->Getcamera();
+	m_CharacterController.SetPosition(m_Position);
 	m_CharacterController.Execute();
 	Animetion();  //アニメーション
 	MovePlayer();//プレイヤーの移動
@@ -460,9 +457,6 @@ void CPlayer::TransformAngle()
 	}
 
 	
-	//D3DXQuaternionMultiply(&m_Rotation, &m_Rotation, &rot);
-
-	
 
 }
 
@@ -471,12 +465,12 @@ void CPlayer::TransformAngle()
 void CPlayer::InitBullet()
 {
 	//弾の生成
-	D3DXMATRIX Ahead = /*game->GetGameCamara()->GetCameraMatrix();*/m_Skinmodel.GetMatrix(); //プレイヤーの行列を取得
+	D3DXMATRIX Ahead = /*game->GetGameCamara()->GetCameraMatrix();/*/m_Skinmodel.GetMatrix();//*/ //プレイヤーの行列を取得
 	D3DXVECTOR3 Epos = { 0,0,0 };
 	D3DXVECTOR3 Length;
 	
 	//D3DXVec3Normalize(&Epos, &Epos);
-	if (m_Pad.IsPress(Pad::enButtonRB1) && m_bulletFireInterval == 0) {
+	if (m_Pad.IsPress(Pad::enButtonRB1) && m_bulletIntervalTime > BULLETTIME) {
 		Bullet* bullet = new Bullet();
 		D3DXVECTOR3 bulletPos = m_Position;
 		bulletPos.y += 5.0f;
@@ -486,7 +480,7 @@ void CPlayer::InitBullet()
 			{
 
 				Epos = enemy->Getpos();
-				Epos.y += 2.0f;
+				Epos.y += 5.0f;
 				Length = Epos - bulletPos;
 			}
 		}
@@ -500,15 +494,15 @@ void CPlayer::InitBullet()
 			bullet->Start(bulletPos, Epos);
 		}
 		game->AddPlayerBullets(bullet);
-		m_bulletFireInterval = 10;
+		m_bulletIntervalTime = 0.0f;
 		m_PlayerSE->Init("Assets/Sound/SE/BulletSound2.wav");
 		m_PlayerSE->SetVolume(0.1f);
 		m_PlayerSE->Play(true);
 		m_PlayerSE->Update();
 	}
-	m_bulletFireInterval--;
-	if (m_bulletFireInterval < 0) {
-		m_bulletFireInterval = 0;
+
+	if (m_bulletIntervalTime < BULLETTIME) {
+		m_bulletIntervalTime += GameTime().GetFrameDeltaTime();
 	}
 
 }

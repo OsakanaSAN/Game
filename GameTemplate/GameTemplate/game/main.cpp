@@ -6,10 +6,13 @@
 #include "myEngine/Graphics/Light.h"
 #include "game.h"
 #include "myEngine/Graphics/PostEffect/PostEffect.h"
+#include "myEngine/Random/MyRandom.h"
 
 Game* game;
 CPostEffect* g_PostEffect;
 CSoundEngine* g_SoundEngine;
+MyRandom*	  g_Random;
+
 
 //-----------------------------------------------------------------------------
 // Name: ゲームを初期化。
@@ -24,6 +27,8 @@ void Init()
 	//ポストエフェクト用のシェーダーロード
 	g_PostEffect->LoadShader();
 	
+	g_Random = new MyRandom;
+	g_Random->Init((unsigned long)time(NULL));
 	
 	game = new Game;
 	game->Start();
@@ -39,6 +44,8 @@ VOID Render()
 
 	// 画面をクリア。
 	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
+	
+
 	
 	//シーンの描画開始。
 	

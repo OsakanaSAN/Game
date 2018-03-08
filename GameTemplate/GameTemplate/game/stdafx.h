@@ -29,10 +29,11 @@
 
 #include "game.h"
 #include "myEngine/Graphics/ShadowMap.h"
+#include "myEngine/Random/MyRandom.h"
 #include "myEngine/Graphics/PostEffect/PostEffect.h"
 
 extern CShadowMap g_shadowMap;	//シャドウマップ。
-
+extern MyRandom* g_Random;
 
 #define SAFE_RELEASE(p)			{ if(p) { (p)->Release(); (p) = NULL; } }	//インスタンスリリース
 #define SAFE_DELETE_ARRAY(p)	{ if(p) { delete[] (p);   (p) = NULL; } }	//インスタンス配列削除
