@@ -34,6 +34,7 @@ private:
 	D3DXVECTOR3			moveSpeed;			//!<速度。
 	D3DXVECTOR3			position;			//!<座標。
 	float				m_EndTime;			//消す時間
+	float				m_brightness = 0.1f;//輝度
 	float				Time;
 	float				m_alpha = 1.0f;
 	bool                isDete = false;

@@ -25,9 +25,9 @@ CParticle::~CParticle()
 	/*if(shaderEffect != nullptr){
 		shaderEffect->Release();
 	}*/
-	/*if(texture != nullptr){
+	if(texture != nullptr){
 		texture->Release();
-	}*/
+	}
 	primitive.Release();
 }
 void CParticle::Init( const SParicleEmitParameter& param,const LPDIRECT3DTEXTURE9 settexture, ID3DXEffect& effect)
@@ -185,8 +185,10 @@ void CParticle::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatri
 
 	shaderEffect->SetTechnique("ColorTexPrimAdd");
 	shaderEffect->SetMatrix("g_mWVP", &m);
+
 	shaderEffect->SetFloat("g_alpha", m_alpha);
 	shaderEffect->SetTexture("g_texture", texture);
+	shaderEffect->SetFloat("g_brightness", m_brightness);
 	shaderEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
 	shaderEffect->BeginPass(0);
 	shaderEffect->CommitChanges();

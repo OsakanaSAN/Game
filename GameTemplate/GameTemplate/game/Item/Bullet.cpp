@@ -113,12 +113,14 @@ bool Bullet::Update()
 			//m_particleEmit->Update();
 		}
 
-		m_position = moveSpeed * 120.0f;
-		m_characterController->SetMoveSpeed(m_position);
-		m_characterController->Execute();
-		m_position = m_characterController->GetPosition();
+		else
+		{
+			m_position = moveSpeed * 120.0f;
+			m_characterController->SetMoveSpeed(m_position);
+			m_characterController->Execute();
+			m_position = m_characterController->GetPosition();
 
-
+		}
 		//model.UpdateWorldMatrix(m_position, m_rotation, D3DXVECTOR3(0.3f, 0.3f, 0.3f));
 		return true;
 		break;

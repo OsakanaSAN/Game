@@ -43,7 +43,7 @@ void CPlayer::Start()
 	//m_Light.SetDiffuseLightColor(1, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
 	//m_Light.SetDiffuseLightColor(2, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
 	//m_Light.SetDiffuseLightColor(3, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
-	m_Light.SetAmbientLight({ 1.5f,1.5f,1.5f,1.0f });
+	m_Light.SetAmbientLight({ 2.5f,2.5f,2.5f,1.0f });
 	m_SkinmodelData.LoadModelData("Assets/modelData/robo6.x",&m_Animation);
 	m_Skinmodel.Init(&m_SkinmodelData);
 
