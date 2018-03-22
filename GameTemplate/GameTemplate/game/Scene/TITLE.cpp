@@ -124,11 +124,12 @@ void TITLE::Update()
 				m_Title_Sound[0]->Release();
 				m_Title_Sound[1]->Release();
 				m_Title_Sound[2]->Release();
-				g_physicsWorld = new PhysicsWorld;
-				g_physicsWorld->Init();
-				game->SetGameScene();
-				game->NewGameScene();
-				game->GetGameScene()->Start();
+				
+				//セレクトシーンに変更
+				game->SetSelectScene();
+				
+				game->NewSelect();
+				game->GetSelect()->Start();
 				game->GetFade()->StartFadeIn();
 				m_state = End;
 				delete this;

@@ -241,7 +241,7 @@ float4 PSCombine( VS_OUTPUT In ) : COLOR
 	combineColor += tex2D(g_combineSampler02, uv);
 	combineColor += tex2D(g_combineSampler03, uv);
 	combineColor += tex2D(g_combineSampler04, uv);
-	combineColor /= 5.0f;
+	combineColor /= 4.0f;
 	return combineColor;
 }
 

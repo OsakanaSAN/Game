@@ -21,10 +21,10 @@ public:
 	
 	void LightEyePosRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightProjMatrix);
 private:
-	SkinModel model;
-	SkinModelData modelData;
-	D3DXVECTOR3	position;
-	D3DXQUATERNION rotation;
+	SkinModel		model;							//スキンモデル
+	SkinModelData	modelData;						//スキンモデルデータ
+	D3DXVECTOR3		position;						//座標				
+	D3DXQUATERNION rotation;						//ローテーション
 	Light light;
 	MeshCollider meshCollider;	//メッシュコライダー。
 	RigidBody* rigidBody;		//剛体。

@@ -8,6 +8,7 @@
 
 
 
+
 struct AdjacentRoute
 {
 	D3DXVECTOR3  m_RoutePos = {0.0f,0.0f,0.0f};
@@ -57,7 +58,6 @@ public:
 	void EnemyMove();
 
 private:
-
 		CGUI*					m_GUI;						//HPゲージの表示
 		CParticleEmitter		m_ParticleEmitter;			//パーティクルの表示
 		SkinModel				m_Skinmodel;				//スキンモデル

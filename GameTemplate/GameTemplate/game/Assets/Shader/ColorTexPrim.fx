@@ -48,7 +48,7 @@ float4 PSMainTrans( VS_OUTPUT In ) : COLOR0
 float4 PSMainAdd( VS_OUTPUT In ) : COLOR0
 {
 	float4 tex = tex2D(g_textureSampler, In.uv);
-	return float4(tex.xyz * g_alpha,1.0f);
+	return float4(tex.xyz * tex.a * g_alpha * 0.1f, 1.0f);
 }
 
 /*!

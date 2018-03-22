@@ -29,7 +29,10 @@ CMonochrome::~CMonochrome()
 
 void CMonochrome::Render()
 {
-	if (game->GetPlayer() == NULL || game->GetPlayer()->GetHp() >= 100) { return; }
+	if (game->GetPlayer() == NULL || game->GetPlayer()->GetHp() >= 100)
+	{
+		m_AlphaPower = 1.0f;
+		return; }
 	if (m_AlphaPower >= 0)
 	{
 		m_AlphaPower -= GameTime().GetFrameDeltaTime() / 2;

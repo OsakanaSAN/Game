@@ -45,12 +45,18 @@ public:
 	{
 		Position = SetPosition;
 	}
+	void SetLockPosition(bool set)
+	{
+		lockPosition = set;
+	}
 private:
 	SParicleEmitParameter	param;			//!<パラメータ。
 	std::list<CParticle*>	particleList;	//!<パーティクルのリスト。
 	float					timer = 0;			//!<タイマー
+	float					EndTime = 0.0f;
 	D3DXVECTOR3				Position;
 	LPDIRECT3DTEXTURE9		texture;			//!<テクスチャ。
 	static ID3DXEffect*		shaderEffect;		//!<シェーダーエフェクト。
+	bool					lockPosition = false;
 };
 

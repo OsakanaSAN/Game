@@ -163,14 +163,15 @@ void CGUI::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix)
 
 	//アルファブレンディングを有効にする。
 	g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-	//g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-	//g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+	g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+	g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
 
 	shaderEffect->SetTechnique("ColorTexPrimTrans");
 
 	shaderEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
 	shaderEffect->BeginPass(0);
-	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+
 
 	shaderEffect->SetValue("g_mWVP", &m, sizeof(m));
 	shaderEffect->SetTexture("g_texture", m_texture);
@@ -185,9 +186,9 @@ void CGUI::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix)
 	shaderEffect->EndPass();
 	shaderEffect->End();
 
-	/*g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 	g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
-	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);*/
+	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 }

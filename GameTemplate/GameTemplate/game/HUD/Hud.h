@@ -9,16 +9,21 @@ public:
 	void Update();
 	void DashTime();
 	void Drow(LPD3DXSPRITE spt);
+	void SetNoRenderCircle(bool setc)
+	{
+		m_NoRenderCircle = setc;
+	}
 private:
-	Sprite* m_Hp[2];   //ブーストゲージの表示
-	Sprite* m_Bootht[2];
-	Sprite* m_Circle; //サークル表示
-	Sprite* m_Number[3];
-	float m_num = 0;
-	int   m_setnum = 0;
-	int   oldnum = 0;
-	int	  m_Minute = 0;
+	Sprite*		m_Hp[2];   //ブーストゲージの表示
+	Sprite*		m_Bootht[2];
+	Sprite*		m_Circle; //サークル表示
+	Sprite*		m_Number[3];
+	float		m_num = 0;
+	int			m_setnum = 0;
+	int			oldnum = 0;
+	int			m_Minute = 0;
 	char        TextName[255];
+	bool		m_NoRenderCircle = false;
 
 	D3DXVECTOR2  m_Meterpos = { 300.0f,40.0f };
 	Pad     m_pad;

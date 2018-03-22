@@ -87,6 +87,10 @@ public:
 	{
 		IsWave = Wave;
 	}
+	void SetAlphaZero(bool set)
+	{
+		AlphaZero = set;
+	}
 	
 	LPDIRECT3DTEXTURE9 GetWaveTex()
 	{
@@ -165,5 +169,8 @@ private:
 	//空用の判定
 	bool                 IsSky = false;
 	LPDIRECT3DCUBETEXTURE9      CubeMap = NULL;
+
+	//透過するオブジェクト
+	bool				AlphaZero = false;
 	
 };

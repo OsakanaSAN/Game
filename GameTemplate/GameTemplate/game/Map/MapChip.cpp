@@ -37,8 +37,18 @@ void MapChip::Init(SMapChipLocInfo& locInfo)
 	position = locInfo.pos;
 	rotation = locInfo.rotation;
 	model.Init(&modelData);
+
+	if (locInfo.modelName == "Wall" || locInfo.modelName == "Wall2")
+	{
+		model.SetAlphaZero(true);
+	}
 	//ライトを初期化。
-	if (locInfo.modelName != "Map4")
+	if (locInfo.modelName == "map7")
+	{
+		light.SetAmbientLight({ 0.5f,0.5f,0.5f,1.0f });
+	}
+
+	else if (locInfo.modelName != "Map4")
 	{
 		light.SetDiffuseLightDirection(0, D3DXVECTOR4(0.707f, -0.707f, 0.0f, 1.0f));
 		light.SetDiffuseLightDirection(1, D3DXVECTOR4(-0.707f, 0.0f, -0.707f, 1.0f));
@@ -64,25 +74,29 @@ void MapChip::Init(SMapChipLocInfo& locInfo)
 
 	model.SetLight(&light);
 
-	rigidBody = new RigidBody;
-	//ここから衝突判定絡みの初期化。
-	//スキンモデルからメッシュコライダーを作成する。
-	D3DXMATRIX* rootBoneMatrix = modelData.GetRootBoneWorldMatrix();
-	model.UpdateWorldMatrix(position, rotation, { 1.0f, 1.0f, 1.0f });
+	if (locInfo.modelName != "bill2_NR" || locInfo.modelName != "bill3_NR")
+	{
 
-	meshCollider.CreateFromSkinModel(&model, rootBoneMatrix);
-	//続いて剛体を作成する。
-	//まずは剛体を作成するための情報を設定。
-	RigidBodyInfo rbInfo;
-	rbInfo.collider = &meshCollider;	//剛体のコリジョンを設定する。
-	rbInfo.mass = 0.0f;					//質量を0にすると動かない剛体になる。
-	rbInfo.pos = position;
-	rbInfo.rot = rotation;
-	//剛体を作成。
-	rigidBody->Create(rbInfo);
-	//作成した剛体を物理ワールドに追加。
-	g_physicsWorld->AddRigidBody(rigidBody);
-	
+		rigidBody = new RigidBody;
+		//ここから衝突判定絡みの初期化。
+		//スキンモデルからメッシュコライダーを作成する。
+		D3DXMATRIX* rootBoneMatrix = modelData.GetRootBoneWorldMatrix();
+		model.UpdateWorldMatrix(position, rotation, { 1.0f, 1.0f, 1.0f });
+
+		meshCollider.CreateFromSkinModel(&model, rootBoneMatrix);
+		//続いて剛体を作成する。
+		//まずは剛体を作成するための情報を設定。
+		RigidBodyInfo rbInfo;
+		rbInfo.collider = &meshCollider;	//剛体のコリジョンを設定する。
+		rbInfo.mass = 0.0f;					//質量を0にすると動かない剛体になる。
+		rbInfo.pos = position;
+		rbInfo.rot = rotation;
+		//剛体を作成。
+		rigidBody->Create(rbInfo);
+		//作成した剛体を物理ワールドに追加。
+		g_physicsWorld->AddRigidBody(rigidBody);
+
+	}
 
 
 }

@@ -35,7 +35,8 @@ namespace {
 		LPDIRECT3DTEXTURE9 NormalMap,
 		LPDIRECT3DTEXTURE9 NormalMap2,
 		bool   IsSky,
-		LPDIRECT3DCUBETEXTURE9      CubeMap
+		LPDIRECT3DCUBETEXTURE9      CubeMap,
+		bool	AlphaZero
 
 	)
 	{
@@ -85,7 +86,7 @@ namespace {
 					pEffect->SetTexture("g_normalTexture2", NormalMap2); //法線マップ
 					pEffect->SetTexture("g_CubeTexture", CubeMap);
 					pEffect->SetFloat("g_moveUV", g_Moveuv);		   //法線マップを動かすための処理
-					g_Moveuv += 0.0006f;
+					g_Moveuv += 0.0005f;
 					if (g_Moveuv == 0.01)
 					{
 						g_Moveuv = 0;
@@ -128,6 +129,19 @@ namespace {
 				light,
 				sizeof(Light)
 			);
+			if (AlphaZero)
+			{
+
+				pEffect->SetInt("g_alphaZero", 1);
+
+			}
+			else
+			{
+
+				pEffect->SetInt("g_alphaZero", 0);
+
+			}
+			
 
 		}
 	
@@ -166,9 +180,6 @@ namespace {
 					}
 				}
 			
-				Camera camera;
-				camera.SetFar(100);
-				camera.SetEyePt({ 0.0f, 15000.0f, 0.0f });
 				D3DXVECTOR4 g_pos = game->GetGameCamara()->Getcamera()->GetEyePt();
 				//g_pos.y = 15000.0f;
 				//g_pos.w = 1.0f;
@@ -221,10 +232,8 @@ namespace {
 
 			for (DWORD i = 0; i < pMeshContainer->NumMaterials; i++) {
 
-				Camera camera;
-				camera.SetFar(100);
-				camera.SetEyePt({ 0.0f, 1000.0f, 0.0f });
-				D3DXVECTOR4 g_pos = camera.GetEyePt();;
+
+				D3DXVECTOR4 g_pos = game->GetGameCamara()->Getcamera()->GetEyePt();
 				g_pos.w = 1.0f;
 				pEffect->SetVector("g_Eyeposition", &g_pos);
 				
@@ -252,7 +261,9 @@ namespace {
 		LPDIRECT3DTEXTURE9  NormalMap,
 		LPDIRECT3DTEXTURE9  NormalMap2,
 		bool   IsSky,
-		LPDIRECT3DCUBETEXTURE9      CubeMap)
+		LPDIRECT3DCUBETEXTURE9      CubeMap,
+		bool	AlphaZero
+	)
 	{
 		LPD3DXMESHCONTAINER pMeshContainer;
 
@@ -275,7 +286,8 @@ namespace {
 				NormalMap,
 				NormalMap2,
 				IsSky,
-				CubeMap
+				CubeMap,
+				AlphaZero
 
 				);
 
@@ -299,7 +311,8 @@ namespace {
 				NormalMap,
 				NormalMap2,
 				IsSky,
-				CubeMap
+				CubeMap,
+				AlphaZero
 				);
 		}
 
@@ -320,7 +333,8 @@ namespace {
 				NormalMap, 
 				NormalMap2,
 				IsSky,
-				CubeMap
+				CubeMap,
+				AlphaZero
 				);
 		}
 	}
@@ -382,6 +396,12 @@ void SkinModel::Draw(D3DXMATRIX* viewMatrix, D3DXMATRIX* projMatrix)
 		g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
 	}
+	else if (AlphaZero)
+	{
+		g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+		g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+	}
 	else
 	{
 		//半透明合成の設定。
@@ -405,7 +425,8 @@ void SkinModel::Draw(D3DXMATRIX* viewMatrix, D3DXMATRIX* projMatrix)
 			WaveTex,
 			WaveTex2,
 			IsSky,
-			CubeMap
+			CubeMap,
+			AlphaZero
 		);
 	}
 }

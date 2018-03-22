@@ -39,6 +39,7 @@ void Sea::Start(D3DXVECTOR3 pos, D3DXQUATERNION rot)
 
 	model.SetWaveTexture();
 	model.SetWaveTexture2();
+	model.SetSkyTexture();
 	model.SetWave(true);
 
 	

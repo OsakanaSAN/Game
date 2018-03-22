@@ -10,7 +10,7 @@ float4x3    g_mWorldMatrixArray[MAX_MATRICES] : WORLDMATRIXARRAY;
 float4x4    g_mViewProj : VIEWPROJECTION;     //カメラのビュープロジェクション行列
 float		g_numBone;			//骨の数。
 float3      g_Eyeposition;         //視点
-
+int		g_alphaZero;
 
 int         g_isShadowReciever;				    //シャドウレシーバー？１ならシャドウレシーバー。
 float4x4 	g_lightViewMatrix;			//ライトビュー行列。
@@ -234,7 +234,10 @@ VS_OUTPUT VSMain( VS_INPUT In, uniform bool hasSkin )
  */
 float4 PSMain( VS_OUTPUT In ) : COLOR
 {
-	
+	if(g_alphaZero == 1)
+	{
+		return float4(1.0f,0.0f,0.0f,0.0f);
+	}
 	float4 color = tex2D(g_diffuseTextureSampler, In.Tex0);
 	
     float3 normal = In.Normal;
@@ -249,6 +252,22 @@ float4 PSMain( VS_OUTPUT In ) : COLOR
 	
 	color *= lig + pow(max(0,dot(R,eye)),20.0f);   //スペキュラーの計算
 	
+	 //距離フォグ
+	 /*
+	 	float  Far = 10.0f;
+	 	float  Near = 0.2f;
+	 	float4 fogcol = float4(1.0f,1.0f,1.0f,1.0f);
+		float z = length(In.worldPos.xyz - g_Eyeposition.xyz);
+		z = max(z - Near, 0.0f);
+		float t = min( z / Far, 1.0f);
+		fogcol.xyz = lerp(fogcol.xyz, float3(0.75f, 0.75f, 0.95f), t);
+		
+		//color.rgb	*= fogcol.rgb;
+		float f = (Far - z ) / (Far - Near);
+		f = clamp(f,0.0f,1.0f);
+		color = color * f + fogcol * (1.0f - f);
+	*/	
+		 
 	if(g_isShadowReciever == 1)
 	{
 		//射影空間(スクリーン座標系)に変換された座標はw成分で割ってやると(-1.0f～1.0)の範囲の正規化座標系になる。
@@ -336,7 +355,7 @@ VS_OUTPUT VSMainWave( VS_INPUT In)
 float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 {
 
-    	float3 normal = In.Normal;
+    	float3 normal = float3(0.0f, 1.0f, 0.0f);
     	float4 Wcolor = float4(0.5f,0.5f,0.5f,1.0f);//tex2D(g_diffuseTextureSampler, In.Tex0.xy * 5.0f);
     	
   
@@ -383,7 +402,7 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 		Wnormal += tangent * binSpaceNormal2.x + biNormal * binSpaceNormal2.y + normal * binSpaceNormal2.z; 
 		Wnormal += tangent * binSpaceNormal3.x + biNormal * binSpaceNormal3.y + normal * binSpaceNormal3.z;
 		Wnormal = normalize(Wnormal);
-		float4 lig = pow(DiffuseLight(Wnormal), 15.0f);     //ディフューズライトの計算
+		float4 lig = DiffuseLight(Wnormal);//pow(DiffuseLight(Wnormal), 15.0f);     //ディフューズライトの計算
 		
 	#else 
 		//オブジェクトスペース法線。
@@ -406,10 +425,36 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 			lig *= pow(max(0.0f,dot(R,toSun)),10.0f);   //スペキュラーの計算
 		}
 		*/
+		float3 toSun = normalize(In.worldPos.xyz-g_Eyeposition); 
 		
-		Wcolor.xyz *= lig.xyz;
+	/*	Wcolor.xyz *= lig.xyz;
 		Wcolor.xyz += g_light.ambient.xyz; 					//アンビエントの加算
-		Wcolor.a = 0.5f; //水面の透過処理
+	*/
+	
+		
+		
+		//反射ベクトルを求める。
+		float3 reflectVector = reflect( toSun, Wnormal);
+		//
+		float4 envColor = texCUBE(g_CubeTextureSampler, reflectVector );
+		
+		//太陽の反射も考慮する。
+		float3 toSunDir = float3(0.996f, 0.087f, 0.0f);
+		float sunRate = pow( max( 0.0f, dot(reflectVector, toSunDir)), 10.0f);
+		envColor.xyz += 1.0f * sunRate;
+		
+		//フレネル反射係数を計算する。
+		float rate = abs(dot(toSun, Wnormal));
+		
+		Wcolor.xyz = lerp( envColor.xyz, float3(0.2f, 0.2f, 0.4f), min( 1.0f, rate + 0.5f));
+		
+		float  Far = 1200.0f;
+	 	float  Near = 0.2f;
+		float z = length(In.worldPos.xyz - g_Eyeposition.xyz);
+		z = max(z - Near, 0.0f);
+		float t =min( z / Far, 1.0f);
+		Wcolor.xyz = lerp(Wcolor.xyz, float3(0.75f, 0.75f, 0.95f), t);
+		
 		return Wcolor;
 		
 
@@ -441,6 +486,15 @@ float4 PSskyMain(VS_OUTPUT In ): COLOR
 {   
     float3 normal = In.Normal;
 	float4 diffuseColor = texCUBE(g_CubeTextureSampler, -normal );
+	
+	 
+		float  MaxHeight = 300.0f;
+	 	float  MinHeight = 40.0f;
+		float  HeightFog = max(In.worldPos.y  - MinHeight, 0.0f);
+		float  t = min(HeightFog / MaxHeight, 1.0f);
+		diffuseColor.xyz = lerp( float3(0.75f, 0.75f, 0.95f),diffuseColor.xyz, t);
+		
+	/*
 	float4 color = 0;
 	//空のテクスチャを白黒化
 	float3 monochrome = float3(0.29900f, 0.58700f, 0.11400f );
@@ -462,7 +516,7 @@ float4 PSskyMain(VS_OUTPUT In ): COLOR
 	psOut.velocity.xy *= 0.5f;
 	psOut.velocity.xy += 0.5f;
 	psOut.velocity.zw = 0.0f;
-	
+	*/
 	return diffuseColor;
 }
 

@@ -90,7 +90,7 @@ void CHud::Drow(LPD3DXSPRITE spt)
 		m_Bootht[i]->Draw(spt);
 	}
 	
-	
+	if (m_NoRenderCircle) { return; }
 	m_Circle->Draw(spt);
 	
 	

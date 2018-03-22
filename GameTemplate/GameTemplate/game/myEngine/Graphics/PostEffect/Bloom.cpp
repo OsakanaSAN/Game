@@ -59,10 +59,6 @@ CBloom::CBloom()
 			0						//マルチサンプリングの品質レベル。今回はマルチサンプリングは行わないので0でいい。
 		);
 
-	}
-	W = 1280;
-	for (int i = 0;i < MGF_DOWN_SAMPLE_COUNT;i++)
-	{
 		H /= 2;
 		//縦ブラー用。
 		m_downSamplingRenderTarget[i][1].Create(
@@ -114,6 +110,7 @@ void CBloom::Render()
 
 	//ガウスブラーで使う重みテーブルを更新。
 	UpdateWeight(25.0f);
+	CRenderTarget* prevRenderTarget = &m_luminanceRenderTarget;
 	//輝度を抽出したテクスチャをXブラー
 	for (int i = 0;i < MGF_DOWN_SAMPLE_COUNT;i++)
 	{
@@ -126,8 +123,8 @@ void CBloom::Render()
 
 			//輝度のテクスチャサイズ転送
 			float size[2] = {
-				(float)(m_luminanceRenderTarget.GetWidth()),
-				(float)(m_luminanceRenderTarget.GetHeight())
+				(float)(prevRenderTarget->GetWidth()),
+				(float)(prevRenderTarget->GetHeight())
 			};
 			m_BloomEffect->SetValue("g_luminanceTexSize", size, sizeof(size));
 
@@ -146,7 +143,7 @@ void CBloom::Render()
 
 			m_BloomEffect->SetValue("g_weight", weights, sizeof(weights));
 
-			m_BloomEffect->SetTexture("g_blur", m_luminanceRenderTarget.GetTexture());
+			m_BloomEffect->SetTexture("g_blur", prevRenderTarget->GetTexture());
 			m_BloomEffect->CommitChanges();
 			g_PostEffect->RenderPrimitive();
 			//DrawQuadPrimitive();
@@ -155,6 +152,7 @@ void CBloom::Render()
 			m_BloomEffect->End();
 		}
 
+		prevRenderTarget = &m_downSamplingRenderTarget[i][0];
 		//輝度を抽出したテクスチャをYブラー
 		{
 			g_pd3dDevice->SetRenderTarget(0, m_downSamplingRenderTarget[i][1].GetRenderTarget());
@@ -164,8 +162,8 @@ void CBloom::Render()
 			m_BloomEffect->BeginPass(0);
 			//輝度テクスチャ転送
 			float size[2] = {
-				(float)(m_downSamplingRenderTarget[i][0].GetWidth()),
-				(float)(m_downSamplingRenderTarget[i][0].GetHeight())
+				(float)(prevRenderTarget->GetWidth()),
+				(float)(prevRenderTarget->GetHeight())
 			};
 			m_BloomEffect->SetValue("g_luminanceTexSize", size, sizeof(size));
 
@@ -185,7 +183,7 @@ void CBloom::Render()
 
 			m_BloomEffect->SetValue("g_weight", weights, sizeof(weights));
 
-			m_BloomEffect->SetTexture("g_blur", m_downSamplingRenderTarget[i][0].GetTexture());
+			m_BloomEffect->SetTexture("g_blur", prevRenderTarget->GetTexture());
 			m_BloomEffect->CommitChanges();
 			g_PostEffect->RenderPrimitive();
 
@@ -193,6 +191,7 @@ void CBloom::Render()
 			m_BloomEffect->End();
 
 		}
+		prevRenderTarget = &m_downSamplingRenderTarget[i][1];
 	}
 
 	//ボケフィルターの合成
@@ -213,7 +212,7 @@ void CBloom::Render()
 		m_BloomEffect->SetTexture("g_combineTex01", m_downSamplingRenderTarget[1][1].GetTexture());
 		m_BloomEffect->SetTexture("g_combineTex02", m_downSamplingRenderTarget[2][1].GetTexture());
 		m_BloomEffect->SetTexture("g_combineTex03", m_downSamplingRenderTarget[3][1].GetTexture());
-		m_BloomEffect->SetTexture("g_combineTex04", m_downSamplingRenderTarget[4][1].GetTexture());
+		//m_BloomEffect->SetTexture("g_combineTex04", m_downSamplingRenderTarget[4][1].GetTexture());
 
 		m_BloomEffect->SetValue("g_offset", offset, sizeof(offset));
 		m_BloomEffect->CommitChanges();

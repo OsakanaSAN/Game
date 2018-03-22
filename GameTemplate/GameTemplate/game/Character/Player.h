@@ -8,6 +8,8 @@
 #include "myEngine/Sound/CSoundSource.h"
 #include "myEngine/Graphics/Particle/Particle.h"
 #include "myEngine/Graphics/Particle/ParticleEmitter.h"
+#include "HUD/GUI.h"
+
 
 struct EenemyBoX {
 	D3DXVECTOR3 Position;
@@ -84,16 +86,22 @@ public:
 	{
 		return m_ZoomBlurOn;
 	}
+	bool IsPlayer()
+	{
+		return m_Isplayer;
+	}
 
 private:
-
+	D3DXMATRIX				m_Mat;
+	D3DXVECTOR3				m_FrontPosition;
+	CGUI*					m_TagetUI;									//ロックオン時のUI
 	int						m_MaxHp = 200;								//プレイヤーの最大HP
 	int						m_Hp	= 200;								//プレイヤーの現在のHP
 	CParticleEmitter		m_ParticleEmitter;							//パーティクル
 	SkinModel				m_Skinmodel;								//スキンモデル
 	SkinModelData			m_SkinmodelData;							//スキンモデルデーター
 	Light					m_Light;									//プレイヤーのライト
-	D3DXVECTOR3				m_Position = { 0.0f,0.0f,0.0f };			//プレイヤーの現在位置	
+	D3DXVECTOR3				m_Position = { 0.0f,50.0f,0.0f };			//プレイヤーの現在位置	
 	D3DXQUATERNION			m_Rotation = { 0.0f, 0.0f, 0.0f, 1.0f };	//回転
 	CharacterController		m_CharacterController;						//キャラクターコントローラー
 	CSoundSource*			m_PlayerSE;									//プレイヤーのSE
@@ -126,6 +134,8 @@ private:
 /////////////////////////////////////////////////////////////////////////////////////
 	bool					m_ZoomBlurOn = false;					//Zoomブラーをオンにする
 	float					m_Radian = 0.0f;						//プレイヤーを傾ける処理
+	bool					m_siyakakuON = false;
+	bool					m_Isplayer = false;
 	
 };
 

@@ -54,7 +54,8 @@ void CParticleEmitter::Init(const SParicleEmitParameter& param)
 void CParticleEmitter::Update()
 {
 	
-	if (timer >= param.intervalTime) {
+	if (timer >= param.intervalTime && EndTime <= param.timer)
+	{
 			//パーティクルを生成。
 			CParticle* p = new CParticle;
 			p->Init(param, texture, *shaderEffect);
@@ -64,6 +65,7 @@ void CParticleEmitter::Update()
 	
 	}
 	timer += 1.0f / 60.0f;
+	EndTime += 1.0f / 60.0f;
 
 	
 	//auto IsParticle = particleList.begin();
@@ -92,7 +94,12 @@ void CParticleEmitter::Update()
 	for (const auto& p : particleList)
 	{
 		p->Update();
-		p->SetPosition(Position);
+		if (lockPosition)
+		{
+
+			p->SetPosition(Position);
+
+		}
 	}
 }
 void CParticleEmitter::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix)

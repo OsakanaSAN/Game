@@ -32,6 +32,8 @@
 #include "myEngine/Random/MyRandom.h"
 #include "myEngine/Graphics/PostEffect/PostEffect.h"
 
+
+
 extern CShadowMap g_shadowMap;	//シャドウマップ。
 extern MyRandom* g_Random;
 

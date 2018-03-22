@@ -22,12 +22,17 @@ public:
 	{
 		return Springcamera.GetCamera();
 	}
+
+	SpringCamera* GetSpringGamera()
+	{
+		return	&Springcamera;
+	}
 	
 	//プレやーがロックオンした時に動く関数
 	void LookOnCamera(D3DXVECTOR3 LookPos, bool on)
 	{
 		LookOn = on;
-		LookTag = LookPos;
+		m_LookTag = LookPos;
 	}
 	D3DXMATRIX GetCameraMatrix()
 	{
@@ -56,6 +61,6 @@ private:
 	bool            QuickTurn = false;  //Quickターン
 	float             Quick = 0;
 	bool           LookOn = false;
-	D3DXVECTOR3    LookTag;
+	D3DXVECTOR3    m_LookTag;
 };
 

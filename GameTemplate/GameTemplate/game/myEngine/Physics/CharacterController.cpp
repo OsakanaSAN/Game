@@ -226,6 +226,7 @@ void CharacterController::Execute()
 	{
 		D3DXVECTOR3 addPos;
 		addPos = nextPosition - m_position;
+		
 
 		m_position = nextPosition;	//移動の仮確定。
 									//レイを作成する。

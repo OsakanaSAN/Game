@@ -12,7 +12,7 @@ public:
 	//重みの更新
 	void UpdateWeight(float dispersion);
 private:
-	static const int MGF_DOWN_SAMPLE_COUNT = 5;     //ダウンサンプリングの回数
+	static const int MGF_DOWN_SAMPLE_COUNT = 4;     //ダウンサンプリングの回数
 	LPD3DXEFFECT  m_BloomEffect;						//!<シェーダーエフェクト。
 	CRenderTarget m_luminanceRenderTarget;			//!<輝度を抽出するためのレンダリングターゲット。
 	CRenderTarget	m_combineRenderTarget;			//!<ぼかし合成用のレンダリングターゲット。

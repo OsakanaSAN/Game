@@ -17,21 +17,18 @@ Bullet::Bullet()
 
 Bullet::~Bullet()
 {
+
 	m_BulletSe->Release();
 
 	delete m_BulletSe;
 
-	//delete m_particleEmit;
-	//modelData->Release();
-	//delete modelData;
-	//modelData = NULL;
-	m_characterController->RemoveRigidBoby();
-	delete m_characterController;
+
 }
 void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 {
 
 	m_position = pos;
+	D3DXVec3Dot(&m_position, &moveSpeed);
 	PlayerFrontPosition = moveSpeed;
 	D3DXVec3Normalize(&PlayerFrontPosition,&PlayerFrontPosition);
 	
@@ -52,7 +49,7 @@ void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 	
  
 	m_characterController = new CharacterController;
-	m_characterController->Init(1.0f, 1.0f, m_position);
+	m_characterController->Init(0.1f, 0.1f, m_position);
 	m_characterController->SetGravity(0.0f);
 	//モデルをロード。
 	if (modelData == NULL) {
@@ -74,14 +71,14 @@ void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 	m_BulletSe->Init("Assets/Sound/SE/BulletSound2.wav");
 	m_BulletSe->SetVolume(0.2f);
 	SParicleEmitParameter SparticleEmit;
-	SparticleEmit.texturePath = "Assets/Particle/smoke2.png";
-	SparticleEmit.w = 7.0f;
-	SparticleEmit.h = 8.0f;
-	SparticleEmit.intervalTime = 0.0f;
-	SparticleEmit.timer = 0.5f;
+	SparticleEmit.texturePath = "Assets/Particle/P_Fire.png";
+	SparticleEmit.w = 10.0f;
+	SparticleEmit.h = 10.0f;
+	SparticleEmit.intervalTime = 0.02f;
+	SparticleEmit.timer = 1.0f;
 
-	SparticleEmit.initSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_particleEmit = new CParticleEmitter;
+	SparticleEmit.initSpeed = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	m_particleEmit = std::make_unique<CParticleEmitter>();
 	m_particleEmit->Init(SparticleEmit);
 
 	//m_BulletSe->Play(0);
@@ -93,10 +90,10 @@ bool Bullet::Update()
 
 	case e_Update:
 		life--;
-		//if (m_characterController->IsHitWall())
-		//{
-		//	MessageBox(NULL, "当たったよ", "IsHit", MB_OK);
-		//}
+	/*	if (m_characterController->IsHitWall())
+		{
+			MessageBox(NULL, "当たったよ", "IsHit", MB_OK);
+		}*/
 
 		if (life < 0 || m_characterController->IsHitWall() || IsHit) {
 
@@ -116,7 +113,7 @@ bool Bullet::Update()
 			//m_particleEmit->Update();
 		}
 
-		m_position = moveSpeed * 150.0f;
+		m_position = moveSpeed * 120.0f;
 		m_characterController->SetMoveSpeed(m_position);
 		m_characterController->Execute();
 		m_position = m_characterController->GetPosition();
@@ -131,7 +128,7 @@ bool Bullet::Update()
 		m_particleEmit->SetPosition({ m_position.x,m_position.y,m_position.z });
 		m_particleEmit->Update();
 
-		if (m_time > 0.7f)
+		if (m_time > 3.00f)
 		{
 			m_state = e_IsDete;
 		}
@@ -165,7 +162,7 @@ void Bullet::Render()
 
 		model.SetShadowMap(false);
 		model.SetShadowRecieve(false);
-		model.UpdateWorldMatrix(m_position, m_rotation, D3DXVECTOR3(0.3f, 0.3f, 0.3f));
+		model.UpdateWorldMatrix(m_position, m_rotation, D3DXVECTOR3(0.1f, 0.1f, 0.1f));
 		model.Draw(&game->GetGameCamara()->Getcamera()->GetViewMatrix(), &game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
 		break;
 
@@ -194,7 +191,7 @@ void Bullet::Render2D()
 
 	case e_IsHit:
 
-		
+		//m_particleEmit->Render(game->GetGameCamara()->Getcamera()->GetViewMatrix(), game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
 
 		break;
 

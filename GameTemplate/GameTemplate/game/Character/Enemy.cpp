@@ -59,7 +59,7 @@ void CEnemy::Start()
 
 void CEnemy::Update()
 {
-	m_GUI->SetPosition({ m_Position.x,m_Position.y + 4,m_Position.z });
+	m_GUI->SetPosition({ m_Position.x,m_Position.y + 8,m_Position.z });
 	m_GUI->Update();
 
 	m_MoveSpeed = m_CharacterController.GetMoveSpeed();
@@ -90,7 +90,7 @@ void CEnemy::EnemyBulletON()
 	D3DXVECTOR3 Pos = game->GetPlayer()->GetPos() - m_Position;
 	//D3DXVec3Normalize(&Pos, &Pos);
 
-	if (D3DXVec3Length(&pPos) <= 200.0f)
+	if (D3DXVec3Length(&pPos) <= 100.0f)
 	{
 
 		m_BulletTime += GameTime().GetFrameDeltaTime();  //タイマーの所得
@@ -133,7 +133,7 @@ void CEnemy::EnemyMove()
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 	D3DXVECTOR3 SubVect,NewPlayerposition;
-	m_SubPosition.y = 0.0f;
+	m_SubPosition.y = 10.0f;
 
 	D3DXVec3Subtract(&SubVect, &m_SubPosition, &m_Position);
 	D3DXVec3Subtract(&NewPlayerposition, &m_SubPosition, &game->GetPlayer()->GetPos());
@@ -143,7 +143,7 @@ void CEnemy::EnemyMove()
 	if (D3DXVec3Length(&SubVect) > 20 )
 	{
 		D3DXVec3Normalize(&SubVect, &SubVect);
-		m_MoveSpeed = SubVect * 20.5f;
+		m_MoveSpeed = SubVect * 20.0f;
 		m_CharacterController.Jump();
 		//m_CharacterController.SetGravity(0.0f);
 		m_CharacterController.SetPosition(m_Position);
@@ -235,8 +235,8 @@ void CEnemy::RouteSearch()
 {
 	D3DXVECTOR3 TargetPosition = game->GetPlayer()->GetPos();	//敵から見たターゲット
 	D3DXVECTOR3 MyPosition = m_Position;						//現在位置
-	MyPosition.x += 50.0f;
-	MyPosition.z += 50.0f;
+	MyPosition.x += 80.0f;
+	MyPosition.z += 80.0f;
 	int Numbeer = 1;
 	D3DXVECTOR3 Length = {0,10000,0};
 	D3DXVECTOR3 SubVect = {0,0,0};
@@ -270,11 +270,11 @@ void CEnemy::RouteSearch()
 			}
 
 			
-			MyPosition.x -= 40.0f;
+			MyPosition.x -= 80.0f;
 		}
 
-		MyPosition.x += 120.0f;
-		MyPosition.z -= 40.0f;
+		MyPosition.x += 240.0f;
+		MyPosition.z -= 80.0f;
 	}
 
 

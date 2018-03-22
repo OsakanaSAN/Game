@@ -1,0 +1,121 @@
+﻿  stdafx.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  System.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  WaveFileBank.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  WavFile.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  CSoundSource.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  CSoundEngine.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  MyRandom.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  SphereCollider.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  RigidBody.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Physics.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  MeshCollider.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  CharacterController.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  CapsuleCollider.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Pad.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  VertexBuffer.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Sprite.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Primitive.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  IndexBuffer.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  C2DImage.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  SkinModelData.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  コードを生成中...
+  コンパイル中...
+  SkinModel.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  ShadowMap.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  ZoomBlur.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  PostEffect.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Monochrome.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Dof.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Bloom.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  ParticleEmitter.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Particle.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  EffectManager.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Camera.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Animation.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  IGameObject.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  GameObjectManager.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  SpringCamera.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  CameraCollisionSolver.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  main.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  game.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  TITLE.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  SelectScene.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  コードを生成中...
+  コンパイル中...
+  Result.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  GameScene.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Sun.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Skydoom.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Sea.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  MapChip.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Map.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Missile.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Bullet.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  ScoreCheckre.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Hud.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  GUI.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  RadarMap.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  GameCamera.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Fade.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Player.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  GroupEnemy.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  Enemy.cpp
+c:\users\kbc16b03\desktop\game\gametemplate\gametemplate\game\stdafx.h(19): fatal error C1083: include ファイルを開けません。'btBulletDynamicsCommon.h':No such file or directory
+  コードを生成中...

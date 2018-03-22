@@ -58,10 +58,14 @@ float CalcSpringScalar(
 * @brief	バネ減衰を使用して、現在の位置、目標となる位置、速度、加速度から新しい位置を計算する。
 */
 
-D3DXVECTOR3 CalcSpringVector(D3DXVECTOR3 pos, D3DXVECTOR3 target, D3DXVECTOR3 Speed,
-	float Maxspeed, float down)
+D3DXVECTOR3 CalcSpringVector(	D3DXVECTOR3 pos, 
+								D3DXVECTOR3 target, 
+								D3DXVECTOR3 Speed,
+								float Maxspeed, 
+								float down
+)
 {
-	float deltaTime = 1.0f / 60.0f;//min(1.0f / 30.0f, 1.0f / 60.0f);
+	float deltaTime = min(1.0f / 30.0f,GameTime().GetFrameDeltaTime());
 	D3DXVECTOR3 distans;
 	D3DXVec3Subtract(&distans, &target, &pos);
 	D3DXVECTOR3 originarDir = distans;

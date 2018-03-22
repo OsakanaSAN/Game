@@ -54,7 +54,7 @@ private:
 	Pad						BPad;
 	SkinModel				model;
 	D3DXMATRIX				Mat;
-	static SkinModelData*		modelData;
+	static SkinModelData*	modelData;
 	Animation				animation;
 	Light					m_light;
 	D3DXVECTOR3				m_position;
@@ -65,7 +65,7 @@ private:
 	SphereCollider*			m_collider;
 	RigidBody*				m_rigidbody;
 	CharacterController*	m_characterController;
-	CParticleEmitter*		m_particleEmit;
+	std::unique_ptr<CParticleEmitter> 		m_particleEmit;
 	BulletState				m_state;
 	float					m_time;
 

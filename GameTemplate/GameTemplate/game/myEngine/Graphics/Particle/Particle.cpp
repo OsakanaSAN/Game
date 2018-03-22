@@ -25,9 +25,10 @@ CParticle::~CParticle()
 	/*if(shaderEffect != nullptr){
 		shaderEffect->Release();
 	}*/
-	if(texture != nullptr){
+	/*if(texture != nullptr){
 		texture->Release();
-	}
+	}*/
+	primitive.Release();
 }
 void CParticle::Init( const SParicleEmitParameter& param,const LPDIRECT3DTEXTURE9 settexture, ID3DXEffect& effect)
 {
@@ -92,24 +93,26 @@ void CParticle::Init( const SParicleEmitParameter& param,const LPDIRECT3DTEXTURE
 void CParticle::Update()
 {
 	
-	if (Time >= m_EndTime)
+	/*if (Time >= m_EndTime)
 	{
 		isDete = true;
 		return;
-	}
-	//—á 2  2        
-	else if (Time >= m_EndTime / 2)
+	}*/
+	//—á 2  2   
+	float Blend = 1.0f / 2.0f;
+	if (Time >= Blend)
 	{
-		m_alpha -= 0.05f;
+		//float last = 1.0f;
+		m_alpha -= GameTime().GetFrameDeltaTime() * 2;
 		if (m_alpha <= 0) {
 			m_alpha = 0;
+			isDete = true;
 		}
 	}
 	Time += GameTime().GetFrameDeltaTime();
 
-	float deltaTime = 1.0f / 60.0f;
-	//moveSpeed.y -= 0.05f;
-	D3DXVECTOR3 add = moveSpeed * deltaTime;
+	//moveSpeed.y -= 1.8f;
+	D3DXVECTOR3 add = moveSpeed * GameTime().GetFrameDeltaTime();
 	position += add;
 
 
@@ -177,12 +180,12 @@ void CParticle::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatri
 	g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 	g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-
+	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	g_pd3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	shaderEffect->SetTechnique("ColorTexPrimAdd");
 	shaderEffect->SetMatrix("g_mWVP", &m);
-	shaderEffect->SetFloat("g_alpha", 0.5f);
+	shaderEffect->SetFloat("g_alpha", m_alpha);
 	shaderEffect->SetTexture("g_texture", texture);
 	shaderEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
 	shaderEffect->BeginPass(0);
@@ -199,6 +202,7 @@ void CParticle::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatri
 	g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 	g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	g_pd3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 }
 

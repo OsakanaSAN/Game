@@ -1,17 +1,16 @@
 #pragma once
 #include "Map/Map.h"
+#include "SelectScene.h"
+#include "Character/Player.h"
+#include "Map/Map.h"
+#include "GameCamera/GameCamera.h"
 
 class CGameScene
 {
 public:
-	enum GameState {
-		e_Upadte,		//アップデート中
-		e_Clear,		//クリア判定
-		e_End,		//終了判定
-	};
 	CGameScene();
 	~CGameScene();
-	void Start();
+	void Start(int map);
 	void Update();
 	void Render();
 	void CountUp(int count)
@@ -22,14 +21,23 @@ public:
 	{
 		m_EnemyCount -= count;
 	}
-	
+
+	CPlayer* GetPlayer()
+	{
+		return m_Player.get();
+	}
 
 private:
 	bool	m_Clear = false;
 	int		m_EnemyCount = 0;
-	GameState		m_gameState;
-	CSoundSource*	m_Sound[2];
+	SceneState		m_gameState;
+	CSoundSource*	m_Sound[3];
+	float			m_FadeTime = 0.0f;
+	bool			m_VoiceOn = false;
+	std::unique_ptr<CPlayer>	m_Player = NULL;
+	std::unique_ptr<Map>		m_Map;
+	std::unique_ptr<GameCamera>	m_GameCamera;
 
-
+		
 };
 

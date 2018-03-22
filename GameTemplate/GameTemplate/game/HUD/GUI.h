@@ -21,8 +21,8 @@ private:
 	D3DXVECTOR3			m_position;			//座標。
 	D3DXVECTOR2			m_size;				//サイズ
 	float				Time;
-	bool                isDete = false;
-	float               oldsize[2] ;
-	float				m_oldHp;
+	bool                isDete = false;		//生存しているかの判定
+	float               oldsize[2];			//サイズ変更前のサイズを格納するための配列
+	float				m_oldHp;			//
 };
 

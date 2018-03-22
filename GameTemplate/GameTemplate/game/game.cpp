@@ -18,16 +18,7 @@ Game::Game()
  */
 Game::~Game()
 {
-	//delete &player;
-	
-	/*for (CSoundSource* soundit : Sounds)
-	{
-		soundit->Release();
-		delete soundit;
-	}
-	Sounds.clear();
-	m_SoundEngine->Release();
-	delete m_SoundEngine;*/
+
 	
 }
 /*!
@@ -41,6 +32,10 @@ void Game::Start()
 	Hud.Start(); //スプライト
 	m_title = new TITLE;
 	m_title->Start();
+
+
+	g_physicsWorld = new PhysicsWorld;
+	g_physicsWorld->Init();
 }
 /*!
  * @brief	更新。
@@ -56,10 +51,14 @@ void Game::Update()
 		m_Result->Update();
 		break;
 
+
+	case Select_Scene:
+		m_SelectScene->Update();
+
+		break;
+
 	case Title_Scene:
 
-
-		
 		m_title->Update();
 		break;
 
@@ -133,7 +132,11 @@ void Game::Render()
 	//タイトル画面の描画
 	case Title_Scene:
 
-		m_title->Drow(spt);
+
+		break;
+
+	case Select_Scene:
+
 
 		break;
 	//ゲーム画面の描画
@@ -155,7 +158,14 @@ void Game::Render2D()
 	switch (Scene)
 	{
 	case Title_Scene:
+		
 		m_title->Drow(spt);
+		break;
+
+	case Select_Scene:
+
+		m_SelectScene->Render(spt);
+
 		break;
 
 	case Game_Scene:
@@ -167,10 +177,10 @@ void Game::Render2D()
 		g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 		g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 		g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-		/*for (auto Bullet : game->GetPlayerBullet())
+		for (auto Bullet : game->GetPlayerBullet())
 		{
 			Bullet->Render2D();
-		}*/
+		}
 		break;
 	case Result_Scene:
 		m_Result->Render(spt);

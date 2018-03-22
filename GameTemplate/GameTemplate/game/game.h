@@ -164,6 +164,20 @@ public:
 		m_title = new TITLE;
 	}
 
+	CSelectScene* GetSelect()
+	{
+
+		return m_SelectScene;
+
+	}
+
+	void NewSelect()
+	{
+		m_SelectScene = new CSelectScene;
+	}
+
+
+
 
 	//ゲームシーンの取得
 	CGameScene* GetGameScene()
@@ -195,6 +209,10 @@ public:
 	void SetTitleScene()
 	{
 		Scene = Title_Scene;
+	}
+	void SetSelectScene()
+	{
+		Scene = Select_Scene;
 	}
 	void SetGameScene()
 	{
@@ -235,11 +253,15 @@ public:
 	{
 		return m_SoundEngine;
 	}
-
+	CHud*  GetHud()
+	{
+		return &Hud;
+	}
 
 private:
 	enum SceneState {
 		Title_Scene,	//タイトル画面
+		Select_Scene,	//セレクト画面
 		Game_Scene,		//ゲーム画面
 		Result_Scene	//リザルト画面に移行
 	};

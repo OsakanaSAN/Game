@@ -194,15 +194,15 @@ public:
 
 	}
 private:
-	Camera		m_camera;						//!<カメラ。
-	D3DXVECTOR3	m_target = { 0.0f,0.0f,0.0f };		//!<目標となる注視点。
-	D3DXVECTOR3	m_position = { 0.0f,0.0f,0.0f };	//!<目標となる視点。
+	Camera		m_camera;									//!<カメラ。
+	D3DXVECTOR3	m_target = { 0.0f,0.0f,0.0f };				//!<目標となる注視点。
+	D3DXVECTOR3	m_position = { 0.0f,0.0f,0.0f };			//!<目標となる視点。
 	D3DXVECTOR3	m_targetMoveSpeed = { 0.0f,0.0f,0.0f };		//!<注視点の移動速度。
 	D3DXVECTOR3	m_positionMoveSpeed = { 0.0f,0.0f,0.0f };	//!<視点の移動速度。
 
-	float		m_maxMoveSpeed = 0.0f;					//!<最高移動速度。
-	float		m_targetDampingRate = 10.0f;				//!<減衰率。値が大きいほどカメラが遅れ付いてくる。
-	float		m_dampingRate = 1.0f;					//!<減衰率。
-	float		m_dampingRateVel = 10.0f;
+	float		m_maxMoveSpeed = 0.0f;						//!<最高移動速度。
+	float		m_targetDampingRate = 1.0f;					//!<減衰率。値が大きいほどカメラが遅れ付いてくる。
+	float		m_dampingRate = 0.6f;						//!<減衰率。
+	float		m_dampingRateVel = 0.0f;
 };
 
