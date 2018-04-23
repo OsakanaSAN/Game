@@ -69,6 +69,7 @@ void MapChip::Init(SMapChipLocInfo& locInfo)
 	{
 
 		light.SetAmbientLight({ 0.1f,0.1f,0.1f,1.0f });
+		m_terrain = true;
 
 	}
 
@@ -134,6 +135,7 @@ void MapChip::Render()
 }
 void MapChip::LightEyePosRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightProjMatrix)
 {
+	if (m_terrain) { return; }
 	model.SetShadowMap(true);
 	model.SetShadowRecieve(false);
 	model.Draw(&lightViewMatrix, &lightProjMatrix);
@@ -141,6 +143,7 @@ void MapChip::LightEyePosRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightPro
 }
 void MapChip::RadarMapRender(D3DXMATRIX&  RederCameraMatrix, D3DXMATRIX&	RederCameraProjMatrix)
 {
+	
 	model.SetShadowMap(false);
 	model.SetShadowRecieve(true);
 	model.Draw(&RederCameraMatrix, &RederCameraProjMatrix);

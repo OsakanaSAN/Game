@@ -33,4 +33,5 @@ private:
 	D3DXVECTOR4 Up = { 0.75f,0.0f,0.0f,1.0f };
 	int         lightNo = 0;
 	LPDIRECT3DCUBETEXTURE9      CubeMap = NULL;
+	bool        m_terrain = false;
 };

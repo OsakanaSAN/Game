@@ -352,6 +352,7 @@ void CEnemy::LightEyePosRender(D3DXMATRIX&  lightViewMatrix, D3DXMATRIX&	lightPr
 
 	case e_EnemyUpdate:
 		if (m_IsDete) { return; };
+		m_Skinmodel.UpdateWorldMatrix(m_Position, m_Rotation, D3DXVECTOR3(2.0f, 2.0f, 2.0f));
 		m_Skinmodel.SetShadowMap(true);
 		m_Skinmodel.SetShadowRecieve(false);
 		m_Skinmodel.Draw(&lightViewMatrix, &lightProjMatrix);

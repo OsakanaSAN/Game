@@ -69,17 +69,13 @@ void CShadowMap::Update()
 
 	D3DXVECTOR3 target = game->GetPlayer()->GetPos();
 	D3DXVECTOR3 viewPos = target;
-	viewPos.y += 30;
+	viewPos.y += 100;
 	shadowCount++;
 	if (shadowCount == 3)
 	{
 		shadowCount = 1;
 	}
 
-	/*D3DXVec3Subtract(&m_lightDirection, &target, &viewPos);
-	D3DXVec3Normalize(&m_lightDirection, &m_lightDirection);
-	D3DXVec3Add(&target, &viewPos,&m_lightDirection);
-	*/
 	g_shadowMap.SetLightViewPosition(viewPos);
 	g_shadowMap.SetLightViewTarget(target);
 
@@ -88,14 +84,39 @@ void CShadowMap::Update()
 	//普通のカメラと同じ。
 	//カメラの上方向を決める計算だけ入れておく。
 	D3DXVECTOR3 tmp = viewTarget - viewPosition;
+	D3DXVECTOR3 lightViewUp;
 	D3DXVec3Normalize(&tmp, &tmp);
 	if (fabsf(tmp.y) > 0.9999f) {
 		//カメラがほぼ真上or真下を向いている。
 		D3DXMatrixLookAtLH(&lightViewMatrix, &viewPosition, &viewTarget, &D3DXVECTOR3(1.0f, 0.0f, 0.0f));
+		D3DXVec3Cross(&lightViewUp, &tmp, &D3DXVECTOR3(1.0f, 0.0f, 0.0f));
 	}
 	else {
 		D3DXMatrixLookAtLH(&lightViewMatrix, &viewPosition, &viewTarget, &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+		D3DXVec3Cross(&lightViewUp, &tmp, &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
 	}
+	D3DXVec3Normalize(&lightViewUp, &lightViewUp);
+	D3DXVECTOR3 lightViewRight;
+	D3DXVec3Cross(&lightViewRight, &D3DXVECTOR3(0.0f, 1.0f, 0.0f), &tmp);
+	D3DXVec3Normalize(&lightViewRight, &lightViewRight);
+
+	D3DXMATRIX lightViewRot;
+	//ライトビューの横を設定する。
+	lightViewRot.m[0][0] = lightViewRight.x;
+	lightViewRot.m[0][1] = lightViewRight.y;
+	lightViewRot.m[0][2] = lightViewRight.z;
+	lightViewRot.m[0][3] = 0.0f;
+	//ライトビューの上を設定する。
+	lightViewRot.m[1][0] = lightViewUp.x;
+	lightViewRot.m[1][1] = lightViewUp.y;
+	lightViewRot.m[1][2] = lightViewUp.z;
+	lightViewRot.m[1][3] = 0.0f;
+	//ライトビューの前を設定する。
+	lightViewRot.m[2][0] = tmp.x;
+	lightViewRot.m[2][1] = tmp.y;
+	lightViewRot.m[2][2] = tmp.z;
+	lightViewRot.m[2][3] = 0.0f;
+
 	//D3DXMATRIXA16 matProj;
 	D3DXMatrixPerspectiveFovLH(
 		&lightProjMatrix, 
@@ -126,9 +147,16 @@ void CShadowMap::Draw()
 
 		game->GetPlayer()->LightEyePosRender(lightViewMatrix, lightProjMatrix);
 
-		/*for (const auto& Enemy : game->GetEnemys()) {
+		for (const auto& Enemy : game->GetEnemys()) {
 			Enemy->LightEyePosRender(lightViewMatrix, lightProjMatrix);
-		}*/
+		}
+		if (game->GetEnemys().size() == 0)
+		{
+			for (const auto& Enemys : game->GetMap()->GetGroupenemy())
+			{
+				Enemys->LightEyePosRender(lightViewMatrix, lightProjMatrix);
+			}
+		}
 		/*for (auto bullet : game->GetPlayerBullet()) {
 			bullet->LightEyePosRender(lightViewMatrix, lightProjMatrix);
 		}*/

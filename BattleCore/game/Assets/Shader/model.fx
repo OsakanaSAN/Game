@@ -487,7 +487,7 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 		}
 	 }
 		
-		
+		Wcolor.a = 0.5f;
 		return Wcolor;
 		
 
