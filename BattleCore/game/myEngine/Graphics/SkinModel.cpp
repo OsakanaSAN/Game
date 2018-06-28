@@ -148,10 +148,20 @@ namespace {
 
 		if (IsRecieveShadow) {
 
-			pEffect->SetTexture("g_shadowMapTexture", g_shadowMap.GetTexture());
-			pEffect->SetMatrix("g_lightViewMatrix", &g_shadowMap.GetLightViewMatrix());
-			pEffect->SetMatrix("g_lightProjectionMatrix", &g_shadowMap.GetLightProjectionMatrix());
+			pEffect->SetTexture("g_shadowMapTexture", g_shadowMap.GetTexture(0));
+			pEffect->SetTexture("g_shadowMapTexture2", g_shadowMap.GetTexture(1));
+			pEffect->SetTexture("g_shadowMapTexture3", g_shadowMap.GetTexture(2));
+
+			pEffect->SetMatrix("g_lightViewMatrix", &g_shadowMap.GetLightViewMatrix(0));
+			pEffect->SetMatrix("g_lightProjectionMatrix", &g_shadowMap.GetLightProjectionMatrix(0));
+
+			pEffect->SetMatrix("g_lightViewMatrix2", &g_shadowMap.GetLightViewMatrix(1));
+			pEffect->SetMatrix("g_lightProjectionMatrix2", &g_shadowMap.GetLightProjectionMatrix(1));
+
+			pEffect->SetMatrix("g_lightViewMatrix3", &g_shadowMap.GetLightViewMatrix(2));
+			pEffect->SetMatrix("g_lightProjectionMatrix3", &g_shadowMap.GetLightProjectionMatrix(2));
 			pEffect->SetInt("g_isShadowReciever", 1);
+			int num;
 
 		}
 		else

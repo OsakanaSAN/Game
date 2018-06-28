@@ -7,11 +7,13 @@
 #include "game.h"
 #include "myEngine/Graphics/PostEffect/PostEffect.h"
 #include "myEngine/Random/MyRandom.h"
+#include "myEngine\Graphics\PostEffect\CSoftShadow.h"
 
 Game* game;
 CPostEffect* g_PostEffect;
 CSoundEngine* g_SoundEngine;
 MyRandom*	  g_Random;
+CSoftShadow*  g_softshdow;
 
 
 //-----------------------------------------------------------------------------
@@ -29,6 +31,7 @@ void Init()
 	
 	g_Random = new MyRandom;
 	g_Random->Init((unsigned long)time(NULL));
+	g_softshdow = new CSoftShadow;
 	
 	game = new Game;
 	game->Start();
@@ -41,6 +44,7 @@ VOID Render()
 
 	//シャドウマップにレンダリング。
 	g_shadowMap.Draw();
+//	g_softshdow->Render();
 
 	// 画面をクリア。
 	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);

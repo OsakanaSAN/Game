@@ -21,6 +21,7 @@ public:
 	{
 		return isDete;
 	}
+	
 
 	void Delete();
 	void Init(const SParicleEmitParameter& param, const LPDIRECT3DTEXTURE9 texture, ID3DXEffect& effct,const D3DXVECTOR3 pos);
@@ -39,6 +40,7 @@ private:
 	float				Time;
 	float				m_alpha = 1.0f;
 	bool                isDete = false;
+	bool                isCopy = false;
 
 };
 

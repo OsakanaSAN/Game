@@ -127,6 +127,11 @@ void Camera::Update()
 	//D3DXMatrixPerspectiveFovLH(&projectionMatrix, D3DX_PI / 4, aspect, Near, Far);
 
 	D3DXMatrixInverse(&viewMatrixInv, NULL, &viewMatrix);
+
+
+	m_Front = { viewMatrixInv.m[2][0],viewMatrixInv.m[2][1] ,viewMatrixInv.m[2][2] };
+	m_Right = { viewMatrixInv.m[0][0], viewMatrixInv.m[0][1], viewMatrixInv.m[0][2] };
+
 	CameraRot = viewMatrixInv;
 	CameraRot.m[3][0] = 0.0f;
 	CameraRot.m[3][1] = 0.0f;

@@ -53,14 +53,6 @@ void CRadarMap::InitRender()
 		0						//マルチサンプリングしないので０を指定。
 	);
 
-	m_Springcamera.Init(Eyepos, m_Scamera.GetLookatPt(), 40000.0f); //バネカメラの初期化
-	m_Springcamera.SetPosition(Eyepos);
-	m_Springcamera.SetTarget(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_Springcamera.GetCamera()->SetUpVec({ 1.0f,0.0f,0.0f });
-	m_Springcamera.GetCamera()->SetViewAngle(m_viewAngle);
-	CameraCol.Init(1.0f); //剛体カメラの初期化
-
-
 
 	static SShapeVertex_PT vertex[]{
 		{
@@ -102,36 +94,41 @@ void CRadarMap::InitRender()
 
 void CRadarMap::Update(const D3DXVECTOR3 position)
 {
-	D3DXVECTOR3 Vpos;
+
+		D3DXVECTOR3 target = game->GetGameCamara()->Getcamera()->GetLookatPt();
+		D3DXVECTOR3 viewPos = target;
+		viewPos.y += 100;
+
+
+		m_viewPosition = viewPos;
+		m_viewTarget = target;
+
+
+		//ライトビュープロジェクション行列を更新。
+		//普通のカメラと同じ。
+		//カメラの上方向を決める計算だけ入れておく。
+		D3DXVECTOR3 tmp = m_viewTarget - m_viewPosition;
+		D3DXVECTOR3 lightViewUp;
+		D3DXVec3Normalize(&tmp, &tmp);
+
+		D3DXMatrixLookAtLH(&m_lightViewMatrix, &m_viewPosition, &m_viewTarget, &D3DXVECTOR3(1.0f, 0.0f, 0.0f));
 	
-	D3DXVECTOR3 topos = game->GetGameCamara()->Getcamera()->GetLookatPt() - game->GetGameCamara()->Getcamera()->GetEyePt();
-	D3DXVec3Normalize(&topos, &topos);
-	
-	m_Springcamera.GetCamera()->SetUpVec(topos);
+		D3DXMatrixOrthoLH(
+			&m_lightProjMatrix,
+			1240,
+			1240,
+			m_Near,
+			m_Far
+			
+		);
+		D3DXMATRIX rot;
+		angle++;
+		float rStick_x = pad.GetRStickXF();
 
-	Vpos = position;
-	m_Springcamera.SetTarTarget(Vpos);
-	D3DXVec3Add(&Vpos, &Vpos, &Eyepos); 
-	m_Springcamera.SetTarPosition(Vpos);
-
-
-
-
-//カメラのあたり判定
-	D3DXVECTOR3 newPos;
-	if (CameraCol.Execute(newPos, m_Springcamera.GetTarPosition(), m_Springcamera.GetTarTarget()))
-	{
-		m_Springcamera.SetTarPosition(newPos);
-
-
-	}
-
-
-	m_Springcamera.Update();
-	m_Scamera.Update();
-
-
-
+		D3DXMatrixRotationAxis(&rot, &D3DXVECTOR3(0.0f, 0.0f, 1.0f), D3DXToRadian(rStick_x));
+		//D3DXMatrixRotationZ(&m_rot, 0.1f * rStick_x);
+		D3DXMatrixMultiply(&m_lightProjMatrix, &m_lightProjMatrix,&rot);
+		pad.Update();
 
 }
 
@@ -147,15 +144,16 @@ void CRadarMap::Draw(SkinModel* skinmodel)
 	//書き込み先を変更したのでクリア。
 	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xffffffff, 1.0f, 0);
 
-	skinmodel->Draw(&m_Springcamera.GetCamera()->GetViewMatrix(), &m_Springcamera.GetCamera()->GetProjectionMatrix());
+	skinmodel->Draw(&m_lightViewMatrix, &m_lightProjMatrix);
 
 	for (const auto& Enemy : game->GetEnemys()) {
-		Enemy->MiniMapRender(m_Springcamera.GetCamera()->GetViewMatrix(), m_Springcamera.GetCamera()->GetProjectionMatrix());
+		Enemy->MiniMapRender(m_lightViewMatrix, m_lightProjMatrix);
 	}
-	game->GetMap()->RadarMapRender(m_Springcamera.GetCamera()->GetViewMatrix(), m_Springcamera.GetCamera()->GetProjectionMatrix());
+	game->GetMap()->RadarMapRender(m_lightViewMatrix, m_lightProjMatrix);
+	
 	
 	D3DXMATRIX viewProj;
-	D3DXMatrixMultiply(&viewProj, &m_Springcamera.GetCamera()->GetViewMatrix(), &m_Springcamera.GetCamera()->GetProjectionMatrix());
+	D3DXMatrixMultiply(&viewProj, &m_lightViewMatrix, &m_lightProjMatrix);
 
 	shaderEffect->SetTechnique("creatTex");
 	shaderEffect->SetMatrix("g_WVPmt", &viewProj);
@@ -171,9 +169,9 @@ void CRadarMap::Draw(SkinModel* skinmodel)
 
 	shaderEffect->EndPass();
 	shaderEffect->End();
-
+	
 	//game->GetMap()->RadarMapRender(m_Springcamera.GetCamera()->GetViewMatrix(), m_Springcamera.GetCamera()->GetProjectionMatrix());
-
+	g_pd3dDevice->EndScene();
 	g_pd3dDevice->SetRenderTarget(0, renderTargetBackup);		//戻す。
 	g_pd3dDevice->SetDepthStencilSurface(depthBufferBackup);	//戻す。
 	g_pd3dDevice->EndScene();

@@ -156,7 +156,7 @@
   <ItemGroup>
     <ClCompile Include="Character\GroupEnemy.cpp" />
     <ClCompile Include="myEngine\Graphics\PostEffect\Monochrome.cpp" />
-    <ClCompile Include="myEngine\Graphics\PostEffect\Dof.cpp" />
+    <ClCompile Include="myEngine\Graphics\PostEffect\CSoftShadow.cpp" />
     <ClCompile Include="HUD\GUI.cpp" />
     <ClCompile Include="myEngine\Graphics\PostEffect\Bloom.cpp" />
     <ClCompile Include="HUD\Hud.cpp" />
@@ -223,7 +223,7 @@
     <ClInclude Include="Map\DebagRoom.h" />
     <ClInclude Include="Map\Tutorial2.h" />
     <ClInclude Include="myEngine\Graphics\PostEffect\Monochrome.h" />
-    <ClInclude Include="myEngine\Graphics\PostEffect\Dof.h" />
+    <ClInclude Include="myEngine\Graphics\PostEffect\CSoftShadow.h" />
     <ClInclude Include="HUD\GUI.h" />
     <ClInclude Include="myEngine\Random\MyRandom.h" />
     <ClInclude Include="Scene\GameScene.h" />
@@ -284,7 +284,7 @@
     <ClInclude Include="HUD\ScoreCheckre.h" />
     <ClInclude Include="Scene\SelectScene.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Stopwatch.h" />
+    <ClInclude Include="myEngine\Time\StopWatch.h" />
     <ClInclude Include="Scene\TITLE.h" />
     <ClInclude Include="myEngine\Graphics\Sprite\VertexBuffer.h" />
     <ClInclude Include="Map\Sun.h" />

@@ -16,6 +16,13 @@ int         g_isShadowReciever;				    //ƒVƒƒƒhƒEƒŒƒV[ƒo[H‚P‚È‚çƒVƒƒƒhƒEƒŒƒV
 float4x4 	g_lightViewMatrix;			//ƒ‰ƒCƒgƒrƒ…[s—ñB
 float4x4 	g_lightProjectionMatrix;	//ƒ‰ƒCƒgƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñB
 
+float4x4 	g_lightViewMatrix2;			//ƒ‰ƒCƒgƒrƒ…[s—ñB
+float4x4 	g_lightProjectionMatrix2;	//ƒ‰ƒCƒgƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñB
+
+float4x4 	g_lightViewMatrix3;			//ƒ‰ƒCƒgƒrƒ…[s—ñB
+float4x4 	g_lightProjectionMatrix3;	//ƒ‰ƒCƒgƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñB
+
+float4	    g_lightViewPos;
 
 float4x4	g_worldMatrix;			//!<ƒ[ƒ‹ƒhs—ñB
 float4x4	g_rotationMatrix;		//!<‰ñ“]s—ñB
@@ -56,6 +63,18 @@ sampler g_shadowMapTextureSecondSampler =
 sampler_state
 {
 	Texture = <g_shadowMapTexture2>;
+    MipFilter = LINEAR;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    AddressU = CLAMP;
+	AddressV = CLAMP;
+};
+
+texture g_shadowMapTexture3;		//ƒVƒƒƒhƒEƒ}ƒbƒvƒeƒNƒXƒ`ƒƒ3–‡–ÚB
+sampler g_shadowMapTextureThirdSampler = 
+sampler_state
+{
+	Texture = <g_shadowMapTexture3>;
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
@@ -127,7 +146,7 @@ struct VS_OUTPUT
     float2  Tex0   			: TEXCOORD0;
     float3	Tangent			: TEXCOORD1;		//ÚƒxƒNƒgƒ‹
     float3	worldPos 	    : TEXCOORD2;		//ƒ[ƒ‹ƒh‹óŠÔ‚Å‚Ì’¸“_À•W
-    float4	lightViewPos 	: TEXCOORD3;		//ƒ[ƒ‹ƒh‹óŠÔ->ƒ‰ƒCƒgƒrƒ…[‹óŠÔ->ƒ‰ƒCƒgË‰e‹óŠÔ‚É•ÏŠ·‚³‚ê‚½À•WB
+    float4	lightViewPos	: TEXCOORD3;		//ƒ[ƒ‹ƒh‹óŠÔ->ƒ‰ƒCƒgƒrƒ…[‹óŠÔ->ƒ‰ƒCƒgË‰e‹óŠÔ‚É•ÏŠ·‚³‚ê‚½À•WB
     float2	uv				: TEXCOORD4;
     float4  DepthUV 		: TEXCOORD5;		// Z’lZo—pƒeƒNƒXƒ`ƒƒ
     float2  Depth 		    : TEXCOORD6;	
@@ -251,44 +270,47 @@ float4 PSMain( VS_OUTPUT In ) : COLOR
 	float3 R = -L + 2.0f * dot(N,L)* N; //”½ËƒxƒNƒgƒ‹‚ÌŒvZ
 	
 	color *= lig + pow(max(0,dot(R,eye)),20.0f);   //ƒXƒyƒLƒ…ƒ‰[‚ÌŒvZ
-	
-	 //‹——£ƒtƒHƒO
-	 /*
-	 	float  Far = 10.0f;
-	 	float  Near = 0.2f;
-	 	float4 fogcol = float4(1.0f,1.0f,1.0f,1.0f);
-		float z = length(In.worldPos.xyz - g_Eyeposition.xyz);
-		z = max(z - Near, 0.0f);
-		float t = min( z / Far, 1.0f);
-		fogcol.xyz = lerp(fogcol.xyz, float3(0.75f, 0.75f, 0.95f), t);
-		
-		//color.rgb	*= fogcol.rgb;
-		float f = (Far - z ) / (Far - Near);
-		f = clamp(f,0.0f,1.0f);
-		color = color * f + fogcol * (1.0f - f);
-	*/	
-		 
+	//‰e‚ğ—‚Æ‚·‚©‚Ì”»’è
 	if(g_isShadowReciever == 1)
 	{
-		//Ë‰e‹óŠÔ(ƒXƒNƒŠ[ƒ“À•WŒn)‚É•ÏŠ·‚³‚ê‚½À•W‚Íw¬•ª‚ÅŠ„‚Á‚Ä‚â‚é‚Æ(-1.0f`1.0)‚Ì”ÍˆÍ‚Ì³‹K‰»À•WŒn‚É‚È‚éB
-		//‚±‚ê‚ğUVÀ•WŒn(0.0`1.0)‚É•ÏŠ·‚µ‚ÄAƒVƒƒƒhƒEƒ}ƒbƒv‚ğƒtƒFƒbƒ`‚·‚é‚½‚ß‚ÌUV‚Æ‚µ‚ÄŠˆ—p‚·‚éB
-		float2 shadowMapUV = In.lightViewPos.xy / In.lightViewPos.w;	//‚±‚ÌŒvZ‚Å(-1.0`1.0)‚Ì”ÍˆÍ‚É‚È‚éB
-		shadowMapUV *= float2(0.5f, -0.5f);								//‚±‚ÌŒvZ‚Å(-0.5`0.5)‚Ì”ÍˆÍ‚É‚È‚éB
-		shadowMapUV += float2(0.5f, 0.5f);								//‚»‚µ‚Ä‚±‚ê‚Å(0.0`1.0)‚Ì”ÍˆÍ‚É‚È‚Á‚Ä‚t‚uÀ•WŒn‚É•ÏŠ·B
-		float4 shadowVal = tex2D(g_shadowMapTextureSampler,shadowMapUV);	//ƒVƒƒƒhƒEƒ}ƒbƒv‚Í‰e‚ª—‚¿‚Ä‚¢‚é‚Æ‚±‚ë‚ÍƒOƒŒ[ƒXƒP[ƒ‹‚É‚È‚Á‚Ä‚¢‚éB
+		float4 worldPos = float4(In.worldPos.x,In.worldPos.y,In.worldPos.z,1.0f); 
+		sampler texSampler[3];
+		float4  lightVP[3];
+		texSampler[0] = g_shadowMapTextureSampler;
+		texSampler[1] = g_shadowMapTextureSecondSampler;
+		texSampler[2] = g_shadowMapTextureThirdSampler;
 		
+		lightVP[0]    = mul(worldPos,g_lightViewMatrix);  
+		lightVP[0]    = mul(lightVP[0] ,g_lightProjectionMatrix);
+		lightVP[1]    = mul(worldPos,g_lightViewMatrix2);  
+		lightVP[1]    = mul(lightVP[1] ,g_lightProjectionMatrix2);
+		lightVP[2]    = mul(worldPos,g_lightViewMatrix3);  
+		lightVP[2]    = mul(lightVP[2] ,g_lightProjectionMatrix3);
 		
-		if(shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f && shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f)
+		//ƒVƒƒƒhƒEƒ}ƒbƒv‚Ì”‚¾‚¯‰ñ‚·
+		for(int i = 0; i < 3;i++)
 		{
-			float Depth  = In.lightViewPos.z  / In.lightViewPos.w;  		//ƒ‰ƒCƒg‚©‚çŒ©‚½Z’l
-			Depth =  min(1.0f ,Depth);
-			if(Depth > shadowVal.x)
+			float2 shadowMapUV = lightVP[i].xy / lightVP[i].w;	//‚±‚ÌŒvZ‚Å(-1.0`1.0)‚Ì”ÍˆÍ‚É‚È‚éB
+			shadowMapUV *= float2(0.5f, -0.5f);								//‚±‚ÌŒvZ‚Å(-0.5`0.5)‚Ì”ÍˆÍ‚É‚È‚éB
+			shadowMapUV += float2(0.5f, 0.5f);								//‚»‚µ‚Ä‚±‚ê‚Å(0.0`1.0)‚Ì”ÍˆÍ‚É‚È‚Á‚Ä‚t‚uÀ•WŒn‚É•ÏŠ·B
+			float4 shadowVal = tex2D(texSampler[i],shadowMapUV);
+		
+			if(shadowMapUV.y > 0.01f && shadowMapUV.y < 0.99f && shadowMapUV.x > 0.01f && shadowMapUV.x < 0.99f)
 			{
-				color = float4(0.5f,0.5f,0.5f,1.0f);
+				float Depth  = In.lightViewPos.z  / In.lightViewPos.w;  		//ƒ‰ƒCƒg‚©‚çŒ©‚½Z’l
+				Depth =  min(1.0f ,Depth);
+				if(Depth > shadowVal.x)
+				{
+					color.xyz *= float3(0.5f,0.5f,0.5f);
+					return color;
+				}
 				
-				return color;
+					
+					return color;
 			}
 		}
+		
+		
 	 }
 	 
 	 
@@ -327,10 +349,12 @@ VS_OUTPUT VSMainShadow( VS_INPUT In, uniform bool hasSkin)
  */
 float4 PSRenderToShadowMapMain(VS_OUTPUT In ) : COLOR
 {
-   float4 col = 1.0f;;
+   float4 col = 1.0f;
    col.rgb = In.DepthUV.z / In.DepthUV.w; //Z’l‚ğ“ü‚ê‚é
    return float4(In.DepthUV.z / In.DepthUV.w,0,0,1);
 }
+
+
 
 //…–Ê—p‚Ì’¸“_ƒVƒF[ƒ_[
 VS_OUTPUT VSMainWave( VS_INPUT In)
@@ -339,7 +363,6 @@ VS_OUTPUT VSMainWave( VS_INPUT In)
 	float3 Pos, Normal, Tangent;
 	//ƒXƒLƒ“‚È‚µB
 	CalcWorldPosAndNormal( In, Pos, Normal, Tangent );
-	
 	o.worldPos = Pos;
     o.Pos = mul(float4(Pos.xyz, 1.0f), g_mViewProj);
     o.Normal = normalize(Normal);
@@ -348,7 +371,7 @@ VS_OUTPUT VSMainWave( VS_INPUT In)
     o.uv = In.uv;
     
      if(g_isShadowReciever == 1){
-     	float4 worldPos = float4(Pos.x,Pos.y,Pos.z,1.0f); 
+     	float4 worldPos = float4(Pos.x,Pos.y,Pos.z,1.0f);
 		//ƒVƒƒƒhƒEƒŒƒV[ƒo[B
 		//ƒ[ƒ‹ƒhÀ•W‚ğƒ‰ƒCƒgƒJƒƒ‰‚©‚çŒ©‚½Ë‰e‹óŠÔ‚É•ÏŠ·‚·‚éB
 		o.lightViewPos = mul(worldPos, g_lightViewMatrix);
@@ -358,6 +381,8 @@ VS_OUTPUT VSMainWave( VS_INPUT In)
 	return o;
 
 }
+
+
 
 //…–Ê—p‚ÌƒsƒNƒZƒ‹ƒVƒF[ƒ_[
 float4 PSWaveMain( VS_OUTPUT In ) : COLOR
@@ -465,29 +490,49 @@ float4 PSWaveMain( VS_OUTPUT In ) : COLOR
 		
 		Wcolor.xyz = lerp(Wcolor.xyz, float3(0.75f, 0.75f, 0.95f), t);
 		
+		
 	if(g_isShadowReciever == 1)
 	{
-		//Ë‰e‹óŠÔ(ƒXƒNƒŠ[ƒ“À•WŒn)‚É•ÏŠ·‚³‚ê‚½À•W‚Íw¬•ª‚ÅŠ„‚Á‚Ä‚â‚é‚Æ(-1.0f`1.0)‚Ì”ÍˆÍ‚Ì³‹K‰»À•WŒn‚É‚È‚éB
-		//‚±‚ê‚ğUVÀ•WŒn(0.0`1.0)‚É•ÏŠ·‚µ‚ÄAƒVƒƒƒhƒEƒ}ƒbƒv‚ğƒtƒFƒbƒ`‚·‚é‚½‚ß‚ÌUV‚Æ‚µ‚ÄŠˆ—p‚·‚éB
-		float2 shadowMapUV = In.lightViewPos.xy / In.lightViewPos.w;	//‚±‚ÌŒvZ‚Å(-1.0`1.0)‚Ì”ÍˆÍ‚É‚È‚éB
-		shadowMapUV *= float2(0.5f, -0.5f);								//‚±‚ÌŒvZ‚Å(-0.5`0.5)‚Ì”ÍˆÍ‚É‚È‚éB
-		shadowMapUV += float2(0.5f, 0.5f);								//‚»‚µ‚Ä‚±‚ê‚Å(0.0`1.0)‚Ì”ÍˆÍ‚É‚È‚Á‚Ä‚t‚uÀ•WŒn‚É•ÏŠ·B
-		float4 shadowVal = tex2D(g_shadowMapTextureSampler,shadowMapUV);	//ƒVƒƒƒhƒEƒ}ƒbƒv‚Í‰e‚ª—‚¿‚Ä‚¢‚é‚Æ‚±‚ë‚ÍƒOƒŒ[ƒXƒP[ƒ‹‚É‚È‚Á‚Ä‚¢‚éB
 		
+		float4 worldPos = float4(In.worldPos.x,In.worldPos.y,In.worldPos.z,1.0f); 
+		sampler texSampler[3];
+		float4  lightVP[3];
+		texSampler[0] = g_shadowMapTextureSampler;
+		texSampler[1] = g_shadowMapTextureSecondSampler;
+		texSampler[2] = g_shadowMapTextureThirdSampler;
 		
-		if(shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f && shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f)
+		lightVP[0]    = mul(worldPos,g_lightViewMatrix);  
+		lightVP[0]    = mul(lightVP[0] ,g_lightProjectionMatrix);
+		lightVP[1]    = mul(worldPos,g_lightViewMatrix2);  
+		lightVP[1]    = mul(lightVP[1] ,g_lightProjectionMatrix2);
+		lightVP[2]    = mul(worldPos,g_lightViewMatrix3);  
+		lightVP[2]    = mul(lightVP[2] ,g_lightProjectionMatrix3);
+		
+		for(int i = 0; i < 3;i++)
 		{
-			float Depth  = In.lightViewPos.z  / In.lightViewPos.w;  		//ƒ‰ƒCƒg‚©‚çŒ©‚½Z’l
-			Depth =  min(1.0f ,Depth);
-			if(Depth > shadowVal.x)
+			float2 shadowMapUV = lightVP[i].xy / lightVP[i].w;	//‚±‚ÌŒvZ‚Å(-1.0`1.0)‚Ì”ÍˆÍ‚É‚È‚éB
+			shadowMapUV *= float2(0.5f, -0.5f);								//‚±‚ÌŒvZ‚Å(-0.5`0.5)‚Ì”ÍˆÍ‚É‚È‚éB
+			shadowMapUV += float2(0.5f, 0.5f);								//‚»‚µ‚Ä‚±‚ê‚Å(0.0`1.0)‚Ì”ÍˆÍ‚É‚È‚Á‚Ä‚t‚uÀ•WŒn‚É•ÏŠ·B
+			float4 shadowVal = tex2D(texSampler[i],shadowMapUV);
+		
+			if(shadowMapUV.y > 0.01f && shadowMapUV.y < 0.99f && shadowMapUV.x > 0.01f && shadowMapUV.x < 0.99f)
 			{
-				Wcolor.xyz *= float3(0.5f,0.5f,0.5f);
-				return Wcolor;
+				float Depth  = In.lightViewPos.z  / In.lightViewPos.w;  		//ƒ‰ƒCƒg‚©‚çŒ©‚½Z’l
+				Depth =  min(1.0f ,Depth);
+				if(Depth > shadowVal.x)
+				{
+					Wcolor.xyz *= float3(0.5f,0.5f,0.5f);
+					return Wcolor;
+				}
+				
+					//Wcolor.xyz = float3(i * 0.5f,i * 0.5f,i * 0.5f);
+					return Wcolor;
 			}
 		}
+		
+	
+		
 	 }
-		
-		
 		return Wcolor;
 		
 

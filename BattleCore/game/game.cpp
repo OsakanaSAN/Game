@@ -75,34 +75,36 @@ void Game::ListUpdate()
 
 	auto EnemyIt = Enemys.begin();
 	while (EnemyIt != Enemys.end()) {
+
+
 		if ((*EnemyIt)->IsEnd()) {
 			//€–S
 			//“G‚Ìc‚è”
-			game->GetGameScene()->CountDown(1);
-			(*EnemyIt)->Delete();
-			EnemyIt = Enemys.erase(EnemyIt);
-			count++;
+			if (!(*EnemyIt)->GetIsCountDown())
+			{
+				(*EnemyIt)->setCountDown(true);
+				game->GetGameScene()->CountDown(1);
+				//(*EnemyIt)->Delete();
+				//EnemyIt = Enemys.erase(EnemyIt);
+			}
 		}
-		else {
+		
+
 			(*EnemyIt)->Update();
 			EnemyIt++;
-		}
+		
 
 
 	}
-	auto bulletIt = PlayerBullets.begin();
-	while (bulletIt != PlayerBullets.end()) {
-		if (!(*bulletIt)->Update())
-		{
-			//€–S
-			bulletIt = PlayerBullets.erase(bulletIt);
-		}
-		else {
-			bulletIt++;
-		}
 
 
+	//ƒvƒŒƒCƒ„[‚Ì’e‚ÌXV
+	for (auto& Playerbullet : PlayerBullets)
+	{
+
+		Playerbullet->Update();
 	}
+	
 
 	auto EbulletIt = EnemyBullets.begin();
 	while (EbulletIt != EnemyBullets.end()) {
@@ -169,21 +171,16 @@ void Game::Render2D()
 		break;
 
 	case Game_Scene:
-		Hud.Drow(spt);
-		for (const auto& Enemy : game->GetEnemys()) {
-			Enemy->Render2D();
-		}
-		if (game->GetEnemys().size() == 0)
-		{
-			for (const auto& GroupEnemy : game->GetMap()->GetGroupenemy())
-			{
-				GroupEnemy->Render2D();
-			}
-		}
 		g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 		g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 		g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
 		g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+		Hud.Drow(spt);
+		for (const auto& Enemy : game->GetEnemys()) {
+			Enemy->Render2D();
+		}
+		game->GetMap()->Render2D();
+		
 		for (auto Bullet : game->GetPlayerBullet())
 		{
 			Bullet->Render2D();

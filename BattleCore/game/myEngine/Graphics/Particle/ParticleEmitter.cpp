@@ -15,7 +15,6 @@ CParticleEmitter::~CParticleEmitter()
 	{
 		delete paticl;
 	}
-	//shaderEffect->Release();
 	particleList.clear();
 }
 void CParticleEmitter::Init(const SParicleEmitParameter& param)
@@ -23,8 +22,10 @@ void CParticleEmitter::Init(const SParicleEmitParameter& param)
 	this->param = param;
 	HRESULT hr = D3DXCreateTextureFromFileA(g_pd3dDevice, param.texturePath, &texture);
 	timer = 0.0f;
+	EndTime = 0.0f;
 	//エフェクトファイルのロードが重いのでエミッタのInitで作る。
 	LPD3DXBUFFER  compileErrorBuffer = NULL;
+
 	if (shaderEffect == NULL)
 	{
 		hr = D3DXCreateEffectFromFile(
@@ -50,6 +51,7 @@ void CParticleEmitter::Init(const SParicleEmitParameter& param)
 	}
 
 
+
 }
 void CParticleEmitter::Update()
 {
@@ -57,18 +59,31 @@ void CParticleEmitter::Update()
 	if (timer >= param.intervalTime && EndTime <= param.Endtimer)
 	{
 			//パーティクルを生成。
+		bool skip = false;
+		for (auto* Paticle : particleList)
+		{
+			if (Paticle->IsDete())
+			{
+
+				Paticle->Init(param, texture, *shaderEffect, Position);
+				skip = true;
+				break;
+
+			}
+
+		}
+
+		if (!skip)
+		{
+
 			CParticle* p = new CParticle;
-			p->Init(param, texture, *shaderEffect,Position);
-			timer = 0.0f;
+			p->Init(param, texture, *shaderEffect, Position);
 			particleList.push_back(p);
 
-		/*	p = new CParticle;
-			p->Init(param, texture, *shaderEffect, Position);
-			timer = 0.0f;
-			particleList.push_back(p);*/
-
-	
+		}
+		timer = 0.0f;
 	}
+
 	for (const auto& p : particleList)
 	{
 		p->Update();
@@ -80,31 +95,10 @@ void CParticleEmitter::Update()
 		}
 	}
 
-	timer += 1.0f / 60.0f;
-	EndTime += 1.0f / 60.0f;
+	timer += GameTime().GetFrameDeltaTime();
+	EndTime += GameTime().GetFrameDeltaTime();
 
-	/*auto IsParticle = particleList.begin();
-	while (IsParticle != particleList.end())
-	{
-	(*IsParticle)->Update();
-
-	if ((*IsParticle)->IsDete())
-	{
-	//(*IsParticle)->Delete();
-	//IsParticle = particleList.erase(IsParticle);
-	//(*IsParticle)->Delete();
-	IsParticle++;
-	}
-
-	else
-	{
-	//(*IsParticle)->Update();
-	IsParticle++;
-
-	}
-
-
-	}*/
+	
 
 }
 void CParticleEmitter::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix)

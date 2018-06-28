@@ -22,9 +22,10 @@ public:
 
 private:
 	CPrimitive		m_primitive;
-	CRenderTarget m_SrenderTarget;		//レーダーマップを書きこむレンダリングターゲット。
-	D3DXMATRIX  m_lightViewMatrix;		//ライトビューマトリクス。
-	D3DXMATRIX	m_lightProjMatrix;		//ライトプロジェクションマトリクス。
+	CRenderTarget	m_SrenderTarget;		//レーダーマップを書きこむレンダリングターゲット。
+	D3DXMATRIX		m_lightViewMatrix;		//ライトビューマトリクス。
+	D3DXMATRIX		m_lightProjMatrix;		//ライトプロジェクションマトリクス。
+	D3DXMATRIX      m_LightVPM;
 	D3DXVECTOR3 m_viewPosition;			//ライトビューの視点。
 	D3DXVECTOR3 m_viewTarget;			//ライトビューの注視点。
 	D3DXVECTOR3 m_lightDirection;		//!<ライトの向き
@@ -44,6 +45,7 @@ private:
 	float					m_Near;				//!<近平面。
 	float			        m_viewAngle;		//!<画角(ラジアン)。
 	float					m_aspect;			//!<アスペクト比
+	float					angle;
 	Pad						pad;     //パット
 };
 

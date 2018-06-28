@@ -105,8 +105,26 @@ INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 			DispatchMessage(&msg);
 		}
 		else {
+			CStopwatch sw;
+			sw.Start();
+
 			Update();
 			Render();
+
+			sw.Stop();
+
+			if (sw.GetElapsed() < 1.0f / 30.0f) {
+				//30fps‚ÉŠÔ‚É‡‚Á‚Ä‚¢‚é‚È‚ç–°‚éB
+				DWORD sleepTime = max(0.0, (1.0 / 30.0)*1000.0 - (DWORD)sw.GetElapsedMillisecond());
+				Sleep(sleepTime);
+				GameTime().SetFrameDeltaTime(1.0f / 30.0f);
+			}
+
+			else 
+			{
+				//ŠÔ‚É‡‚Á‚Ä‚¢‚È‚¢B
+				GameTime().SetFrameDeltaTime((float)sw.GetElapsed());
+			}
 		}
 	}
 	UnregisterClass("Shader Tutorial", wc.hInstance);

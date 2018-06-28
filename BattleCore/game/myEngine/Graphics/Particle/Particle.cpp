@@ -22,93 +22,94 @@ CParticle::CParticle() :
 }
 CParticle::~CParticle()
 {
-	/*if(shaderEffect != nullptr){
+	if(shaderEffect != nullptr){
 		shaderEffect->Release();
-	}*/
-	/*if(texture != nullptr){
+	}
+	if(texture != nullptr){
 		texture->Release();
-	}*/
+	}
 	primitive.Release();
 }
 void CParticle::Init( const SParicleEmitParameter& param,const LPDIRECT3DTEXTURE9 settexture, ID3DXEffect& effect, const D3DXVECTOR3 pos)
 {
-	float halfW = param.w * 0.5f;
-	float halfH = param.h * 0.5f;
-	m_EndTime = param.Endtimer;
-	m_brightness = param.brightness;
-	m_life = param.life;
-	
-	D3DXVECTOR4 uv(0.0f, 0.0f, 1.0f, 1.0f);
-	moveSpeed = param.initSpeed;
+	//パーティクルのパラメーターの初期化
+	{
+		float halfW = param.w * 0.5f;
+		float halfH = param.h * 0.5f;
+		m_EndTime = param.Endtimer;
+		m_brightness = param.brightness;
+		m_life = param.life;
+		m_alpha = param.alpha;
+		isDete = false;
 
-	//Particleを出す位置
-	position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	position = pos;
+		D3DXVECTOR4 uv(0.0f, 0.0f, 1.0f, 1.0f);
+		moveSpeed = param.initSpeed;
+
+		//Particleを出す位置
+		position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		position = pos;
 
 
-	float add = ((g_Random->GetRandInt() % 255) - 128) / 128.0f;
-	moveSpeed.x += add * 0.3f;
-	moveSpeed.y += add * 0.3f;
-	moveSpeed.z += add * 0.3f;
-	position.x += (((float)g_Random->GetRandDouble() - 0.5f) * 2.0f) * param.initPositionRandomMargin.x;
-	position.y += (((float)g_Random->GetRandDouble() - 0.5f) * 2.0f) * param.initPositionRandomMargin.y;
-	position.z += (((float)g_Random->GetRandDouble() - 0.5f) * 2.0f) * param.initPositionRandomMargin.z;
+		float add = ((g_Random->GetRandInt() % 255) - 128) / 128.0f;
+		moveSpeed.x += add * 0.3f;
+		moveSpeed.y += add * 0.3f;
+		moveSpeed.z += add * 0.3f;
+		position.x += (((float)g_Random->GetRandDouble() - 0.5f) * 2.0f) * param.initPositionRandomMargin.x;
+		position.y += (((float)g_Random->GetRandDouble() - 0.5f) * 2.0f) * param.initPositionRandomMargin.y;
+		position.z += (((float)g_Random->GetRandDouble() - 0.5f) * 2.0f) * param.initPositionRandomMargin.z;
 
-	
 
-	SShapeVertex_PT vb[] = {
+		if (isCopy == false)
 		{
-			-halfW, halfH, 0.0f, 1.0f,
-			uv.x, uv.y
-		},
-		{
-			halfW, halfH, 0.0f, 1.0f,
-			uv.z, uv.y
-		},
-		{
-			-halfW, -halfH, 0.0f, 1.0f,
-			uv.x, uv.w
-		},
-		{
-			halfW, -halfH, 0.0f, 1.0f,
-			uv.z, uv.w
-		},
-		
-	};
-	short index[]{
-		0,1,2,3
-	};
+			SShapeVertex_PT vb[] =
+			{
+				{
+					-halfW, halfH, 0.0f, 1.0f,
+					uv.x, uv.y
+				},
+				{
+					halfW, halfH, 0.0f, 1.0f,
+					uv.z, uv.y
+				},
+				{
+					-halfW, -halfH, 0.0f, 1.0f,
+					uv.x, uv.w
+				},
+				{
+					halfW, -halfH, 0.0f, 1.0f,
+					uv.z, uv.w
+				},
 
-	
+			};
+			short index[]{
+				0,1,2,3
+			};
 
-	primitive.Create(
-		CPrimitive::eTriangleStrip,
-		4,
-		sizeof(SShapeVertex_PT),
-		scShapeVertex_PT_Element,
-		vb,
-		4,
-		D3DFMT_INDEX16,
-		index
-		);
 
-	texture = settexture;		//テクスチャのセット
-	
-	shaderEffect = &effect;		//エフェクトファイルセット
 
-	
+			primitive.Create(
+				CPrimitive::eTriangleStrip,
+				4,
+				sizeof(SShapeVertex_PT),
+				scShapeVertex_PT_Element,
+				vb,
+				4,
+				D3DFMT_INDEX16,
+				index
+			);
+			isCopy = true;
+		}
+		texture = settexture;		//テクスチャのセット
+
+		shaderEffect = &effect;		//エフェクトファイルセット
+
+	}
 }
 void CParticle::Update()
 {
-	
-	/*if (Time >= m_EndTime)
-	{
-		isDete = true;
-		return;
-	}*/
-	//例 2  2   
-	
 	//寿命の半分からアルファ値を下げていく
+	if (isDete) { return; }
+
 	if (Time >= m_life / 2)
 	{
 		m_alpha -= GameTime().GetFrameDeltaTime() * (1 / (m_life / 2));
@@ -170,7 +171,7 @@ void CParticle::Update()
 }
 void CParticle::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix)
 {
-	if (isDete||shaderEffect == nullptr || texture ==nullptr) { return; }
+	//if (isDete||shaderEffect == nullptr || texture ==nullptr) { return; }
 
 	D3DXMATRIX m, mTrans,viewRot;
 	D3DXMatrixTranslation(&mTrans, position.x, position.y, position.z);

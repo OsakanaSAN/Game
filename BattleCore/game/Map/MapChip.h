@@ -34,4 +34,5 @@ private:
 	int         lightNo = 0;
 	LPDIRECT3DCUBETEXTURE9      CubeMap = NULL;
 	bool        m_terrain = false;
+	bool        m_noRender = false;
 };

@@ -78,6 +78,14 @@ void CGameScene::Update()
 			game->ListUpdate();
 			m_Sound[0]->Update();
 			m_Sound[1]->Update();
+
+			if (GetAsyncKeyState('L') & 0x8000)
+			{
+				game->InitEnemy({0.0f,30.0f,0.0f});
+				game->GetGameScene()->CountUp(1);
+				game->GetScorecheckre()->CountUp();
+			}
+
 			if (m_EnemyCount == 0 )
 			{
 				m_FadeTime += GameTime().GetFrameDeltaTime();
@@ -108,6 +116,8 @@ void CGameScene::Update()
 			delete game->GetGameCamara();
 			game->DeleteEnemy();
 			game->DeletePlayer();
+			game->DeleteBullet();
+
 			//delete g_physicsWorld;
 			game->NewResult();
 			game->GetResult()->Start();

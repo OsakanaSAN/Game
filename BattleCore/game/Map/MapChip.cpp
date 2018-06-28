@@ -41,6 +41,7 @@ void MapChip::Init(SMapChipLocInfo& locInfo)
 	if (locInfo.modelName == "Wall" || locInfo.modelName == "Wall2")
 	{
 		model.SetAlphaZero(true);
+		m_noRender = true;
 	}
 	//ƒ‰ƒCƒg‚ð‰Šú‰»B
 	if (locInfo.modelName == "map7")
@@ -129,8 +130,9 @@ void MapChip::Update()
 }
 void MapChip::Render()
 {
+	if (m_noRender) { return; }
 	model.SetShadowMap(false);
-	model.SetShadowRecieve(true);
+	model.SetShadowRecieve(false);
 	model.Draw(&game->GetGameCamara()->Getcamera()->GetViewMatrix(), &game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
 }
 void MapChip::LightEyePosRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightProjMatrix)

@@ -42,30 +42,35 @@ void Sea::Start(D3DXVECTOR3 pos, D3DXQUATERNION rot)
 	model.SetSkyTexture();
 	model.SetWave(true);
 
+	SParicleEmitParameter SparticleEmit;
+	//パーティクルの設定
+	SparticleEmit.texturePath = "Assets/Particle/Smoke0.jpg";
+	static float w = 10.0f;
+	static float h = 10.0f;
+	SparticleEmit.w = w;
+	SparticleEmit.h = h;
+	SparticleEmit.intervalTime = 0.1f;
+	SparticleEmit.Endtimer = 50.0f;
+	SparticleEmit.brightness = 0.2f;
+	SparticleEmit.life = 5.0f;
+	static D3DXVECTOR3 randomMargin = { 1.5f,1.5f,1.5f };
+	SparticleEmit.initPositionRandomMargin = randomMargin;
+
+	SparticleEmit.initSpeed = D3DXVECTOR3(2.0f, 0.0f, 0.0f);
+
+		m_particleEmit = std::make_unique<CParticleEmitter>();
+		m_particleEmit->Init(SparticleEmit);
+
 	
 
 }
 
 void Sea::Update()
 {
-	////ライトの回転
-	//float angle = 0.0f;
-	//if (GetAsyncKeyState('Q')) {
-	//	angle = D3DXToRadian(1.0f);
-	//}
-	//else if (GetAsyncKeyState('E')) {
-	//	angle = D3DXToRadian(-1.0f);
-	//}
-	////ライトを回転させる行列を作成する。
-	//D3DXMATRIX mRot;
-	//D3DXVECTOR3 UP = { 0.0,1.0,0.0 };
-	//D3DXMatrixRotationAxis(&mRot, &UP, angle);
-	////回転させる。
-	//for (int i = 0; i < 4; i++) {
-	//	D3DXVECTOR4 dir;
-	//	D3DXVec4Transform(&dir, &light.GetDiffuseLightDirection()[i], &mRot);
-	//	light.SetDiffuseLightDirection(i, dir);
-	//}
+	//ライトの回転
+	
+
+
 
 	//太陽ライトの方向を更新。
 	D3DXVECTOR3 sundir = game->GetMap()->GetSun()->GetPosition() * -1.0f;
@@ -73,7 +78,8 @@ void Sea::Update()
 	light.SetDiffuseLightDirection(0, { sundir.x, sundir.y, sundir.z, 1.0f });
 
 	model.UpdateWorldMatrix(position, rotation, D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-
+	//m_particleEmit->SetPosition({ 0.0f,50.0f,0.0f });
+	//m_particleEmit->Update();
 }
 
 void Sea::Render()
@@ -81,6 +87,7 @@ void Sea::Render()
 	model.SetShadowMap(false);
 	model.SetShadowRecieve(true);
 	model.Draw(&game->GetGameCamara()->Getcamera()->GetViewMatrix(), &game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
+	//m_particleEmit->Render(game->GetGameCamara()->Getcamera()->GetViewMatrix(), game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
 }
 
 void Sea::RadarMapRender(D3DXMATRIX&  RederCameraMatrix, D3DXMATRIX&	RederCameraProjMatrix)

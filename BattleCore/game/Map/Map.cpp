@@ -11,7 +11,7 @@ SMapChipLocInfo mapChipInfo[] =
 SMapChipLocInfo mapChipInfo2[] =
 {
 
-#include "locationInfo.h"
+#include "Test.h"
 
 };
 
@@ -79,6 +79,7 @@ void Map::Init(int mapserect)
 				game->InitEnemy(mapChipInfo[i].pos);
 				game->GetGameScene()->CountUp(1);
 				game->GetScorecheckre()->CountUp();
+				m_nomalEnemyCount++;
 			}
 
 			else if (mapChipInfo[i].modelName == "PTEnemy")
@@ -87,6 +88,7 @@ void Map::Init(int mapserect)
 				m_Enemy[GroupNo].push_back(enemy);
 				enemy->Start();
 				enemy->SetPos(mapChipInfo[i].pos);
+				enemy->setGroup(true);
 				GroupCount++;
 				if (GroupCount == 5)
 				{
@@ -106,7 +108,14 @@ void Map::Init(int mapserect)
 				sun = new CSun;
 				sun->Start(mapChipInfo[i].pos, mapChipInfo[i].rotation);
 			}
-
+			else if (mapChipInfo[i].modelName == "Wall" || mapChipInfo[i].modelName == "Wall2")
+			{
+				MapChip* mapChip = new MapChip;
+				//マップチップの情報を渡して初期化。
+				mapChip->Init(mapChipInfo[i]);
+				//動的配列にプッシュ。
+				NoRenderobj.push_back(mapChip);
+			}
 			else {
 				MapChip* mapChip = new MapChip;
 				//マップチップの情報を渡して初期化。
@@ -144,6 +153,7 @@ void Map::Init(int mapserect)
 				game->InitEnemy(mapChipInfo2[i].pos);
 				game->GetGameScene()->CountUp(1);
 				game->GetScorecheckre()->CountUp();
+				m_nomalEnemyCount++;
 			}
 
 			else if (mapChipInfo2[i].modelName == "Player")
@@ -151,11 +161,11 @@ void Map::Init(int mapserect)
 				game->GetPlayer()->SetPos(mapChipInfo2[i].pos);
 			}
 
-			/*else if (mapChipInfo2[i].modelName == "Sun")
+			else if (mapChipInfo2[i].modelName == "Sun")
 			{
 				sun = new CSun;
 				sun->Start(mapChipInfo2[i].pos, mapChipInfo2[i].rotation);
-			}*/
+			}
 
 			else
 			{
@@ -184,7 +194,11 @@ void Map::Update()
 	{
 		mapchip->Update();
 	}
-	if (game->GetEnemys().size() == 0 && GroupNo != 4)
+	for (const auto& mapchip : NoRenderobj)
+	{
+		mapchip->Update();
+	}
+	if (m_nomalEnemyCount == 0 && GroupNo != 3)
 	{
 		
 		if (GroupCount == 0 )
@@ -203,14 +217,12 @@ void Map::Update()
 				if ((*EnemyIt)->IsEnd()) {
 					//死亡
 					//敵の残り数
-					if (!(*EnemyIt)->GetIsGroup())
+					if ((*EnemyIt)->GetIsGroup())
 					{
-						(*EnemyIt)->setIsGroup(true);
+						(*EnemyIt)->setGroup(false);
 						game->GetGameScene()->CountDown(1);
 						GroupCount--;
 					}
-					/*(*EnemyIt)->Delete();
-					EnemyIt = m_Enemy[GroupNo].erase(EnemyIt);*/
 					EnemyIt++;
 				}
 				else {
@@ -225,6 +237,18 @@ void Map::Update()
 	}
 	
 }
+void Map::Render2D()
+{
+	if (m_nomalEnemyCount == 0)
+	{
+		for (const auto& GroupEnemy : game->GetMap()->GetGroupenemy())
+		{
+			GroupEnemy->Render2D();
+		}
+	}
+
+}
+
 void Map::Render()
 {
 	
@@ -232,14 +256,21 @@ void Map::Render()
 	
 	skydoom->Render();
 	sun->Render();
-	sea->Render();
+	//sea->Render();
 	//マップチップを一個ずつ描画。
 	for (const auto& mapchip : mapChipList)
 	{
 		mapchip->Render();
 	}
 
-	if (game->GetEnemys().size() == 0 && GroupNo != 4)
+	sea->Render();
+
+	for (const auto& mapchip : NoRenderobj)
+	{
+		mapchip->Render();
+	}
+
+	if (m_nomalEnemyCount == 0 && GroupNo != 3)
 	{
 		for (const auto& groupEnemy : m_Enemy[GroupNo])
 		{
@@ -248,6 +279,7 @@ void Map::Render()
 		}
 		
 	}
+	
 	
 }
 
@@ -265,7 +297,7 @@ void Map::ShadowMapRender(D3DXMATRIX  lightViewMatrix, D3DXMATRIX	lightProjMatri
 
 void Map::RadarMapRender(D3DXMATRIX&  RederCameraMatrix, D3DXMATRIX&	RederCameraProjMatrix)
 {
-	if (game->GetEnemys().size() == 0 && GroupNo != 4)
+	if (m_nomalEnemyCount == 0 && GroupNo != 3)
 	{
 		for (const auto& groupEnemy : m_Enemy[GroupNo])
 		{

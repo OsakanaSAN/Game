@@ -1,4 +1,5 @@
 #pragma once
+#include"myEngine/Graphics/Sprite/Primitive.h"
 
 class CGUI
 {
@@ -16,7 +17,9 @@ public:
 private:
 
 	ID3DXEffect*		shaderEffect;		//シェーダーエフェクト。
+
 	CPrimitive			m_primitive;		//プリミティブ。
+
 	LPDIRECT3DTEXTURE9	m_texture;			//テクスチャ。
 	D3DXVECTOR3			m_position;			//座標。
 	D3DXVECTOR2			m_size;				//サイズ

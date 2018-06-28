@@ -41,7 +41,7 @@ void CZoomBlur::Render()
 	m_ZoomEffect->Begin(NULL, D3DXFX_DONOTSAVESHADERSTATE);
 	m_ZoomEffect->BeginPass(0);
 	//シーンテクスチャを設定する
-	m_ZoomEffect->SetTexture("g_scene", rt->GetTexture());
+	m_ZoomEffect->SetTexture("g_scene",rt->GetTexture());
 	m_ZoomEffect->SetFloat("g_BlurPower", 5.0f);
 	//定数レジスタへの変更をコミットする。
 	m_ZoomEffect->CommitChanges();

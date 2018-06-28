@@ -163,7 +163,7 @@ void CGUI::Render(const D3DXMATRIX& viewMatrix, const D3DXMATRIX& projMatrix)
 	m = viewRot * mTrans * viewMatrix * projMatrix;
 
 	//アルファブレンディングを有効にする。
-	g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
 	g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 	g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);

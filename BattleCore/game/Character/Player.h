@@ -10,6 +10,7 @@
 #include "myEngine/Graphics/Particle/ParticleEmitter.h"
 #include "HUD/GUI.h"
 #include "GameCamera/RadarMap.h"
+#include "Enemy.h"
 
 
 struct EenemyBoX {
@@ -101,39 +102,45 @@ private:
 	D3DXMATRIX				m_Mat;
 	D3DXVECTOR3				m_FrontPosition;
 	CGUI*					m_TagetUI;									//ロックオン時のUI
-	int						m_MaxHp = 200;								//プレイヤーの最大HP
-	int						m_Hp	= 200;								//プレイヤーの現在のHP
 	CParticleEmitter		m_ParticleEmitter;							//パーティクル
 	SkinModel				m_Skinmodel;								//スキンモデル
 	SkinModelData			m_SkinmodelData;							//スキンモデルデーター
 	SkinModel				m_MapSkinmodel;								//ミニマップ用スキンモデル
 	SkinModelData			m_MapSkinmodelData;							//ミニマップ用スキンモデルデーター
-
-
 	Light					m_Light;									//プレイヤーのライト
 	D3DXVECTOR3				m_Position = { 0.0f,50.0f,0.0f };			//プレイヤーの現在位置	
 	D3DXQUATERNION			m_Rotation = { 0.0f, 0.0f, 0.0f, 1.0f };	//回転
 	CharacterController		m_CharacterController;						//キャラクターコントローラー
 	CSoundSource*			m_PlayerSE;									//プレイヤーのSE
 	CSoundSource*			m_PlayerBoothtSE;							//ブース中のSE
-	float					m_BoothtTime;								//ブーストの時間を格納
-	int						m_MoveSpeed = 0;							//キャラクターの移動速度
-	bool					m_NoBoothtInput;							/*ブースと時間の上限を超えてもR2が押し続けている時に
-																		  切り替わりが発生するのを防ぐため*/
 	Animation				m_Animation;								//アニメーション
 	Pad						m_Pad;										//パット
-	int						m_AnimationNo;								//現在のアニメーション番号
-	bool					m_IsMove = false;							//移動中かの判定
+	CEnemy*					m_lockTarget;
+	
 	float					m_bulletIntervalTime;						//弾丸をもう一度打てるようになるまでのインターバル
 	float					m_DashTime = 0;								//現在のブースと時間を格納
-	bool					m_ZAttent = false;							//敵に注目するかの判定
+	
 	float					m_Inertia = 6;								//慣性
 	float					m_X_input = 0;								//x軸の入力量保管
 	float					m_Y_input = 0;								//y軸の入力量保管
 	float					m_X_input_old = 0;							//過去のx軸の入力量保管
 	float					m_Y_input_old = 0;							//過去のy軸の入力量保管
+	float					m_BoothtTime;								//ブーストの時間を格納
+	float					m_bulletreload = 0.0f;					//リロード時間を入れる
+
+	int						m_MaxHp = 200;								//プレイヤーの最大HP
+	int						m_Hp = 200;									//プレイヤーの現在のHP
+	int						m_MoveSpeed = 0;							//キャラクターの移動速度
+	int						m_AnimationNo;								//現在のアニメーション番号
+	int					    m_reloadCount = 0;
+	
+	bool					m_IsReload = false;
 	bool					m_Oveline = false;
-	bool					m_BattleMotion = false;					//攻撃中
+	bool					m_BattleMotion = false;					    //攻撃中
+	bool					m_ZAttent = false;							//敵に注目するかの判定
+	bool					m_IsMove = false;							//移動中かの判定
+	bool					m_NoBoothtInput;							/*ブースと時間の上限を超えてもR2が押し続けている時に
+																		切り替わりが発生するのを防ぐため*/
 
 /////////////////////////////////////////////////////////////////////////////////////
 	//エネミーに注目するための変数

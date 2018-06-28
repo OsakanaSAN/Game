@@ -10,13 +10,6 @@ public:
 	
 private:
 
-	//D3DXVECTOR3			m_Position;				//座標
-	//D3DXQUATERNION		m_Rotation;				//回転
-	//SkinModel				m_Skin_model;			//スキンモデル
-	//SkinModelData			m_Skin_model_data;		//スキンモデルデータ
-	//Light					m_Light;				//ライト
-	//CharacterController	m_CharacterController	//キャラクターコントローラー
-
 
 };
 

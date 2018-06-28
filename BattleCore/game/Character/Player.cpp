@@ -89,12 +89,18 @@ void CPlayer::Start()
 	m_SparticleEmit.intervalTime = 0.01f;
 	m_SparticleEmit.Endtimer = 100.0f;
 	m_SparticleEmit.brightness = 0.2f;
-	m_SparticleEmit.life = 2.0f;
+	m_SparticleEmit.life = 5.0f;
 	m_SparticleEmit.initSpeed = D3DXVECTOR3(0.0f, 2.0f, 0.0f);
 	static D3DXVECTOR3 randomMargin = { 1.5f,1.5f,1.5f };
 	m_SparticleEmit.initPositionRandomMargin = randomMargin;
 	m_ParticleEmitter.Init(m_SparticleEmit);
 	//m_ParticleEmitter.SetPosition({ m_Position.x,m_Position.y + 5.0f,m_Position.z });
+
+
+
+
+	m_lockTarget = new CEnemy;
+
 }
 
 
@@ -110,6 +116,10 @@ void CPlayer::Update()
 	OnLock(); //ロックオン
 	
 	m_Pad.Update(); //パッドのアプデ
+
+	//m_ParticleEmitter.SetPosition({ m_Position.x,m_Position.y + 5.0f,m_Position.z });
+	//m_ParticleEmitter.Update();
+	
 
 	for (auto EnemyBullt : game->GetEnemyBullet())
 	{
@@ -165,12 +175,13 @@ void CPlayer::OnLock()
 	bool        LockEnemy = false;
 	int			Box = 0;				//敵の数を入れる  
 	float		angle = 0.0f;
+
 	//距離が一番近い敵にロックオンをする
-	if (game->GetEnemys().size() == 0)
+	if (game->GetMap()->GetnomalEnemyCount() == 0)
 	{
 		for (const auto& enemy : game->GetMap()->GetGroupenemy())
 		{
-			//カメラの前方向
+			//敵が死んでいるか確認する
 			if (enemy->IsEnd()) 
 			{
 				Box++;
@@ -179,8 +190,8 @@ void CPlayer::OnLock()
 
 			else
 			{
-
-				m_FrontPosition = { m_Mat.m[2][0],m_Mat.m[2][1], m_Mat.m[2][2] };
+				//カメラの前方向を取得
+				m_FrontPosition = game->GetGameCamara()->GetSpringGamera()->GetCamera()->GetFront();;
 				//PlayerからEnemyに向かうベクトルを計算する。
 				D3DXVECTOR3 toPlayer = enemy->Getpos() - m_Position;
 				//正規化
@@ -192,17 +203,6 @@ void CPlayer::OnLock()
 
 				//敵かプレイヤーに向かうベクトルを取得
 				Lenght2 = m_Position - enemy->Getpos();
-
-
-				/*if (LockEnemy)
-				{
-				if (m_EnemyNo != Box) { return; }
-				LockEnemy = true;
-				m_EnemyBox[Box].Position = enemy->Getpos();
-				m_EnemyBox[Box].Number = Box;
-				m_EnemyNo = Box;
-				break;
-				}*/
 
 				if (fabsf(angle) < D3DXToRadian(60.0f) && m_ZAttent && D3DXVec3Length(&Length) > D3DXVec3Length(&Lenght2))
 				{
@@ -225,45 +225,48 @@ void CPlayer::OnLock()
 	{
 		for (const auto& enemy : game->GetEnemys())
 		{
-			//カメラの前方向
-			m_FrontPosition = { m_Mat.m[2][0],m_Mat.m[2][1], m_Mat.m[2][2] };
-			//PlayerからEnemyに向かうベクトルを計算する。
-			D3DXVECTOR3 toPlayer = enemy->Getpos() - m_Position;
-			//正規化
-			D3DXVec3Normalize(&toPlayer, &toPlayer);
-			D3DXVec3Normalize(&m_FrontPosition, &m_FrontPosition);
 
-			angle = D3DXVec3Dot(&toPlayer, &m_FrontPosition);
-			angle = acos(angle);
-
-			//敵かプレイヤーに向かうベクトルを取得
-			Lenght2 = m_Position - enemy->Getpos();
-
-
-			/*if (LockEnemy)
+			//敵が死んでいるか確認する
+			if (enemy->IsEnd())
 			{
-				if (m_EnemyNo != Box) { return; }
-				LockEnemy = true;
-				m_EnemyBox[Box].Position = enemy->Getpos();
-				m_EnemyBox[Box].Number = Box;
-				m_EnemyNo = Box;
-				break;
-			}*/
-
-			if (fabsf(angle) < D3DXToRadian(60.0f) && m_ZAttent && D3DXVec3Length(&Length) > D3DXVec3Length(&Lenght2))
-			{
-
-				LockEnemy = true;
-				m_EnemyBox[Box].Position = enemy->Getpos();
-				Length = m_Position - m_EnemyBox[Box].Position;
-				m_EnemyBox[Box].Number = Box;
-				m_EnemyNo = Box;
-
+				Box++;
+				m_MaxEnemy = Box;
 			}
 
+			else
+			{
+				//カメラの前方向
+				m_FrontPosition = game->GetGameCamara()->GetSpringGamera()->GetCamera()->GetFront();
+				//PlayerからEnemyに向かうベクトルを計算する。
+				D3DXVECTOR3 toPlayer = enemy->Getpos() - m_Position;
+				//正規化
+				D3DXVec3Normalize(&toPlayer, &toPlayer);
+				D3DXVec3Normalize(&m_FrontPosition, &m_FrontPosition);
 
-			Box++;
-			m_MaxEnemy = Box;
+				angle = D3DXVec3Dot(&toPlayer, &m_FrontPosition);
+				angle = acos(angle);
+
+				//敵かプレイヤーに向かうベクトルを取得
+				Lenght2 = m_Position - enemy->Getpos();
+
+
+
+				if (fabsf(angle) < D3DXToRadian(60.0f) && m_ZAttent && D3DXVec3Length(&Length) > D3DXVec3Length(&Lenght2))
+				{
+
+					LockEnemy = true;
+					m_lockTarget = enemy;
+					m_EnemyBox[Box].Position = enemy->Getpos();
+					Length = m_Position - m_EnemyBox[Box].Position;
+					m_EnemyBox[Box].Number = Box;
+					m_EnemyNo = Box;
+
+				}
+
+
+				Box++;
+				m_MaxEnemy = Box;
+			}
 		}
 	}
 	
@@ -287,15 +290,7 @@ void CPlayer::OnLock()
 		m_ZAttent = false;
 		Box = 0;
 	}
-	
-	
-	/*D3DXVECTOR3 pPos = m_EnemyBox[m_EnemyNo].Position;
-	D3DXVec3Subtract(&pPos, &pPos, &m_Position);
 
-	if (D3DXVec3Length(&pPos) > 5000)
-	{
-		m_ZAttent = false;
-	}*/
 
 	if (m_ZAttent) {
 
@@ -630,14 +625,42 @@ void CPlayer::TransformAngle()
 //プレイヤーの弾の処理
 void CPlayer::InitBullet()
 {
-	//弾の生成
-	D3DXMATRIX Ahead = game->GetGameCamara()->GetSpringGamera()->GetCamera()->GetCameraRotation();/*/m_Skinmodel.GetMatrix();//*/ //プレイヤーの行列を取得
-	D3DXVECTOR3 Epos = { 0,0,0 };
-	D3DXVECTOR3 Length;
-	m_Mat = Ahead;
-	//D3DXVec3Normalize(&Epos, &Epos);
-	if (m_Pad.IsPress(Pad::enButtonRB1) && m_bulletIntervalTime >= BULLETTIME) {
-		Bullet* bullet = new Bullet();
+	
+	//リロードの処理
+	if (m_IsReload)
+	{
+		m_bulletreload -= GameTime().GetFrameDeltaTime();
+		if (m_bulletreload <= 0.0f)
+		{
+			m_reloadCount = 0;
+			m_IsReload = false;
+		}
+
+	}
+
+	if (m_Pad.IsPress(Pad::enButtonRB1) && m_bulletIntervalTime >= BULLETTIME &&m_bulletreload <= 0.0f) 
+	{
+
+		bool Isfree = false;	//インスタンを新たに生成するかの判定
+		
+								//弾丸を作成する
+		if (m_reloadCount == 30)
+		{
+			m_bulletreload = 3.0f;
+			m_IsReload = true;
+
+		}
+
+		if (m_IsReload) { return; }
+
+		m_reloadCount++;
+		//弾の初期化
+
+		D3DXMATRIX Ahead = game->GetGameCamara()->GetSpringGamera()->GetCamera()->GetCameraRotation();/*/m_Skinmodel.GetMatrix();//*/ //プレイヤーの行列を取得
+		D3DXVECTOR3 Epos = { 0,0,0 };
+		D3DXVECTOR3 Length;
+		m_Mat =  Ahead;
+
 		D3DXVECTOR3 bulletPos = m_Position;
 		bulletPos.y += 5.0f;
 		for (auto enemy : game->GetEnemys())
@@ -657,24 +680,68 @@ void CPlayer::InitBullet()
 		game->GetGameCamara()->Getcamera()->Update();
 		D3DXVECTOR3 PlayerFront = { Ahead.m[2][0],Ahead.m[2][1],Ahead.m[2][2] };
 		D3DXVec3Add(&bulletPos, &bulletPos, &(PlayerFront * 2.0f));
-		bullet->Start(bulletPos, PlayerFront);//プレイヤーの前方向を渡す
 
+		
+			
 
-		if (m_ZAttent)
-		{
-			bullet->Start(bulletPos, Epos);
-		}
-		game->AddPlayerBullets(bullet);
+			//使われてない弾を探して使われえないのが有ればそのインスタンスを使いまわす
+			for (auto& PlayerBullet : game->GetPlayerBullet())
+			{
+
+				if (PlayerBullet->GetFree())
+				{
+					Isfree = true;
+
+					if (m_ZAttent)
+					{
+						//PlayerBullet->Start(bulletPos, Epos);
+						PlayerBullet->homingStart(*m_lockTarget, bulletPos, Epos);
+					}
+					else
+					{
+
+						PlayerBullet->Start(bulletPos, PlayerFront);
+					}
+					break;
+
+				}
+
+			}
+
+			//使えるものが無ければ新たに追加する
+			if (!Isfree)
+			{
+				Bullet* bullet = new Bullet();
+
+				if (m_ZAttent)
+				{
+					//bullet->Start(bulletPos, Epos);
+					bullet->homingStart(*m_lockTarget, bulletPos, Epos);
+				}
+
+				else
+				{
+
+					bullet->Start(bulletPos, PlayerFront);//プレイヤーの前方向を渡す
+				}
+				game->AddPlayerBullets(bullet);
+
+			}
+		
 		m_bulletIntervalTime = 0.0f;
 		m_PlayerSE->Init("Assets/Sound/SE/BulletSound2.wav");
 		m_PlayerSE->SetVolume(0.1f);
 		m_PlayerSE->Play(true);
 		m_PlayerSE->Update();
+
 	}
 
 	if (m_bulletIntervalTime <= BULLETTIME) {
 		m_bulletIntervalTime += GameTime().GetFrameDeltaTime();
 	}
+
+	
+
 
 }
 
@@ -722,7 +789,7 @@ void CPlayer::Render()
 		m_TagetUI->Render(game->GetGameCamara()->Getcamera()->GetViewMatrix(), game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
 		
 	}
-	
+	m_ParticleEmitter.Render(game->GetGameCamara()->Getcamera()->GetViewMatrix(), game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
 	m_rederMap->Draw(&m_MapSkinmodel);
 }
 

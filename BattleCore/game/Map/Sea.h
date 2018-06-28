@@ -14,5 +14,7 @@ private:
 	D3DXVECTOR3	position;
 	D3DXQUATERNION rotation;
 	Light light;
+	std::unique_ptr<CParticleEmitter> 		m_particleEmit;
+
 };
 

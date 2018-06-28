@@ -11,6 +11,7 @@ struct SParicleEmitParameter {
 		memset(this, 0, sizeof(SParicleEmitParameter));
 		brightness = 1.0f;
 		life = 1.0f;
+		alpha = 1.0f;
 		initPositionRandomMargin = { 0.0f,0.0f,0.0f };
 	}
 	const char* texturePath;			//!<テクスチャのファイルパス。
@@ -20,10 +21,12 @@ struct SParicleEmitParameter {
 	float	Endtimer;						//パーティクルを生成するまでの時間
 	float	brightness;					//輝度
 	float	life;						//一つのパーティクルの寿命
+	float   alpha;						//アルファ値
 	D3DXVECTOR3	initPositionRandomMargin;
 	D3DXVECTOR3 initSpeed;				//!<初速度
 
 };
+
 /*!
 * @brief	パーティクルの発生機
 */

@@ -20,13 +20,26 @@ Bullet::~Bullet()
 
 	m_BulletSe->Release();
 	delete m_BulletSe;
+	delete m_particleEmit[0];
+	delete m_particleEmit[1];
 
 
 }
 void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 {
+	//変数の初期化
+	{
 
+		IsLifeDown = false;
+		m_IsHit = false;
+		m_state = e_Update;
+		m_life = 2.0f;		//弾が消滅するまでの寿命（秒）
+
+	}
 	m_position = pos;
+	
+
+
 	D3DXVec3Dot(&m_position, &moveSpeed);
 	PlayerFrontPosition = moveSpeed;
 	D3DXVec3Normalize(&PlayerFrontPosition,&PlayerFrontPosition);
@@ -44,12 +57,105 @@ void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 	//m_light.SetDiffuseLightColor(2, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
 	//m_light.SetDiffuseLightColor(3, D3DXVECTOR4(0.5f, 0.5f, 0.5f, 1.0f));
 
-	m_light.SetAmbientLight(D3DXVECTOR4(5.6f, 5.6f, 5.6f, 1.0f));
+	m_light.SetAmbientLight(D3DXVECTOR4(5.0f, 5.0f, 5.0f, 1.0f));
 	
- 
 	m_characterController = new CharacterController;
 	m_characterController->Init(0.1f, 0.1f, m_position);
 	m_characterController->SetGravity(0.0f);
+	
+	//モデルをロード。
+	if (modelData == NULL) {
+
+		modelData = new SkinModelData;
+		modelData->LoadModelData("Assets/modelData/Bullet2.X", NULL);
+		
+	}
+
+	m_rotation = game->GetPlayer()->GetRot(); //プレイヤーの回転
+	model.Init(modelData);
+	model.SetLight(&m_light);
+
+	
+	
+
+	
+
+	m_BulletSe = new CSoundSource;
+	m_BulletSe->Init("Assets/Sound/SE/BulletSound2.wav");
+	m_BulletSe->SetVolume(0.2f);
+	//パーティクルの設定
+	{
+
+		m_SparticleEmit.texturePath = "Assets/Particle/P_Fire.png";
+		static float w = 2.0f;
+		static float h = 2.0f;
+		m_SparticleEmit.w = w;
+		m_SparticleEmit.h = h;
+		m_SparticleEmit.intervalTime = 0.01f;
+		m_SparticleEmit.Endtimer = 1.0f;
+		m_SparticleEmit.brightness = 0.2f;
+		m_SparticleEmit.life = 1.0f;
+		m_SparticleEmit.alpha = 1.0f;
+		static D3DXVECTOR3 randomMargin = { 1.5f,1.5f,1.5f };
+		m_SparticleEmit.initPositionRandomMargin = randomMargin;
+
+		m_SparticleEmit.initSpeed = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		for (int i = 0;i < 2;i++)
+		{
+			if (m_free == false)
+			{
+
+				m_particleEmit[i] = new CParticleEmitter;
+
+			}
+
+			m_particleEmit[i]->Init(m_SparticleEmit);
+
+		}
+			m_free = false;
+
+	}
+}
+void Bullet::homingStart(CEnemy& enemy, const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
+{
+	if (m_homingTarget == nullptr)
+	{
+
+		m_homingTarget = new CEnemy;
+		m_homingTarget = &enemy;
+		
+		
+	}
+
+	//変数の初期化
+	{
+
+		IsLifeDown = false;
+		m_IsHit = false;
+		m_state = e_homingUpdate;
+		m_life = 5.0f;		//弾が消滅するまでの寿命（秒）
+
+	}
+	m_position = pos;
+
+	m_position.x += (((float)g_Random->GetRandDouble() - 0.5f) * 2.0f) * 20.0f;
+	m_position.y += (((float)g_Random->GetRandDouble() - 0.5f) * 2.0f) * 20.0f;
+	m_position.z += (((float)g_Random->GetRandDouble() - 0.5f) * 2.0f) * 20.0f;
+
+	D3DXVec3Dot(&m_position, &moveSpeed);
+	PlayerFrontPosition = moveSpeed;
+	D3DXVec3Normalize(&PlayerFrontPosition, &PlayerFrontPosition);
+
+	this->moveSpeed = PlayerFrontPosition;//1.5f; //弾速調整
+	m_light.SetAmbientLight(D3DXVECTOR4(5.0f, 5.0f, 5.6f, 1.0f));
+
+
+
+	m_characterController = new CharacterController;
+	m_characterController->Init(0.1f, 0.1f, m_position);
+	m_characterController->SetGravity(0.0f);
+
+
 	//モデルをロード。
 	if (modelData == NULL) {
 
@@ -61,48 +167,64 @@ void Bullet::Start(const D3DXVECTOR3& pos, const D3DXVECTOR3& moveSpeed)
 	model.Init(modelData);
 	model.SetLight(&m_light);
 
-	
-	
 
-	life = 120;
+
+
+
 
 	m_BulletSe = new CSoundSource;
 	m_BulletSe->Init("Assets/Sound/SE/BulletSound2.wav");
 	m_BulletSe->SetVolume(0.2f);
-	SParicleEmitParameter SparticleEmit;
 	//パーティクルの設定
-	SparticleEmit.texturePath = "Assets/Particle/P_Fire.png";
-	static float w = 2.0f;
-	static float h = 2.0f;
-	SparticleEmit.w = w;
-	SparticleEmit.h = h;
-	SparticleEmit.intervalTime = 0.01f;
-	SparticleEmit.Endtimer = 1.0f;
-	SparticleEmit.brightness = 0.2f;
-	SparticleEmit.life = 2.0f;
-	static D3DXVECTOR3 randomMargin = { 1.5f,1.5f,1.5f };
-	SparticleEmit.initPositionRandomMargin = randomMargin;
+	{
 
-	SparticleEmit.initSpeed = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	m_particleEmit = std::make_unique<CParticleEmitter>();
-	m_particleEmit->Init(SparticleEmit);
+		m_SparticleEmit.texturePath = "Assets/Particle/P_Fire.png";
+		static float w = 2.0f;
+		static float h = 2.0f;
+		m_SparticleEmit.w = w;
+		m_SparticleEmit.h = h;
+		m_SparticleEmit.intervalTime = 0.01f;
+		m_SparticleEmit.Endtimer = 1.0f;
+		m_SparticleEmit.brightness = 0.2f;
+		m_SparticleEmit.life = 1.0f;
+		m_SparticleEmit.alpha = 1.0f;
+		static D3DXVECTOR3 randomMargin = { 1.5f,1.5f,1.5f };
+		m_SparticleEmit.initPositionRandomMargin = randomMargin;
+
+		m_SparticleEmit.initSpeed = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		for (int i = 0;i < 2;i++)
+		{
+			if (m_free == false)
+			{
+
+				m_particleEmit[i] = new CParticleEmitter;
+
+			}
+
+			m_particleEmit[i]->Init(m_SparticleEmit);
+
+		}
+		m_free = false;
+
+	}
 }
+
 bool Bullet::Update()
 {
 	switch (m_state)
 	{
 
 	case e_Update:
-		life--;
+		m_life -= GameTime().GetFrameDeltaTime();
 	/*	if (m_characterController->IsHitWall())
 		{
 			MessageBox(NULL, "当たったよ", "IsHit", MB_OK);
 		}*/
 
-		if (life < 0 || m_characterController->IsHitWall() || IsHit) {
+		if (m_life <= 0 || m_characterController->IsHitWall() || m_IsHit) {
 
 			//死亡。
-			if (IsHit)
+			if (m_IsHit)
 			{
 				m_BulletSe->Init("Assets/Sound/SE/HitSound.wav");
 				m_BulletSe->SetVolume(0.1f);
@@ -110,10 +232,11 @@ bool Bullet::Update()
 
 			}
 
+			
 			m_characterController->RemoveRigidBoby();
 			m_characterController->GetRigidBody()->Release();
 			delete m_characterController;
-
+			
 
 			m_state = e_IsHit;
 			
@@ -122,24 +245,80 @@ bool Bullet::Update()
 
 		else
 		{
-			m_position = moveSpeed * 120.0f;
+			m_position = moveSpeed * 8000.0f * GameTime().GetFrameDeltaTime();
 			m_characterController->SetMoveSpeed(m_position);
 			m_characterController->Execute();
 			m_position = m_characterController->GetPosition();
 
 		}
-		//model.UpdateWorldMatrix(m_position, m_rotation, D3DXVECTOR3(0.3f, 0.3f, 0.3f));
 		return true;
 		break;
 
-	case e_IsHit:
-		m_time += GameTime().GetFrameDeltaTime();
-		m_particleEmit->SetPosition({ m_position.x,m_position.y,m_position.z });
-		m_particleEmit->Update();
+	case e_homingUpdate:
 
-		if (m_time > 3.00f)
+		m_life -= GameTime().GetFrameDeltaTime();
+		/*	if (m_characterController->IsHitWall())
+		{
+		MessageBox(NULL, "当たったよ", "IsHit", MB_OK);
+		}*/
+
+		if (m_life <= 0 || m_characterController->IsHitWall() || m_IsHit) {
+
+			//死亡。
+			if (m_IsHit)
+			{
+				m_BulletSe->Init("Assets/Sound/SE/HitSound.wav");
+				m_BulletSe->SetVolume(0.1f);
+				m_BulletSe->Play(0);
+
+			}
+
+			
+			m_characterController->RemoveRigidBoby();
+			m_characterController->GetRigidBody()->Release();
+			
+			delete m_characterController;
+			
+
+			m_state = e_IsHit;
+
+			//m_particleEmit->Update();
+		}
+
+		else
+		{
+			m_position = m_homingTarget->Getpos() - m_position ;
+			D3DXVec3Normalize(&m_position, &m_position);
+			m_position = m_position * 7000.0f * GameTime().GetFrameDeltaTime();
+			m_characterController->SetMoveSpeed(m_position);
+			m_characterController->Execute();
+			m_position = m_characterController->GetPosition();
+
+		}
+		return true;
+
+
+		break;
+	case e_IsHit:
+
+		m_time += GameTime().GetFrameDeltaTime();
+		for (int i = 0;i < 2;i++)
+		{
+			//if (m_IsHit) 
+			//{
+
+				m_particleEmit[i]->SetPosition({ m_position.x,m_position.y,m_position.z });
+				m_particleEmit[i]->Update();
+
+			//}
+		}
+		//最後に生成されるパーティクルの寿命までは死なない
+		if (m_time >m_SparticleEmit.Endtimer + m_SparticleEmit.life)
 		{
 			m_state = e_IsDete;
+			m_time = 0.0f;
+			m_free = true;
+			delete m_BulletSe;
 		}
 		
 		
@@ -147,8 +326,8 @@ bool Bullet::Update()
 
 	case e_IsDete:
 
-		delete this;
-		return false;
+		int i = 0;
+		return true;
 		break;
 
 	}
@@ -167,18 +346,31 @@ void Bullet::Render()
 	{
 
 	case e_Update:
-		if (this->life < 0) { return; }
+		//if (this->m_life <= 0) { return; }
 
 		model.SetShadowMap(false);
 		model.SetShadowRecieve(false);
 		model.UpdateWorldMatrix(m_position, m_rotation, D3DXVECTOR3(0.3f, 0.3f, 0.3f));
 		model.Draw(&game->GetGameCamara()->Getcamera()->GetViewMatrix(), &game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
 		break;
+	case e_homingUpdate:
 
+		model.SetShadowMap(false);
+		model.SetShadowRecieve(false);
+		model.UpdateWorldMatrix(m_position, m_rotation, D3DXVECTOR3(0.3f, 0.3f, 0.3f));
+		model.Draw(&game->GetGameCamara()->Getcamera()->GetViewMatrix(), &game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
+		break;
 	case e_IsHit:
 		//m_particleEmit->Update();
-		m_particleEmit->Render(game->GetGameCamara()->Getcamera()->GetViewMatrix(), game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
+		for (int i = 0;i < 2;i++)
+		{
+			//if (m_IsHit)
+			//{
 
+			m_particleEmit[i]->Render(game->GetGameCamara()->Getcamera()->GetViewMatrix(), game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
+
+			//}
+		}
 		break;
 
 	case e_IsDete:
@@ -200,7 +392,7 @@ void Bullet::Render2D()
 
 	case e_IsHit:
 
-		//m_particleEmit->Render(game->GetGameCamara()->Getcamera()->GetViewMatrix(), game->GetGameCamara()->Getcamera()->GetProjectionMatrix());
+		
 
 		break;
 

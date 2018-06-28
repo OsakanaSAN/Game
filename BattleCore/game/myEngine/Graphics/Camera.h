@@ -13,6 +13,9 @@ private:
 	D3DXVECTOR3				vEyePt;				//!<カメラの視点。
 	D3DXVECTOR3				vLookatPt;			//!<カメラの注視点。
 	D3DXVECTOR3				vUpVec;				//!<カメラの上方向。
+	D3DXVECTOR3             m_Front = { 0.0f,   0.0f,  1.0f };		    //前方向
+	D3DXVECTOR3				m_Right = { 1.0f,  0.0f,  0.0f };            //右方向
+
 	float					Far;				//!<遠平面。
 	float					Near;				//!<近平面。
 	float			        m_viewAngle;		//!<画角(ラジアン)。
@@ -136,5 +139,17 @@ public:
 	 *@brief	カメラの初期化。
 	 */
 	void Init();
+
+	//カメラの前方向取得
+	const D3DXVECTOR3 GetFront()
+	{
+		return m_Front;
+	}
+
+	//カメラの右方向取得
+	const D3DXVECTOR3 GetRight()
+	{
+		return m_Right;
+	}
 
 };

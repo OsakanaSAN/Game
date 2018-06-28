@@ -84,6 +84,21 @@ public:
 	{
 		return EnemyBullets;
 	}
+	void DeleteBullet()
+	{
+		for (Bullet* Pbullet : PlayerBullets)
+		{
+			delete Pbullet;
+		}
+		PlayerBullets.clear();
+
+		for (Bullet* Ebullet : EnemyBullets)
+		{
+			delete Ebullet;
+		}
+		EnemyBullets.clear();
+	}
+
 	//エネミーリスト
 	const std::list<CEnemy*>& GetEnemys()
 	{
